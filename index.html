@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <!-- flexbox footer formatting : solution from https://medium.com/@paynoattn/flexbox-sticky-footer-d19dab50c34 -->
+        <style>
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                color:rgb(42, 197, 15)
+            }
+        
+            footer {
+                margin: auto auto 0 auto;
+            }
+        </style>
+
+        <title>
+            Star Trek Game - Making Games By Year Episode 1
+        </title>
+    </head>
+<body style="background-color:black;">
+
+<h2>Star Trek Game - Making Games By Year Episode 1</h2>
+
+<div id="mapstatus">
+<div id="map" style="display:inline-block">
+<pre>
+---------------------------------
+                      *           
+                          *       
+     +K+                          
+                                  
+     <*>      *                   
+                              *   
+          *                       
+  *                               
+---------------------------------
+
+</pre>
+</div>
+
+<div id="status" style="display:inline-block; vertical-align: top">
+<pre>
+    
+STARDATE           2416 
+CONDITION          *RED*
+QUADRANT           4 , 1 
+SECTOR             5 , 2 
+PHOTON TORPEDOES   10 
+TOTAL ENERGY       2802 
+SHIELDS            0 
+KLINGONS REMAINING 15
+</pre>
+</div>
+</div>
+
+<div id="instructions">
+<pre>
+ENTER ONE OF THE FOLLOWING:
+NAV  (TO SET COURSE)
+SRS  (FOR SHORT RANGE SENSOR SCAN)
+LRS  (FOR LONG RANGE SENSOR SCAN)
+PHA  (TO FIRE PHASERS)
+TOR  (TO FIRE PHOTON TORPEDOES)
+SHE  (TO RAISE OR LOWER SHIELDS)
+DAM  (FOR DAMAGE CONTROL REPORTS)
+COM  (TO CALL ON LIBRARY-COMPUTER)
+XXX  (TO RESIGN YOUR COMMAND)
+</pre>         
+</div>
+
+<div id="inputline">
+<pre>
+Your orders :
+<input maxlength="3" type="text" name="gameinput" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+</pre>
+</div>
+
+</p>
+<footer>
+    Game inspired by the BASIC game <a href="https://en.wikipedia.org/wiki/Star_Trek_(1971_video_game)" >"Star Trek"</a>, originally by Mike Mayfield, 1971<br>
+    Created for the <a href="https://www.youtube.com/channel/UCw4fSSvUTfZnXYmcW7tUZKg">Youtube Show</a>, "Making Games By Year", Episode 1<br>
+    GitHub for the games created for the show can be found <a href="https://github.com/MakingGamesByYear/Games <br>">here.</a><br>
+    <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILggGaExem7zKai5?si=4nELQYb9SK6l2JHO3_ndHw">Spotify Playlist</a> for the episode. <br>
+</footer>
+</body>
+</html>
+
