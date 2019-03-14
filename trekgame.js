@@ -40,3 +40,5 @@ class TrekGame
         this.galaxyMap = new GalaxyMap();
     }
 }
+
+console.log("Hope you enjoy the game!");
