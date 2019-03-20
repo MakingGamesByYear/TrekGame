@@ -22,7 +22,7 @@
     </head>
 <body style="background-color:black;">
 
-<script src="./trekgame.js"></script>
+<script src="trekgame.js"></script>
 
 <h2>Star Trek Game - Making Games By Year Episode 1</h2>
 
@@ -88,5 +88,9 @@ Your orders :
     <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILggGaExem7zKai5?si=4nELQYb9SK6l2JHO3_ndHw">Spotify Playlist</a> for the episode. <br>
 </footer>
 </body>
+<script>
+    game = new TrekGame();
+    document.getElementById("map").innerHTML = game.currentQuadrant.toString();
+</script>
 </html>
 
