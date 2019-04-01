@@ -3,6 +3,7 @@ const mapHeightQuadrants = 8;
 const quadrantWidthSectors = 8;
 const quadrantHeightSectors = 8;
 const sectorDisplayWidthChars = 4;
+const minKlingonsGame = 8;
 
 function checkArgumentsDefinedAndHaveValue(args)
 {
@@ -59,10 +60,43 @@ class Grid
         return this.contents [y * this.width + x];
     }
 
+    // 1D array based lookup
+    lookup1D(x)
+    {
+        checkArgumentsDefinedAndHaveValue(arguments);
+        return this.contents[x];
+    }
+
     setValue(x,y,val)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
         this.contents [y * this.width + x] = val;
+    }
+
+    getEmptySquare()
+    {
+        let startIndex = randomInt(0, this.contents.length-1);
+        let emptyIndex = null;
+
+        for (let i = 0; i < this.contents.length; i++)
+        {
+            let lookup = ( startIndex + i ) % this.contents.length;
+            if (!this.contents.lookup)
+            {
+                emptyIndex = i;
+                break;
+            }
+        }
+
+        if (emptyIndex)
+        {
+            let rx = emptyIndex % this.width;
+            let ry = emptyIndex / this.height;
+
+            return {x : rx, y:ry};
+        }
+        
+        return null;
     }
 
     toString()
@@ -84,12 +118,104 @@ class Grid
 
 class GameObject
 {
-    constructor()
+    constructor(className)
     {
         this.sectorX = 0;
         this.sectorY = 0;
         this.quadrantX = 0;
         this.quadrantY = 0;
+
+        if (!className.Instances)
+        {
+            className.Instances = 0;
+        }
+
+        className.Instances++;
+    }
+
+    setLocationSector(sectorXY)
+    {
+        this.sectorX = sectorXY.x;
+        this.sectorY = sectorXY.y;
+    }
+
+    // randomly generate the number of GameObject instances to put in a new quadrant
+    static randomCountForQuadrant(quadrantFreeSpaces)
+    {
+        let rval = randomInt(0, this.maxInstancesQuadrant());
+        rval = Math.min(rval, quadrantFreeSpaces);
+
+        if (!this.Instances)
+        {
+            this.Instances = 0;
+        }
+
+        console.assert(this.Instances < this.maxInstancesGame());
+
+        rval = Math.min(rval, this.maxInstancesGame() - this.Instances);
+
+        return rval;
+    }
+
+    static minInstancesGame()
+    {
+        return 0;
+    }
+
+    static maxInstancesQuadrant()
+    {
+        return 8;
+    }
+
+    static maxInstancesGame()
+    {
+        return this.maxInstancesQuadrant() * mapWidthQuadrants * mapHeightQuadrants;
+    }
+}
+
+class StarBase extends GameObject
+{
+    constructor()
+    {
+        super(StarBase);
+    }
+
+    toString()
+    {
+        return ">!<";
+    }
+
+    static maxInstancesQuadrant()
+    {
+        return 1;
+    }
+
+    static minInstancesGame()
+    {
+        return 1;
+    }
+}
+
+class Klingon extends GameObject
+{
+    constructor()
+    {
+        super(Klingon);
+    }
+
+    toString()
+    {
+        return "+K+";
+    }
+    
+    static maxInstancesQuadrant()
+    {
+        return 4;
+    }
+
+    static minInstancesGame()
+    {
+        return minKlingonsGame;
     }
 }
 
@@ -97,12 +223,17 @@ class Star extends GameObject
 {
     constructor()
     {
-        super();
+        super(Star);
     }
 
     toString()
     {
         return "*";
+    }
+
+    static maxInstancesQuadrant()
+    {
+        return 4;
     }
 }
 
@@ -110,12 +241,27 @@ class Enterprise extends GameObject
 {
     constructor()
     {
-        super();
+        super(Enterprise);
     }
 
     toString()
     {
         return "<*>";
+    }
+
+    static maxInstancesGame()
+    {
+        return 1;
+    }
+
+    static maxInstancesQuadrant()
+    {
+        return 1;
+    }
+
+    static minInstancesGame()
+    {
+        return 1;
     }
 }
 
@@ -129,6 +275,74 @@ class Quadrant
         this.quadrantEntities = new Array();
     }
 
+    createEntities(entityTypes)
+    {
+        var entityIdx;
+        for (entityIdx in entityTypes)
+        {
+            let entityType = entityTypes[entityIdx];
+
+            let numEntities = entityType.randomCountForQuadrant(this.emptySquares());
+
+            for (let i =0; i < numEntities; i++ )
+            {
+                this.addEntity(new entityType());
+            }
+        }
+    }
+
+    addEntity(entity)
+    {
+        entity.setLocationSector(this.getEmptySquare());
+        console.log("" + entity.sectorX + " " + entity.sectorY);
+        console.log("" + entity.quadrantX + " " + entity.quadrantY);
+        this.quadrantEntities.push(entity);
+    }
+
+    emptySquares()
+    {
+        return this.width*this.height - this.quadrantEntities.length;
+    }
+
+    getEmptySquare()
+    {
+        console.assert(this.width * this.height > this.quadrantEntities.length);
+
+        if (this.quadrantEntities.length >= this.width*this.height)
+        {
+            return null;
+        }
+
+        let emptyFound = false;
+
+        let testRandom = randomInt(0, (this.width*this.height)-1);
+
+        while (!emptyFound)
+        {
+            let randomX = testRandom % this.width;
+            let randomY = Math.floor(testRandom / this.height);
+
+            var entityIdx;
+            emptyFound = true;
+            for (entityIdx in this.quadrantEntities)
+            {
+                let entity = this.quadrantEntities[entityIdx];
+                if (entity.sectorX == randomX && entity.sectorY == randomY)
+                {
+                    emptyFound = false;
+                    break;
+                }
+            }
+
+            if (emptyFound)
+            {
+                return {x : randomX, y : randomY};
+            }
+
+            testRandom++;
+        }
+    }
+
     toString()
     {
         let borderString = "---------------------------------\n";
@@ -138,6 +352,7 @@ class Quadrant
         var gameObjectIndex;
         for (gameObjectIndex in this.quadrantEntities)
         {
+            console.log("entity");
             let gameObject = this.quadrantEntities[gameObjectIndex];
             let objStr = gameObject.toString().padStart(sectorDisplayWidthChars, ' ');
             quadrantStringGrid.setValue(gameObject.sectorX, gameObject.sectorY, objStr);
@@ -151,22 +366,80 @@ class Quadrant
 
 class GalaxyMap extends Grid
 {
-    constructor(quadrantsX, quadrantsY)
+    constructor(quadrantsX, quadrantsY, entityTypes)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
         super(quadrantsX, quadrantsY, function(){return new Quadrant(quadrantWidthSectors,quadrantHeightSectors)});
+
+        this.createMinimumInstances(entityTypes);
+
+        for (let i = 0; i < quadrantsX*quadrantsY; i++)
+        {
+            this.lookup1D(i).createEntities(entityTypes);
+        }
+    }
+
+
+    createMinimumInstances(entityTypes)
+    {
+        var x;
+        for (x in entityTypes)
+        {
+            let etype = entityTypes[x];
+
+            let instancesToCreate = etype.minInstancesGame() - etype.Instances;
+
+            if (instancesToCreate > 0)
+            {
+                for (let i = 0; i < instancesToCreate; i++)
+                {
+                    let inst = new etype();
+                    let randomQuadrant = randomInt(0, (quadrantsX * quadrantsY)-1);
+
+                    let instAssigned = false;
+                    for (let quad = 0; quad < quadrantsX*quadrantsY; quad++)
+                    {
+                        if (this.lookup1D(randomQuadrant).quadrantFreeSpaces())
+                        {
+                            this.lookup1D(randomQuadrant).addEntity(inst);
+                            instAssigned = true;
+                            break;
+                        }
+
+                        randomQuadrant = (randomQuadrant + 1 ) % quadrantsX*quadrantsY;
+                    }
+                    
+                    if (!instAssigned)
+                    {
+                        throw "Not enough space to assign minumum instances of " + etype.name;
+                    }
+                }
+            }
+            
+        }
     }
 }
 
 class TrekGame
 {
+
+    static EntityTypes = [Star, StarBase, Klingon];
+
     constructor()
     {
-        this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants);
-        this.enterprise = new Enterprise();
-        this.currentQuadrant = this.galaxyMap.lookup(this.enterprise.quadrantX, this.enterprise.quadrantY);
+        this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
         
-        this.currentQuadrant.quadrantEntities.push(this.enterprise);
+        this.enterprise = new Enterprise();
+
+        // start in a random quadrant
+        this.enterprise.quadrantX = randomInt(0, mapWidthQuadrants);
+        this.enterprise.quadrantY = randomInt(0, mapHeightQuadrants);
+        this.enterprise.sectorX = 0;
+        this.enterprise.sectorY = 0;
+        
+        this.currentQuadrant = this.galaxyMap.lookup(this.enterprise.quadrantX, this.enterprise.quadrantY);
+
+        this.currentQuadrant.addEntity(this.enterprise);
     }
 }
 
