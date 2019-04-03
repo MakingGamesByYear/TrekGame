@@ -91,6 +91,7 @@ Your orders :
 <script>
     game = new TrekGame();
     document.getElementById("map").innerHTML = game.currentQuadrant.toString();
+    document.getElementById("status").innerHTML = game.statusString();
 </script>
 </html>
 
