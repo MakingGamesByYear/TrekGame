@@ -213,6 +213,11 @@ class Klingon extends GameObject
         return 4;
     }
 
+    static maxInstancesGame()
+    {
+        return 18;
+    }
+
     static minInstancesGame()
     {
         return minKlingonsGame;
@@ -239,9 +244,16 @@ class Star extends GameObject
 
 class Enterprise extends GameObject
 {
+    static StartTorpedoes = 10;
+    static StartEnergy = 3000;
+    static StartShields = 0;
+
     constructor()
     {
         super(Enterprise);
+        this.torpedoes = Enterprise.StartTorpedoes;
+        this.shields = Enterprise.StartShields;
+        this.energy = Enterprise.StartEnergy;
     }
 
     toString()
@@ -262,6 +274,11 @@ class Enterprise extends GameObject
     static minInstancesGame()
     {
         return 1;
+    }
+
+    conditionString()
+    {
+        return "GREEN";
     }
 }
 
@@ -294,8 +311,6 @@ class Quadrant
     addEntity(entity)
     {
         entity.setLocationSector(this.getEmptySquare());
-        console.log("" + entity.sectorX + " " + entity.sectorY);
-        console.log("" + entity.quadrantX + " " + entity.quadrantY);
         this.quadrantEntities.push(entity);
     }
 
@@ -379,7 +394,6 @@ class GalaxyMap extends Grid
         }
     }
 
-
     createMinimumInstances(entityTypes)
     {
         var x;
@@ -422,7 +436,6 @@ class GalaxyMap extends Grid
 
 class TrekGame
 {
-
     static EntityTypes = [Star, StarBase, Klingon];
 
     constructor()
@@ -440,6 +453,30 @@ class TrekGame
         this.currentQuadrant = this.galaxyMap.lookup(this.enterprise.quadrantX, this.enterprise.quadrantY);
 
         this.currentQuadrant.addEntity(this.enterprise);
+
+        this.klingonsRemaining = Klingon.Instances;
+
+        this.starDate = randomInt(1312, 5928);
+    }
+
+    currentStardate()
+    {
+        return this.starDate;
+    }
+
+    statusString()
+    {
+        return "<pre>" +
+        "\n\n" + 
+        "STARDATE           " + this.currentStardate() + '\n' +  
+        "CONDITION          " + this.enterprise.conditionString() + '\n' + 
+        "QUADRANT           " + this.enterprise.quadrantX +  ',' + this.enterprise.quadrantY + '\n' + 
+        "SECTOR             " + this.enterprise.sectorX +  ',' + this.enterprise.sectorY + '\n' + 
+        "PHOTON TORPEDOES   " + this.enterprise.torpedoes + '\n' + 
+        "TOTAL ENERGY       " + this.enterprise.energy + '\n' + 
+        "SHIELDS            " + this.enterprise.shields + '\n' + 
+        "KLINGONS REMAINING " + this.klingonsRemaining + '\n' + 
+        "</pre>";
     }
 }
 
