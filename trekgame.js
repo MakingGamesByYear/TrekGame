@@ -104,12 +104,13 @@ class Grid
         let rval = "";
         for ( let y = 0; y < this.height; y++)
         {
+            rval += '|';
             for (let x = 0; x < this.width; x++)
             {
                 let catstr = this.lookup(x,y).toString();
                 rval += catstr;
             }
-
+            rval += '|';
             rval += '\n';
         }
         return rval;
@@ -150,9 +151,9 @@ class GameObject
             this.Instances = 0;
         }
 
-        console.assert(this.Instances < this.maxInstancesGame());
-
         rval = Math.min(rval, this.maxInstancesGame() - this.Instances);
+
+        console.assert(this.Instances <= this.maxInstancesGame());
 
         return rval;
     }
@@ -280,6 +281,37 @@ class Enterprise extends GameObject
     {
         return "GREEN";
     }
+
+    // long range scan
+    lrsString(galaxyMap)
+    {
+        let border = "-------------------";
+        let rval = border + '\n';
+
+        for (let y = this.quadrantY - 1; y <= this.quadrantY + 1; y++)
+        {
+            rval += "|";
+            for (let x = this.quadrantX - 1; x <= this.quadrantX + 1; x++)
+            {
+                let quadrant = galaxyMap.lookup(x, y);
+                if (quadrant)
+                {
+                    // klingons, starbases, stars
+                    let k = quadrant.countEntitiesOfType(Klingon);
+                    let s = quadrant.countEntitiesOfType(StarBase);
+                    let st = quadrant.countEntitiesOfType(Star);
+
+                    rval += " " + k + s + st + " |";
+                }
+                else
+                {
+                    rval += " *** |";
+                }
+            }
+            rval += "\n" + border + "\n";
+        }
+        return rval;
+    }
 }
 
 class Quadrant
@@ -290,6 +322,19 @@ class Quadrant
         this.width = widthSectorsIn;
         this.height = heightSectorsIn;
         this.quadrantEntities = new Array();
+    }
+
+    countEntitiesOfType(classtype)
+    {
+        var rval=0;
+        for (var x in this.quadrantEntities)
+        {
+            if (this.quadrantEntities[x].constructor == classtype)
+            {
+                rval++;
+            }
+        }
+        return rval;
     }
 
     createEntities(entityTypes)
@@ -360,14 +405,13 @@ class Quadrant
 
     toString()
     {
-        let borderString = "---------------------------------\n";
+        let borderString = " =---=---=---=---=---=---=---=---\n";
 
         let quadrantStringGrid = new Grid(this.width, this.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
 
         var gameObjectIndex;
         for (gameObjectIndex in this.quadrantEntities)
         {
-            console.log("entity");
             let gameObject = this.quadrantEntities[gameObjectIndex];
             let objStr = gameObject.toString().padStart(sectorDisplayWidthChars, ' ');
             quadrantStringGrid.setValue(gameObject.sectorX, gameObject.sectorY, objStr);
@@ -445,8 +489,8 @@ class TrekGame
         this.enterprise = new Enterprise();
 
         // start in a random quadrant
-        this.enterprise.quadrantX = randomInt(0, mapWidthQuadrants);
-        this.enterprise.quadrantY = randomInt(0, mapHeightQuadrants);
+        this.enterprise.quadrantX = randomInt(0, mapWidthQuadrants - 1);
+        this.enterprise.quadrantY = randomInt(0, mapHeightQuadrants - 1);
         this.enterprise.sectorX = 0;
         this.enterprise.sectorY = 0;
         
@@ -456,6 +500,7 @@ class TrekGame
 
         this.klingonsRemaining = Klingon.Instances;
 
+        // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
     }
 
@@ -470,13 +515,23 @@ class TrekGame
         "\n\n" + 
         "STARDATE           " + this.currentStardate() + '\n' +  
         "CONDITION          " + this.enterprise.conditionString() + '\n' + 
-        "QUADRANT           " + this.enterprise.quadrantX +  ',' + this.enterprise.quadrantY + '\n' + 
-        "SECTOR             " + this.enterprise.sectorX +  ',' + this.enterprise.sectorY + '\n' + 
+        "QUADRANT           " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
+        "SECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
         "PHOTON TORPEDOES   " + this.enterprise.torpedoes + '\n' + 
         "TOTAL ENERGY       " + this.enterprise.energy + '\n' + 
         "SHIELDS            " + this.enterprise.shields + '\n' + 
         "KLINGONS REMAINING " + this.klingonsRemaining + '\n' + 
         "</pre>";
+    }
+
+    gameInput(inputStr)
+    {
+        console.log(inputStr);
+
+        if (inputStr == "lrs")
+        {
+            document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
+        }
     }
 }
 
