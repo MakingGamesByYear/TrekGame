@@ -58,6 +58,11 @@ KLINGONS REMAINING 15
 </div>
 </div>
 
+<div id="lrs">
+<pre>
+</pre>
+</div>
+
 <div id="instructions">
 <pre>
 ENTER ONE OF THE FOLLOWING:
@@ -76,8 +81,15 @@ XXX  (TO RESIGN YOUR COMMAND)
 <div id="inputline">
 <pre>
 Your orders :
-<input maxlength="3" type="text" name="gameinput" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+<input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
+<input type="button" 
+    value="Make it so!" 
+    onclick="handleInput(this)"
+    id="inputButton"
+    style="font-family: 
+    monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
+</input>
 </div>
 
 </p>
@@ -89,9 +101,30 @@ Your orders :
 </footer>
 </body>
 <script>
+
+    function handleInput(submitButton)
+    {
+        submitButton.blur();
+        game.gameInput(inputBox.value);
+        inputBox.value = "";
+    }
+
     game = new TrekGame();
+    let inputBox =  document.getElementById("gameInput");
+
+    // set up a listener on the input box to map the enter key to being the same as clicking the submit button
+    inputBox.addEventListener("keyup", 
+        function(event)
+        {
+            if (event.keyCode == 13) // enter
+            {
+                event.preventDefault();
+                document.getElementById("inputButton").click();
+            }
+        }
+    );
+
     document.getElementById("map").innerHTML = game.currentQuadrant.toString();
     document.getElementById("status").innerHTML = game.statusString();
 </script>
 </html>
-
