@@ -5,6 +5,8 @@ const quadrantHeightSectors = 8;
 const sectorDisplayWidthChars = 4;
 const minKlingonsGame = 8;
 
+const defaultInputPrompt = "ENTER ONE OF THE FOLLOWING:\nNAV  (TO SET COURSE)\nSRS  (FOR SHORT RANGE SENSOR SCAN)\nLRS  (FOR LONG RANGE SENSOR SCAN)\nPHA  (TO FIRE PHASERS)\nTOR  (TO FIRE PHOTON TORPEDOES)\nSHE  (TO RAISE OR LOWER SHIELDS)\nDAM  (FOR DAMAGE CONTROL REPORTS)\nCOM  (TO CALL ON LIBRARY-COMPUTER)\nXXX  (TO RESIGN YOUR COMMAND)\n\nYour orders :";
+
 function checkArgumentsDefinedAndHaveValue(args)
 {
     var x;
@@ -104,7 +106,7 @@ class Grid
         let rval = "";
         for ( let y = 0; y < this.height; y++)
         {
-            rval += '|';
+            rval += (y+1) + '|';
             for (let x = 0; x < this.width; x++)
             {
                 let catstr = this.lookup(x,y).toString();
@@ -138,6 +140,11 @@ class GameObject
     {
         this.sectorX = sectorXY.x;
         this.sectorY = sectorXY.y;
+    }
+
+    onTorpedoHit(quadrant)
+    {
+        console.log("Torpedo hit (base)");
     }
 
     // randomly generate the number of GameObject instances to put in a new quadrant
@@ -181,6 +188,15 @@ class StarBase extends GameObject
         super(StarBase);
     }
 
+    onTorpedoHit(quadrant)
+    {
+        console.log("hit a starbase");
+        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("The torpedo strikes and destroys the friendly starbase! I bet you'll be court martialled for that one!");
+
+        quadrant.removeEntity(this);
+    }
+
     toString()
     {
         return ">!<";
@@ -202,6 +218,16 @@ class Klingon extends GameObject
     constructor()
     {
         super(Klingon);
+        this.shields = randomInt(100, 300);
+    }
+
+    onTorpedoHit(quadrant)
+    {
+        console.log("hit a klingon");
+        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("Klingon Fighter Destroyed");
+
+        quadrant.removeEntity(this);
     }
 
     toString()
@@ -232,6 +258,13 @@ class Star extends GameObject
         super(Star);
     }
 
+    onTorpedoHit()
+    {
+        console.log("hit a star");
+        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("The star absorbs the torpedo without a trace.");
+    }
+
     toString()
     {
         return "*";
@@ -245,16 +278,25 @@ class Star extends GameObject
 
 class Enterprise extends GameObject
 {
-    static StartTorpedoes = 10;
-    static StartEnergy = 3000;
-    static StartShields = 0;
-
     constructor()
     {
         super(Enterprise);
         this.torpedoes = Enterprise.StartTorpedoes;
         this.shields = Enterprise.StartShields;
-        this.energy = Enterprise.StartEnergy;
+
+        this.freeEnergy = Enterprise.StartEnergy;
+    }
+
+    // assumes that the input value has been previously checked for the appropriate range and available value
+    setShieldLevel(newShields)
+    {
+        if ((newShields > this.freeEnergy + this.shields) || newShields < 0.0)
+        {
+            throw "Invalid value for shield level"; 
+        }
+
+        this.freeEnergy += this.shields - newShields;
+        this.shields = newShields;
     }
 
     toString()
@@ -280,6 +322,37 @@ class Enterprise extends GameObject
     conditionString()
     {
         return "GREEN";
+    }
+
+
+    firePhasers(energy, targets)
+    {
+        gameOutputAppend("Firing phasers at " + targets.length + " targets.");
+    }
+
+    fireTorpedo(quadrant, angle)
+    {
+        if (this.freeEnergy >= Enterprise.TorpedoEnergyCost)
+        {
+            let torpedoIntersection = quadrant.intersectionTest(this.sectorX, this.sectorY, angle);
+            this.torpedoes--;
+            this.freeEnergy -= Enterprise.TorpedoEnergyCost;
+            
+            if (torpedoIntersection.intersects != null)
+            {
+               torpedoIntersection.intersects.onTorpedoHit(quadrant);
+            }
+            else
+            {
+                gameOutputAppend("The torpedo missed!");
+            }
+        }
+        else
+        {
+            //not enough energy
+            gameOutputAppend("Not enough energy to fire torpedoes!");
+        }
+
     }
 
     // long range scan
@@ -314,6 +387,11 @@ class Enterprise extends GameObject
     }
 }
 
+Enterprise.StartTorpedoes = 10;
+Enterprise.StartEnergy = 3000;
+Enterprise.StartShields = 0;
+Enterprise.TorpedoEnergyCost = 2;
+
 class Quadrant
 {
     constructor(widthSectorsIn, heightSectorsIn)
@@ -322,6 +400,127 @@ class Quadrant
         this.width = widthSectorsIn;
         this.height = heightSectorsIn;
         this.quadrantEntities = new Array();
+    }
+
+    removeEntity(entity)
+    {
+        let rmindex = this.quadrantEntities.indexOf(entity);
+        if (rmindex == -1)throw "Entity not found";
+        this.quadrantEntities.splice( rmindex, 1 );
+    }
+
+    entityAtLocation(nextXCoord, nextYCoord)
+    {
+        nextXCoord = Math.floor(nextXCoord);
+        nextYCoord = Math.floor(nextYCoord);
+        
+        for (var x in this.quadrantEntities)
+        {
+            let objTest = this.quadrantEntities[x];
+
+            if ((objTest.sectorX == nextXCoord) && (objTest.sectorY == nextYCoord))
+            {
+                return objTest;
+            }
+        }
+
+        return null;
+    }
+
+    // return a tuple containing
+    // the last sector prior to the intersection
+    // and the intersection object
+    intersectionTest(sectorX, sectorY, angleDegrees)
+    {
+        // take angle in degrees to radians, then create a vector
+        // start from 360 CCW because we have a top left origin (y axis goes down) internally
+        // instead of y axis goes up like in your math textbook
+        let angle = 360.0 - angleDegrees
+
+        let radians = angle * Math.PI / 180.0;
+
+        // polar to euclidean coordinates
+        let xVec = Math.cos(radians);
+        let yVec = Math.sin(radians);
+
+        // we'll step through the grid in in increments of one cell; -1 if the x / y direction are negative
+        let xNextF = xVec > 0.0 ? 1.0 : -1.0;
+        let yNextF = yVec > 0.0 ? 1.0 : -1.0;
+
+        // start in the middle of the cell.
+        let startCoordX = Math.floor(sectorX) + .5;
+        let startCoordY = Math.floor(sectorY) + .5;
+
+        // return values
+        let lastCellBeforeIntersectionX = startCoordX;
+        let lastCellBeforeIntersectionY = startCoordY;
+        let intersectionObject = null;
+
+        //console.log("start coord " + (1+startCoordX) + " " + (1+startCoordY));
+        //console.log("vec " + (xVec) + " " + (yVec));
+
+        while (true)
+        {
+
+            // we have, given a start coordinate and a direction vector, the parametric equation of a line
+            // Pt = P0 + D*t
+            // From this we can derive the parameter t at which the line will reach a particular X or Y value
+            // X_t = X_0 + V_x * t
+            // Y_t = Y_0 + V_y * t
+            // implies
+            // (X_t - X_0) / V_x = t
+            // or
+            // (Y_t - Y_0) / V_y = t
+            // so we can figure out what the next cell on the x axis is (current plus or minus one) and figure
+            // out the t parameter where the line crosses it.  
+            // We can do the same for the next call on the y axis.
+            // Then, whichever cell has the lower t parameter the line crosses first.
+            // Because there's a division and it's possible the direction vector has a zero component, we'll check for divide by zero
+
+            let nextXCoord = Math.floor(lastCellBeforeIntersectionX + xNextF);
+            let nextYCoord = Math.floor(lastCellBeforeIntersectionY + yNextF);
+
+            //console.log("next " + nextXCoord + " " + nextYCoord);
+
+            let tXBound = (nextXCoord - lastCellBeforeIntersectionX) / xVec;
+            let tYBound = (nextYCoord - lastCellBeforeIntersectionY) / yVec;
+
+            tXBound = Math.abs(xVec) > .00001 ?  tXBound : Number.MAX_VALUE;
+            tYBound = Math.abs(yVec) > .00001 ?  tYBound : Number.MAX_VALUE;
+
+            if (tXBound < tYBound)
+            {
+                //console.log("xb " + tXBound);
+                nextYCoord = lastCellBeforeIntersectionY + yVec * tXBound;
+            }
+            else
+            {
+                //console.log("yb");
+                nextXCoord = lastCellBeforeIntersectionX + xVec * tYBound;
+            }
+
+            intersectionObject = this.entityAtLocation(nextXCoord, nextYCoord);
+
+            if (intersectionObject != null)
+            {
+                //console.log("intersection return");
+                break;
+            }
+
+            if (nextXCoord < 0 || nextXCoord >= quadrantWidthSectors || nextYCoord < 0 || nextYCoord >= quadrantHeightSectors)
+            {
+                //console.log("next out of bounds " + nextXCoord + " " + nextYCoord);
+                break;
+            }
+            
+            lastCellBeforeIntersectionX = nextXCoord;
+            lastCellBeforeIntersectionY = nextYCoord;
+
+            //console.log("cell step" + (1+lastCellBeforeIntersectionX) + " " + (1+lastCellBeforeIntersectionY));
+        }
+
+        //console.log("cell end " + (1+lastCellBeforeIntersectionX) + " " + (1+lastCellBeforeIntersectionY)+ " " + intersectionObject);
+        return {lastX : lastCellBeforeIntersectionX, lastY : lastCellBeforeIntersectionY, intersects : intersectionObject};
     }
 
     countEntitiesOfType(classtype)
@@ -335,6 +534,11 @@ class Quadrant
             }
         }
         return rval;
+    }
+
+    getEntitiesOfType(classtype)
+    {
+        return this.quadrantEntities.filter(function(item){return item.constructor == classtype});
     }
 
     createEntities(entityTypes)
@@ -405,7 +609,8 @@ class Quadrant
 
     toString()
     {
-        let borderString = " =---=---=---=---=---=---=---=---\n";
+        let borderStringPost = "  -1---2---3---4---5---6---7---8--\n";
+        let borderStringPre = "  =---=---=---=---=---=---=---=---\n";
 
         let quadrantStringGrid = new Grid(this.width, this.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
 
@@ -419,7 +624,7 @@ class Quadrant
 
         let mapString = quadrantStringGrid.toString();
 
-        return "<pre>" + borderString + mapString + borderString + "</pre>";
+        return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
     }
 }
 
@@ -480,8 +685,6 @@ class GalaxyMap extends Grid
 
 class TrekGame
 {
-    static EntityTypes = [Star, StarBase, Klingon];
-
     constructor()
     {
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
@@ -502,6 +705,8 @@ class TrekGame
 
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
+
+        this.setInputPrompt(defaultInputPrompt);
     }
 
     currentStardate()
@@ -518,21 +723,169 @@ class TrekGame
         "QUADRANT           " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
         "SECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
         "PHOTON TORPEDOES   " + this.enterprise.torpedoes + '\n' + 
-        "TOTAL ENERGY       " + this.enterprise.energy + '\n' + 
+        "FREE ENERGY        " + this.enterprise.freeEnergy + '\n' + 
         "SHIELDS            " + this.enterprise.shields + '\n' + 
         "KLINGONS REMAINING " + this.klingonsRemaining + '\n' + 
         "</pre>";
     }
 
+    setInputPrompt(newprompt)
+    {
+        document.getElementById("inputPrompt").innerHTML = newprompt;
+
+    }
+
+    shieldHandler(inputline)
+    {
+        let parsedVal = parseInt(inputline);
+
+        if (isNaN(parsedVal) || parsedVal < 0)
+        {
+            gameOutputAppend("Invalid value!");
+            return false;
+        }
+        if (parsedVal > (this.enterprise.shields + this.enterprise.freeEnergy))
+        {
+            gameOutputAppend("We don't have enough energy for that, captain!");
+            return false;
+        }
+        
+        //gameOutputAppend(""+parsedVal);
+
+        this.enterprise.setShieldLevel(parsedVal);
+        this.updateStatus();
+
+        return true;
+    }
+
+    torpedoHandler(inputline)
+    {
+        let angle = parseInt(inputline);
+
+        //console.log(""+angle);
+        //gameOutputAppend(""+angle);
+
+        if ((angle == null) || isNaN(angle) || angle < 0 || angle > 360.0)
+        {
+            gameOutputAppend("Invalid value!");
+            return false;
+        }
+
+        this.enterprise.fireTorpedo(this.currentQuadrant, angle);
+        this.updateStatus();
+        updateMap();
+        return true;
+    }
+
+    phaserHandler(inputline)
+    {
+        let energy = parseInt(inputline);
+
+        if ((energy == null) || isNaN(energy) || energy < 0)
+        {
+            gameOutputAppend("Invalid value!");
+            return false;
+        }
+
+        if (energy > this.enterprise.freeEnergy)
+        {
+            gameOutputAppend("Not enough energy, captain!");
+            return false;
+        }
+
+        this.enterprise.firePhasers(energy, this.currentQuadrant.getEntitiesOfType(Klingon));
+        this.updateStatus();
+        updateMap();
+        
+        return true;
+    }
+
+    updateStatus()
+    {
+        document.getElementById("status").innerHTML = this.statusString();
+    }
+
+    awaitInput(inputPrompt=defaultInputPrompt, charactersToRead=3, inputHandler=null)
+    {
+        this.inputHandler = inputHandler;
+        document.getElementById("gameInput").maxLength = charactersToRead;
+        this.setInputPrompt(inputPrompt);
+    }
+
     gameInput(inputStr)
     {
-        console.log(inputStr);
+        //console.log(inputStr);
+        gameOutputAppend(inputStr);
+
+        if (this.inputHandler)
+        {
+            if (this.inputHandler(inputStr))
+            {
+                this.awaitInput(defaultInputPrompt, 3, null);
+            }
+
+            return;
+        }
+
+        inputStr = inputStr.toLowerCase();
 
         if (inputStr == "lrs")
         {
             document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
         }
+        else if (inputStr == "pha")
+        {
+            if (this.currentQuadrant.countEntitiesOfType(Klingon))
+            {
+                gameOutputAppend("Enter the energy to commit to the phasers.");
+                gameOutputAppend("Total available : " + this.enterprise.freeEnergy);
+                this.awaitInput("Energy:", 4, this.phaserHandler);
+            }
+            else
+            {
+                gameOutputAppend("No enemies detected in this Quadrant, captain.");
+            }
+        }
+        else if (inputStr == "tor")
+        {
+            if (this.enterprise.torpedoes > 0)
+            {
+                gameOutputAppend("Enter torpedo heading (in degrees)");
+                this.awaitInput("Torpedo Heading (degrees)", 3, this.torpedoHandler);
+            }
+            else
+            {
+                gameOutputAppend("We're out of torpedoes, captain!");
+            }
+        }
+        else if (inputStr == "she")
+        {
+            gameOutputAppend("Enter the new energy level for the shields.");
+            gameOutputAppend("Total available is : " + (this.enterprise.freeEnergy + this.enterprise.shields));
+            
+            this.awaitInput("New shield level:", 4, this.shieldHandler);
+        }
+        else if (inputStr == "xxx")
+        {
+            gameOutputAppend("You just need to close your browser tab, captain!");
+        }
+        else
+        {
+            gameOutputAppend("Come again, captain?")
+        }
     }
+}
+
+TrekGame.EntityTypes = [Star, StarBase, Klingon];
+
+function gameOutputAppend(str)
+{
+    document.getElementById("gameOutput").innerHTML += str + '\n';
+}
+
+function updateMap()
+{
+    document.getElementById("map").innerHTML = game.currentQuadrant.toString();
 }
 
 console.log("Hope you enjoy the game!");
