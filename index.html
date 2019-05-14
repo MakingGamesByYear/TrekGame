@@ -63,8 +63,14 @@ KLINGONS REMAINING 15
 </pre>
 </div>
 
-<div id="instructions">
 <pre>
+<div id="gameOutput">
+</div>
+</pre>
+
+<div id="inputline">
+<pre>
+<div id="inputPrompt">
 ENTER ONE OF THE FOLLOWING:
 NAV  (TO SET COURSE)
 SRS  (FOR SHORT RANGE SENSOR SCAN)
@@ -75,12 +81,9 @@ SHE  (TO RAISE OR LOWER SHIELDS)
 DAM  (FOR DAMAGE CONTROL REPORTS)
 COM  (TO CALL ON LIBRARY-COMPUTER)
 XXX  (TO RESIGN YOUR COMMAND)
-</pre>         
-</div>
 
-<div id="inputline">
-<pre>
 Your orders :
+</div>
 <input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
 <input type="button" 
@@ -128,3 +131,4 @@ Your orders :
     document.getElementById("status").innerHTML = game.statusString();
 </script>
 </html>
+
