@@ -127,6 +127,7 @@ class GameObject
         this.sectorY = 0;
         this.quadrantX = 0;
         this.quadrantY = 0;
+        this.entityType = this.constructor.name;
 
         if (!className.Instances)
         {
@@ -402,6 +403,27 @@ class Quadrant
         this.quadrantEntities = new Array();
     }
 
+    populateFromJSData(entitiesQuadrantJS)
+    {
+        var x;
+        for (x in entitiesQuadrantJS.quadrantEntities)
+        {
+            let entData = entitiesQuadrantJS.quadrantEntities[x];
+
+            // we construct and insert the enterprise entity elsewhere.
+            if (entData.entityType != "Enterprise")
+            {
+                let ctype = EntityMap.get(entData.entityType);
+
+                let entityObj = new ctype(); 
+                Object.assign(entityObj, entData);
+
+                this.quadrantEntities.push(entityObj);
+            }
+        }
+    }
+
+
     removeEntity(entity)
     {
         let rmindex = this.quadrantEntities.indexOf(entity);
@@ -643,6 +665,21 @@ class GalaxyMap extends Grid
         }
     }
 
+    static ConstructFromJSData(jsData)
+    {
+        let rval = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, []);
+
+        var x;
+        for (x in jsData.contents)
+        {
+            let entitiesQuadrantJS = jsData.contents[x];
+
+            rval.contents[x].populateFromJSData(entitiesQuadrantJS);
+        }
+
+        return rval;
+    }
+
     createMinimumInstances(entityTypes)
     {
         var x;
@@ -685,6 +722,25 @@ class GalaxyMap extends Grid
 
 class TrekGame
 {
+    static ConstructFromJSData(jsData)
+    {
+        let gamerval = Object.create(TrekGame.prototype);
+        Object.assign(gamerval, jsData);
+
+        gamerval.enterprise = Object.create(Enterprise.prototype);
+        Object.assign(gamerval.enterprise, jsData.enterprise);
+
+        gamerval.galaxyMap = GalaxyMap.ConstructFromJSData(jsData.galaxyMap);
+
+        // console.log("galaxy map : " + gamerval.galaxyMap);
+
+        gamerval.currentQuadrant = gamerval.galaxyMap.lookup(gamerval.enterprise.quadrantX, gamerval.enterprise.quadrantY);
+
+        gamerval.currentQuadrant.quadrantEntities.push(gamerval.enterprise);
+
+        return gamerval;
+    }
+
     constructor()
     {
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
@@ -707,6 +763,8 @@ class TrekGame
         this.starDate = randomInt(1312, 5928);
 
         this.setInputPrompt(defaultInputPrompt);
+
+        autosave(this);
     }
 
     currentStardate()
@@ -800,6 +858,25 @@ class TrekGame
         return true;
     }
 
+    endGameHandler(inputline)
+    {
+        if (inputline == 'Y' || inputline == 'y')
+        {
+            autosave(null);
+            gameOutputAppend("Thanks for playing!  Refresh the page to play again.");
+            this.disableInput();
+            return false;
+        }
+        else if (inputline == 'n' || inputline == 'N')
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     updateStatus()
     {
         document.getElementById("status").innerHTML = this.statusString();
@@ -807,9 +884,20 @@ class TrekGame
 
     awaitInput(inputPrompt=defaultInputPrompt, charactersToRead=3, inputHandler=null)
     {
+        document.getElementById("inputPrompt").style.display="Block";
+        document.getElementById("gameInput").style.display="Block";
+        document.getElementById("inputButton").style.display ="Block";
+
         this.inputHandler = inputHandler;
         document.getElementById("gameInput").maxLength = charactersToRead;
         this.setInputPrompt(inputPrompt);
+    }
+
+    disableInput()
+    {
+        document.getElementById("inputPrompt").style.display="None";
+        document.getElementById("gameInput").style.display="None";
+        document.getElementById("inputButton").style.display ="None";
     }
 
     gameInput(inputStr)
@@ -867,16 +955,34 @@ class TrekGame
         }
         else if (inputStr == "xxx")
         {
-            gameOutputAppend("You just need to close your browser tab, captain!");
+
+            this.awaitInput("Are you sure you want to end your current game and erase your autosave? (Y/N)", 1, this.endGameHandler);
+            return;
         }
         else
         {
             gameOutputAppend("Come again, captain?")
         }
+
+        autosave(this);
     }
 }
 
 TrekGame.EntityTypes = [Star, StarBase, Klingon];
+
+function createEntityMap(entityList)
+{
+    var map = new Map();
+    var x;
+    for (x in entityList)
+    {
+        let etype = entityList[x];
+        map.set(etype.name, etype);
+    }
+    return map;
+}
+
+const EntityMap = createEntityMap(TrekGame.EntityTypes);
 
 function gameOutputAppend(str)
 {
@@ -886,6 +992,12 @@ function gameOutputAppend(str)
 function updateMap()
 {
     document.getElementById("map").innerHTML = game.currentQuadrant.toString();
+}
+
+function autosave(game)
+{
+    console.log(JSON.stringify(game));
+    localStorage.setItem("autosave", JSON.stringify(game));
 }
 
 console.log("Hope you enjoy the game!");
