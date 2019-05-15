@@ -112,7 +112,26 @@ Your orders :
         inputBox.value = "";
     }
 
-    game = new TrekGame();
+    //localStorage.clear();
+    //console.log(localStorage.getItem("autosave"));
+    lookup = JSON.parse(localStorage.getItem("autosave"));
+
+    if (!lookup)
+    {
+        game = new TrekGame();
+        console.log("Autosave not found, starting new game.");
+    }
+    else
+    {
+        gamedata = lookup;
+        
+        game = TrekGame.ConstructFromJSData(gamedata);
+
+        gameOutputAppend("Welcome back, captain!");
+    }
+
+    //localStorage.clear();
+
     let inputBox =  document.getElementById("gameInput");
 
     // set up a listener on the input box to map the enter key to being the same as clicking the submit button
