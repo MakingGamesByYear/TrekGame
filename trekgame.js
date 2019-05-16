@@ -5,7 +5,7 @@ const quadrantHeightSectors = 8;
 const sectorDisplayWidthChars = 4;
 const minKlingonsGame = 8;
 
-const defaultInputPrompt = "ENTER ONE OF THE FOLLOWING:\nNAV  (TO SET COURSE)\nSRS  (FOR SHORT RANGE SENSOR SCAN)\nLRS  (FOR LONG RANGE SENSOR SCAN)\nPHA  (TO FIRE PHASERS)\nTOR  (TO FIRE PHOTON TORPEDOES)\nSHE  (TO RAISE OR LOWER SHIELDS)\nDAM  (FOR DAMAGE CONTROL REPORTS)\nCOM  (TO CALL ON LIBRARY-COMPUTER)\nXXX  (TO RESIGN YOUR COMMAND)\n\nYour orders :";
+const defaultInputPrompt = "ENTER ONE OF THE FOLLOWING:\nNAV  (TO SET COURSE)\nLRS  (FOR LONG RANGE SENSOR SCAN)\nPHA  (TO FIRE PHASERS)\nTOR  (TO FIRE PHOTON TORPEDOES)\nSHE  (TO RAISE OR LOWER SHIELDS)\nDAM  (FOR DAMAGE CONTROL REPORTS)\nCOM  (TO CALL ON LIBRARY-COMPUTER)\nXXX  (TO RESIGN YOUR COMMAND)\n\nYour orders :";
 
 function checkArgumentsDefinedAndHaveValue(args)
 {
@@ -36,6 +36,12 @@ function randomInt(min, max)
 {
     checkArgumentsDefinedAndHaveValue(arguments);
     return Math.round(Math.random() * (max-min) + min);
+}
+
+function randomFloat(min, max)
+{
+    checkArgumentsDefinedAndHaveValue(arguments);
+    return (Math.random() * (max-min) + min);
 }
 
 class Grid
@@ -137,6 +143,14 @@ class GameObject
         className.Instances++;
     }
 
+    distanceToObject(obj2)
+    {
+        // assumes objects are in the same quadrant, for now
+        let xdiff = this.sectorX - obj2.sectorX;
+        let ydiff = this.sectorY - obj2.sectorY;
+        return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+    }
+
     setLocationSector(sectorXY)
     {
         this.sectorX = sectorXY.x;
@@ -231,6 +245,34 @@ class Klingon extends GameObject
         quadrant.removeEntity(this);
     }
 
+    onPhaserHit(energy, quadrant)
+    {
+        console.log("Klingon::onPhaserHit");
+        let shieldDeflectionLevel = Klingon.shieldDeflectionPercent * this.shields;
+
+        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        if (energy <= shieldDeflectionLevel)
+        {
+            gameOutputAppend("Phaser hit did no damage!");
+        }
+        else
+        {
+            gameOutputAppend("Phaser hit the klingon fighter for " + energy + " damage.");
+
+            this.shields -= energy;
+
+            if (this.shields <= 0)
+            {
+                gameOutputAppend("Klingon Fighter Destroyed");
+                quadrant.removeEntity(this);
+            }
+            else
+            {
+                gameOutputAppend("" + this.shields + " units remain.");
+            }
+        }
+    }
+
     toString()
     {
         return "+K+";
@@ -251,6 +293,8 @@ class Klingon extends GameObject
         return minKlingonsGame;
     }
 }
+
+Klingon.shieldDeflectionPercent = .15;
 
 class Star extends GameObject
 {
@@ -326,9 +370,30 @@ class Enterprise extends GameObject
     }
 
 
-    firePhasers(energy, targets)
+    firePhasers(energy, targets, quadrant)
     {
+        console.log("fire phasers");
+
+        console.assert(energy <= this.freeEnergy);
+
+        this.freeEnergy -= energy;
+
         gameOutputAppend("Firing phasers at " + targets.length + " targets.");
+        console.assert(targets.length > 0);
+        let damagePerTarget = energy / targets.length;
+
+        var x;
+        for (x in targets)
+        {
+            console.log("target");
+            let target = targets[x];
+            let dist = this.distanceToObject(target);
+
+            let damageAttenuated = damagePerTarget / dist;
+            let damageFinal = Math.floor(randomFloat(2.0, 3.0) * damageAttenuated);
+
+            target.onPhaserHit(damageFinal, quadrant);
+        }
     }
 
     fireTorpedo(quadrant, angle)
@@ -851,7 +916,12 @@ class TrekGame
             return false;
         }
 
-        this.enterprise.firePhasers(energy, this.currentQuadrant.getEntitiesOfType(Klingon));
+        if (energy == 0)
+        {
+            return true;
+        }
+
+        this.enterprise.firePhasers(energy, this.currentQuadrant.getEntitiesOfType(Klingon), this.currentQuadrant);
         this.updateStatus();
         updateMap();
         
@@ -903,7 +973,7 @@ class TrekGame
     gameInput(inputStr)
     {
         //console.log(inputStr);
-        gameOutputAppend(inputStr);
+        //gameOutputAppend(inputStr);
 
         if (this.inputHandler)
         {
@@ -919,10 +989,12 @@ class TrekGame
 
         if (inputStr == "lrs")
         {
+            gameOutputAppend("Long Range Scan");
             document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
         }
         else if (inputStr == "pha")
         {
+            gameOutputAppend("Fire phasers");
             if (this.currentQuadrant.countEntitiesOfType(Klingon))
             {
                 gameOutputAppend("Enter the energy to commit to the phasers.");
@@ -936,6 +1008,7 @@ class TrekGame
         }
         else if (inputStr == "tor")
         {
+            gameOutputAppend("Fire torpedoes");
             if (this.enterprise.torpedoes > 0)
             {
                 gameOutputAppend("Enter torpedo heading (in degrees)");
@@ -948,6 +1021,7 @@ class TrekGame
         }
         else if (inputStr == "she")
         {
+            gameOutputAppend("Configure shields");
             gameOutputAppend("Enter the new energy level for the shields.");
             gameOutputAppend("Total available is : " + (this.enterprise.freeEnergy + this.enterprise.shields));
             
@@ -955,7 +1029,7 @@ class TrekGame
         }
         else if (inputStr == "xxx")
         {
-
+            gameOutputAppend("Resign command");
             this.awaitInput("Are you sure you want to end your current game and erase your autosave? (Y/N)", 1, this.endGameHandler);
             return;
         }
@@ -996,7 +1070,7 @@ function updateMap()
 
 function autosave(game)
 {
-    console.log(JSON.stringify(game));
+    //console.log(JSON.stringify(game));
     localStorage.setItem("autosave", JSON.stringify(game));
 }
 
