@@ -159,7 +159,7 @@ class GameObject
 
     onTorpedoHit(quadrant)
     {
-        console.log("Torpedo hit (base)");
+        console.log("Torpedo hit (base class)");
     }
 
     // randomly generate the number of GameObject instances to put in a new quadrant
@@ -516,9 +516,12 @@ class Quadrant
 
     // return a tuple containing
     // the last sector prior to the intersection
-    // and the intersection object
-    intersectionTest(sectorX, sectorY, angleDegrees)
+    // and the intersection object (null if none)
+    intersectionTest(sectorX, sectorY, angleDegrees, maxSectorsToTravel = Number.MAX_VALUE)
     {
+        checkArgumentsDefinedAndHaveValue(arguments);
+        // console.log(""+angleDegrees);
+
         // take angle in degrees to radians, then create a vector
         // start from 360 CCW because we have a top left origin (y axis goes down) internally
         // instead of y axis goes up like in your math textbook
@@ -543,12 +546,12 @@ class Quadrant
         let lastCellBeforeIntersectionY = startCoordY;
         let intersectionObject = null;
 
-        //console.log("start coord " + (1+startCoordX) + " " + (1+startCoordY));
+        //console.log("start coord " + (startCoordX) + " " + (startCoordY));
         //console.log("vec " + (xVec) + " " + (yVec));
 
-        while (true)
+        var steps = 0;
+        while (steps < maxSectorsToTravel)
         {
-
             // we have, given a start coordinate and a direction vector, the parametric equation of a line
             // Pt = P0 + D*t
             // From this we can derive the parameter t at which the line will reach a particular X or Y value
@@ -575,6 +578,7 @@ class Quadrant
             tXBound = Math.abs(xVec) > .00001 ?  tXBound : Number.MAX_VALUE;
             tYBound = Math.abs(yVec) > .00001 ?  tYBound : Number.MAX_VALUE;
 
+            var currentT = 0.0;
             if (tXBound < tYBound)
             {
                 //console.log("xb " + tXBound);
@@ -599,15 +603,20 @@ class Quadrant
                 //console.log("next out of bounds " + nextXCoord + " " + nextYCoord);
                 break;
             }
-            
+
+            // manhattan distance.
+            //console.log("next " + Math.floor(nextXCoord) + " " + Math.floor(nextYCoord));
+
             lastCellBeforeIntersectionX = nextXCoord;
             lastCellBeforeIntersectionY = nextYCoord;
+
+            steps++;
 
             //console.log("cell step" + (1+lastCellBeforeIntersectionX) + " " + (1+lastCellBeforeIntersectionY));
         }
 
         //console.log("cell end " + (1+lastCellBeforeIntersectionX) + " " + (1+lastCellBeforeIntersectionY)+ " " + intersectionObject);
-        return {lastX : lastCellBeforeIntersectionX, lastY : lastCellBeforeIntersectionY, intersects : intersectionObject};
+        return {lastX : lastCellBeforeIntersectionX, lastY : lastCellBeforeIntersectionY, intersects : intersectionObject, stepIterations:steps, nextX : nextXCoord, nextY : nextYCoord};
     }
 
     countEntitiesOfType(classtype)
@@ -832,6 +841,11 @@ class TrekGame
         autosave(this);
     }
 
+    changeToQuadrant(qX, qY)
+    {
+    ///\todo implement me        
+    }
+
     currentStardate()
     {
         return this.starDate;
@@ -881,12 +895,128 @@ class TrekGame
         return true;
     }
 
+    navigationHandler(inputline)
+    {
+        console.log("nav");
+        let angle = parseInt(inputline);
+
+        if ((angle == null) || isNaN(angle) || angle < 0 || angle > 360.0)
+        {
+            gameOutputAppend("Invalid value!");
+            return false;
+        }
+
+        this.awaitInput("Input warp factor (0-8).", 5, function(inputline){return this.navigationHandler2(inputline, angle)});
+        return false;
+    }
+
+    navigationHandler2(inputline, angle)
+    {
+
+        console.log("nav2");
+        let warpFactor = parseFloat(inputline);
+
+        if ((warpFactor == null) || isNaN(warpFactor) || warpFactor < 0.0 || warpFactor > 8.0)
+        {
+            gameOutputAppend("Invalid value");
+            return false;
+        }
+
+        console.assert(quadrantHeightSectors == quadrantWidthSectors);
+        let warpFactorScale = quadrantHeightSectors;
+
+        let sectorsToTravel = Math.round(warpFactorScale * warpFactor);
+
+        if (sectorsToTravel < 1)
+        {
+            gameOutputAppend("Warp factor is too small to get anywhere!");
+        }
+
+        //console.log("Sectors to travel : "  + sectorsToTravel);
+
+        //console.log("intersect test");
+
+        var testSectorX = this.enterprise.sectorX;
+        var testSectorY = this.enterprise.sectorY;
+
+        ///\todo don't actually handle the case when we test a new quadrant but the start square is occupied
+        ///\todo need to finish refactor and actually populate testsectorx, testsectory
+        while (sectorsToTravel > 0)
+        {
+            let intersection = this.currentQuadrant.intersectionTest(testSectorX, testSectorY, angle, sectorsToTravel);
+            
+            sectorsToTravel -= intersection.stepIterations;
+
+            let wentOutOfBounds = 
+                intersection.nextX >= 0 && 
+                intersection.nextX < quadrantWidthSectors && 
+                intersection.nextY >= 0 && 
+                intersection.nextY < quadrantHeightSectors;
+
+            if (!wentOutOfBounds)
+            {
+                this.enterprise.sectorX = Math.floor(intersection.lastX);
+                this.enterprise.sectorY = Math.floor(intersection.lastY);
+            }
+
+            if (intersection.intersects != null)
+            {
+                break;
+            }
+
+            // went out of bounds, not done navigating, and didn't hit anything.  handle quadrant transition.
+            if (wentOutOfBounds)
+            {
+                var quadrantXNext = this.enterprise.quadrantX;
+                var quadrantYNext = this.enterprise.quadrantY;
+
+                if (intersection.nextX < 0)
+                {
+                    quadrantXNext = this.enterprise.quadrantX - 1;
+                }
+                if (intersection.nextX >= quadrantWidthSectors)
+                {
+                    quadrantXNext = this.enterprise.quadrantX + 1;
+                }
+                if (intersection.nextY < 0)
+                {
+                    quadrantYNext = this.enterprise.quadrantY - 1;
+                }
+                if (intersection.nextY >= quadrantHeightSectors)
+                {
+                    quadrantYNext = this.enterprise.quadrantY + 1;
+                }
+
+                // we should see SOME change in quadrant.  assert check.
+                console.assert((this.enterprise.quadrantX != quadrantXNext) || (this.enterprise.quadrantY != quadrantYNext));
+
+                var nextQuadrantValid = (quadrantXNext >= 0.0) && (quadrantXNext < mapWidthQuadrants) && (quadrantYNext >= 0.0) && (quadrantYNext < mapHeightQuadrants);
+
+                if (nextQuadrantValid)
+                {
+                    this.changeToQuadrant(this.enterprise.quadrantX, this.enterprise.quadrantY);
+                }
+                else
+                {
+                    gameOutputAppend("You are not authorized by Starfleet to cross the galactic perimeter.  Shutting down warp engines.");
+                }
+            }
+
+        }
+
+        //console.log("updating " + intersection.lastX + " " + intersection.lastY);
+        this.updateStatus();
+        updateMap();
+
+        return true;
+    }
+
     torpedoHandler(inputline)
     {
         let angle = parseInt(inputline);
 
         //console.log(""+angle);
-        //gameOutputAppend(""+angle);
+        gameOutputAppend(""+angle);
 
         if ((angle == null) || isNaN(angle) || angle < 0 || angle > 360.0)
         {
@@ -972,7 +1102,7 @@ class TrekGame
 
     gameInput(inputStr)
     {
-        //console.log(inputStr);
+        console.log(inputStr);
         //gameOutputAppend(inputStr);
 
         if (this.inputHandler)
@@ -981,13 +1111,17 @@ class TrekGame
             {
                 this.awaitInput(defaultInputPrompt, 3, null);
             }
-
             return;
         }
 
         inputStr = inputStr.toLowerCase();
 
-        if (inputStr == "lrs")
+        if (inputStr == 'nav')
+        {
+            gameOutputAppend("Navigation");
+            this.awaitInput("Enter heading (degrees).", 3, this.navigationHandler);
+        }
+        else if (inputStr == "lrs")
         {
             gameOutputAppend("Long Range Scan");
             document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
