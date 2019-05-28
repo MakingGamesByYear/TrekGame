@@ -451,6 +451,109 @@ class Enterprise extends GameObject
         }
         return rval;
     }
+
+    warp(sectorsToTravel, angle, game)
+    {
+        // do an intersection test of the enterprise against the map, in the direction of warp.
+        // update the enterprise position to the last valid sector square along the warp vector
+        // if we have an obstacle ahead we're done.
+        // if we have no squares left to travel we're done.
+        // if we have squares left to travel and the way ahead is clear, we need to go to the next sector.
+        // but the first square along our line might be obstructed.  so we'll test that before changing sectors.
+        while (sectorsToTravel > 0)
+        {
+            console.log("Loop. " + sectorsToTravel);
+            let intersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle, sectorsToTravel);
+           
+            console.log("Got intersection result");
+
+            this.sectorX = Math.floor(intersection.lastX);
+            this.sectorY = Math.floor(intersection.lastY);
+
+            if (intersection.intersects != null)
+            {
+                gameOutputAppend("Obstruction ahead.  Exiting warp.");
+                break;
+            }
+
+            sectorsToTravel -= intersection.stepIterations;
+
+            if (sectorsToTravel <= 0.0)
+            {
+                break;
+            }
+
+            // if we get here that means we've gone out of bounds for the quadrant
+
+            var sectorXNext = this.sectorX;
+            var sectorYNext = this.sectorY;
+            var quadrantXNext = this.quadrantX;
+            var quadrantYNext = this.quadrantY;
+
+            if (intersection.nextX < 0)
+            {
+                console.log("intersection nextx less 0");
+                quadrantXNext = this.quadrantX - 1;
+                sectorXNext = quadrantWidthSectors - 1;
+            }
+            if (intersection.nextX >= quadrantWidthSectors)
+            {
+                console.log("intersection nextx > 8");
+                quadrantXNext = this.quadrantX + 1;
+                sectorXNext = 0;
+            }
+            if (intersection.nextY < 0)
+            {
+                console.log("intersection nexty < 0");
+                quadrantYNext = this.quadrantY - 1;
+                sectorYNext = quadrantWidthSectors - 1;
+            }
+            if (intersection.nextY >= quadrantHeightSectors)
+            {
+                console.log("intersection nexty > 8");
+                quadrantYNext = this.quadrantY + 1;
+                sectorYNext = 0;
+            }
+
+            // we should see SOME change in quadrant.  assert check.
+            console.assert((this.quadrantX != quadrantXNext) || (this.quadrantY != quadrantYNext));
+
+            var nextQuadrantValid = (quadrantXNext >= 0.0) && (quadrantXNext < mapWidthQuadrants) && (quadrantYNext >= 0.0) && (quadrantYNext < mapHeightQuadrants);
+
+            console.log("next quadrant valid " + nextQuadrantValid);
+
+            if (nextQuadrantValid)
+            {
+                console.log("map lookup quadrant " + quadrantXNext + " " + quadrantYNext);
+                var nextQuadrantTest = game.galaxyMap.lookup(quadrantXNext, quadrantYNext);
+
+                console.log("next quadrant test");
+                var startSquareFree = nextQuadrantTest.entityAtLocation(sectorXNext, sectorYNext) == null;
+
+                console.log("Start square free : " + startSquareFree);
+                if (startSquareFree)
+                {
+                    this.sectorX = sectorXNext;
+                    this.sectorY = sectorYNext;
+                    sectorsToTravel -= 1.0;
+                    gameOutputAppend("Entering galactic quadrant " + quadrantXNext + " " + quadrantYNext);
+                    game.changeToQuadrant(quadrantXNext, quadrantYNext);
+                }
+                else
+                {
+                    gameOutputAppend("Obstruction in sector " + sectorXNext + ", " + sectorYNext + " of quadrant " + quadrantXNext + ", " + quadrantYNext );
+                    gameOutputAppend("Exiting warp.");
+                    break;
+                }
+            }
+            else
+            {
+                gameOutputAppend("You are not authorized by Starfleet to cross the galactic perimeter.  Shutting down warp engines.");
+                break;
+            }
+        }
+    }
+
 }
 
 Enterprise.StartTorpedoes = 10;
@@ -942,104 +1045,7 @@ class TrekGame
 
         //console.log("intersect test");
 
-        // do an intersection test of the enterprise against the map, in the direction of warp.
-        // update the enterprise position to the last valid sector square along the warp vector
-        // if we have an obstacle ahead we're done.
-        // if we have no squares left to travel we're done.
-        // if we have squares left to travel and the way ahead is clear, we need to go to the next sector.
-        // but the first square along our line might be obstructed.  so we'll test that before changing sectors.
-        while (sectorsToTravel > 0)
-        {
-            console.log("Loop. " + sectorsToTravel);
-            let intersection = this.currentQuadrant.intersectionTest(this.enterprise.sectorX, this.enterprise.sectorY, angle, sectorsToTravel);
-           
-            console.log("Got intersection result");
-
-            this.enterprise.sectorX = Math.floor(intersection.lastX);
-            this.enterprise.sectorY = Math.floor(intersection.lastY);
-
-            if (intersection.intersects != null)
-            {
-                gameOutputAppend("Obstruction ahead.  Exiting warp.");
-                break;
-            }
-
-            sectorsToTravel -= intersection.stepIterations;
-
-            if (sectorsToTravel <= 0.0)
-            {
-                break;
-            }
-
-            // if we get here that means we've gone out of bounds for the quadrant
-
-            var sectorXNext = this.enterprise.sectorX;
-            var sectorYNext = this.enterprise.sectorY;
-            var quadrantXNext = this.enterprise.quadrantX;
-            var quadrantYNext = this.enterprise.quadrantY;
-
-            if (intersection.nextX < 0)
-            {
-                console.log("intersection nextx less 0");
-                quadrantXNext = this.enterprise.quadrantX - 1;
-                sectorXNext = quadrantWidthSectors - 1;
-            }
-            if (intersection.nextX >= quadrantWidthSectors)
-            {
-                console.log("intersection nextx > 8");
-                quadrantXNext = this.enterprise.quadrantX + 1;
-                sectorXNext = 0;
-            }
-            if (intersection.nextY < 0)
-            {
-                console.log("intersection nexty < 0");
-                quadrantYNext = this.enterprise.quadrantY - 1;
-                sectorYNext = quadrantWidthSectors - 1;
-            }
-            if (intersection.nextY >= quadrantHeightSectors)
-            {
-                console.log("intersection nexty > 8");
-                quadrantYNext = this.enterprise.quadrantY + 1;
-                sectorYNext = 0;
-            }
-
-            // we should see SOME change in quadrant.  assert check.
-            console.assert((this.enterprise.quadrantX != quadrantXNext) || (this.enterprise.quadrantY != quadrantYNext));
-
-            var nextQuadrantValid = (quadrantXNext >= 0.0) && (quadrantXNext < mapWidthQuadrants) && (quadrantYNext >= 0.0) && (quadrantYNext < mapHeightQuadrants);
-
-            console.log("next quadrant valid " + nextQuadrantValid);
-
-            if (nextQuadrantValid)
-            {
-                console.log("map lookup quadrant " + quadrantXNext + " " + quadrantYNext);
-                var nextQuadrantTest = this.galaxyMap.lookup(quadrantXNext, quadrantYNext);
-
-                console.log("next quadrant test");
-                var startSquareFree = nextQuadrantTest.entityAtLocation(sectorXNext, sectorYNext) == null;
-
-                console.log("Start square free : " + startSquareFree);
-                if (startSquareFree)
-                {
-                    this.enterprise.sectorX = sectorXNext;
-                    this.enterprise.sectorY = sectorYNext;
-                    sectorsToTravel -= 1.0;
-                    gameOutputAppend("Entering galactic quadrant " + quadrantXNext + " " + quadrantYNext);
-                    this.changeToQuadrant(quadrantXNext, quadrantYNext);
-                }
-                else
-                {
-                    gameOutputAppend("Obstruction in sector " + sectorXNext + ", " + sectorYNext + " of quadrant " + quadrantXNext + ", " + quadrantYNext );
-                    gameOutputAppend("Exiting warp.");
-                    break;
-                }
-            }
-            else
-            {
-                gameOutputAppend("You are not authorized by Starfleet to cross the galactic perimeter.  Shutting down warp engines.");
-                break;
-            }
-        }
+        this.enterprise.warp(sectorsToTravel, angle, this);
 
         //console.log("updating " + intersection.lastX + " " + intersection.lastY);
         this.updateStatus();
