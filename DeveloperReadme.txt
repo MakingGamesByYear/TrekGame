@@ -9,6 +9,12 @@ longer file imported from the HTML, called trekgame.js.
 - Add a line at the end of compile.sh in the top level directory to include the new file in the final "trekgame.js" source file. EG: 
 IncludeSource BlackHole.js
 
+Make sure this line is above 
+IncludeSource TrekGame.js
+
+and below
+IncludeSource GameObject.js
+
 - Add the class name to the list of entity types the game will support in source/TrekGame.js
 Look for this line:
 TrekGame.EntityTypes = [Star, StarBase, Klingon];
