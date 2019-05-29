@@ -63,7 +63,6 @@ class GalaxyMap extends Grid
                     }
                 }
             }
-            
         }
     }
 }

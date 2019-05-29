@@ -228,7 +228,6 @@ class Enterprise extends GameObject
             }
         }
     }
-
 }
 
 Enterprise.StartTorpedoes = 10;

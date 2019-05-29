@@ -28,7 +28,6 @@ class Quadrant
         }
     }
 
-
     removeEntity(entity)
     {
         let rmindex = this.quadrantEntities.indexOf(entity);
