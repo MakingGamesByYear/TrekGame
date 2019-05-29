@@ -8,7 +8,7 @@ class StarBase extends GameObject
     onTorpedoHit(quadrant)
     {
         console.log("hit a starbase");
-        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("\nReport from sector " + this.sectorString());
         gameOutputAppend("The torpedo strikes and destroys the friendly starbase! I bet you'll be court martialled for that one!");
 
         quadrant.removeEntity(this);

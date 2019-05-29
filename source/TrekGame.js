@@ -52,6 +52,8 @@ class TrekGame
         this.enterprise.quadrantX = qX;
         this.enterprise.quadrantY = qY;
         this.currentQuadrant.quadrantEntities.push(this.enterprise);
+
+        gameOutputAppend("Entering galactic quadrant " + this.enterprise.quadrantString());
     }
 
     currentStardate()

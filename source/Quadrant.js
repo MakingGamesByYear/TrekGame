@@ -146,9 +146,6 @@ class Quadrant
                 break;
             }
 
-            // manhattan distance.
-            //console.log("next " + Math.floor(nextXCoord) + " " + Math.floor(nextYCoord));
-
             lastCellBeforeIntersectionX = nextXCoord;
             lastCellBeforeIntersectionY = nextYCoord;
 

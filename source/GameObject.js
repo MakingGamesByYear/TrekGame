@@ -53,6 +53,16 @@ class GameObject
         return rval;
     }
 
+    sectorString()
+    {
+        return "" + (this.sectorX+1) + ", " + (this.sectorY+1);
+    }
+
+    quadrantString()
+    {
+        return "" + (this.quadrantX+1) + ", " + (this.quadrantY+1);
+    }
+
     static minInstancesGame()
     {
         return 0;

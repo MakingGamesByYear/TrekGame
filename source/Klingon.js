@@ -9,7 +9,7 @@ class Klingon extends GameObject
     onTorpedoHit(quadrant)
     {
         console.log("hit a klingon");
-        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("\nReport from sector " + this.sectorString());
         gameOutputAppend("Klingon Fighter Destroyed");
 
         quadrant.removeEntity(this);
@@ -20,7 +20,7 @@ class Klingon extends GameObject
         console.log("Klingon::onPhaserHit");
         let shieldDeflectionLevel = Klingon.shieldDeflectionPercent * this.shields;
 
-        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("\nReport from sector " + this.sectorString());
         if (energy <= shieldDeflectionLevel)
         {
             gameOutputAppend("Phaser hit did no damage!");

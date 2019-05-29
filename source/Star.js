@@ -8,7 +8,7 @@ class Star extends GameObject
     onTorpedoHit()
     {
         console.log("hit a star");
-        gameOutputAppend("\nReport from sector " + (this.sectorX + 1) + ", " + (this.sectorY+1));
+        gameOutputAppend("\nReport from sector " + sectorString(this.sectorX, this.sectorY));
         gameOutputAppend("The star absorbs the torpedo without a trace.");
     }
 

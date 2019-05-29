@@ -140,8 +140,6 @@ class Enterprise extends GameObject
             console.log("Loop. " + sectorsToTravel);
             let intersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle, sectorsToTravel);
            
-            console.log("Got intersection result");
-
             this.sectorX = Math.floor(intersection.lastX);
             this.sectorY = Math.floor(intersection.lastY);
 
@@ -167,25 +165,21 @@ class Enterprise extends GameObject
 
             if (intersection.nextX < 0)
             {
-                console.log("intersection nextx less 0");
                 quadrantXNext = this.quadrantX - 1;
                 sectorXNext = quadrantWidthSectors - 1;
             }
             if (intersection.nextX >= quadrantWidthSectors)
             {
-                console.log("intersection nextx > 8");
                 quadrantXNext = this.quadrantX + 1;
                 sectorXNext = 0;
             }
             if (intersection.nextY < 0)
             {
-                console.log("intersection nexty < 0");
                 quadrantYNext = this.quadrantY - 1;
                 sectorYNext = quadrantWidthSectors - 1;
             }
             if (intersection.nextY >= quadrantHeightSectors)
             {
-                console.log("intersection nexty > 8");
                 quadrantYNext = this.quadrantY + 1;
                 sectorYNext = 0;
             }
@@ -195,28 +189,23 @@ class Enterprise extends GameObject
 
             var nextQuadrantValid = (quadrantXNext >= 0.0) && (quadrantXNext < mapWidthQuadrants) && (quadrantYNext >= 0.0) && (quadrantYNext < mapHeightQuadrants);
 
-            console.log("next quadrant valid " + nextQuadrantValid);
-
             if (nextQuadrantValid)
             {
-                console.log("map lookup quadrant " + quadrantXNext + " " + quadrantYNext);
                 var nextQuadrantTest = game.galaxyMap.lookup(quadrantXNext, quadrantYNext);
 
-                console.log("next quadrant test");
                 var startSquareFree = nextQuadrantTest.entityAtLocation(sectorXNext, sectorYNext) == null;
 
-                console.log("Start square free : " + startSquareFree);
                 if (startSquareFree)
                 {
                     this.sectorX = sectorXNext;
                     this.sectorY = sectorYNext;
                     sectorsToTravel -= 1.0;
-                    gameOutputAppend("Entering galactic quadrant " + quadrantXNext + " " + quadrantYNext);
+
                     game.changeToQuadrant(quadrantXNext, quadrantYNext);
                 }
                 else
                 {
-                    gameOutputAppend("Obstruction in sector " + sectorXNext + ", " + sectorYNext + " of quadrant " + quadrantXNext + ", " + quadrantYNext );
+                    gameOutputAppend("Obstruction in sector " + (sectorXNext+1) + ", " + (sectorYNext+1) + " of quadrant " + (quadrantXNext+1) + ", " + (quadrantYNext+1) );
                     gameOutputAppend("Exiting warp.");
                     break;
                 }
