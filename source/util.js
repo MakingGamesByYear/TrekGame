@@ -47,6 +47,15 @@ function updateMap()
 
 function autosave(game)
 {
+    //console.log("autosave func");
     //console.log(JSON.stringify(game));
-    localStorage.setItem("autosave", JSON.stringify(game));
+
+    if (game && !game.gameOver)
+    {
+        localStorage.setItem("autosave", JSON.stringify(game));
+    }
+    else
+    {
+        localStorage.setItem("autosave", null);
+    }
 }

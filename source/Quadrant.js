@@ -187,14 +187,19 @@ class Quadrant
 
             for (let i =0; i < numEntities; i++ )
             {
-                this.addEntity(new entityType());
+                this.addEntityInFreeSector(new entityType());
             }
         }
     }
 
-    addEntity(entity)
+    addEntityInFreeSector(entity)
     {
         entity.setLocationSector(this.getEmptySquare());
+        this.quadrantEntities.push(entity);
+    }
+
+    addEntity(entity)
+    {
         this.quadrantEntities.push(entity);
     }
 

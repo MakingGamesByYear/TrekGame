@@ -14,13 +14,15 @@ class TrekGame
 
         gamerval.currentQuadrant = gamerval.galaxyMap.lookup(gamerval.enterprise.quadrantX, gamerval.enterprise.quadrantY);
 
-        gamerval.currentQuadrant.quadrantEntities.push(gamerval.enterprise);
+        gamerval.currentQuadrant.addEntity(gamerval.enterprise);
 
         return gamerval;
     }
 
     constructor()
     {
+        this.gameOver = false;
+
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
         
         this.enterprise = new Enterprise();
@@ -33,7 +35,7 @@ class TrekGame
         
         this.currentQuadrant = this.galaxyMap.lookup(this.enterprise.quadrantX, this.enterprise.quadrantY);
 
-        this.currentQuadrant.addEntity(this.enterprise);
+        this.currentQuadrant.addEntityInFreeSector(this.enterprise);
 
         this.klingonsRemaining = Klingon.Instances;
 
@@ -51,7 +53,7 @@ class TrekGame
         this.currentQuadrant = this.galaxyMap.lookup(qX, qY);
         this.enterprise.quadrantX = qX;
         this.enterprise.quadrantY = qY;
-        this.currentQuadrant.quadrantEntities.push(this.enterprise);
+        this.currentQuadrant.addEntity(this.enterprise);
 
         gameOutputAppend("Entering galactic quadrant " + this.enterprise.quadrantString());
     }
@@ -205,6 +207,7 @@ class TrekGame
     {
         if (inputline == 'Y' || inputline == 'y')
         {
+            this.gameOver = true;
             autosave(null);
             gameOutputAppend("Thanks for playing!  Refresh the page to play again.");
             this.disableInput();

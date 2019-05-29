@@ -49,7 +49,7 @@ class GalaxyMap extends Grid
                     {
                         if (this.lookup1D(randomQuadrant).quadrantFreeSpaces())
                         {
-                            this.lookup1D(randomQuadrant).addEntity(inst);
+                            this.lookup1D(randomQuadrant).addEntityInFreeSector(inst);
                             instAssigned = true;
                             break;
                         }
