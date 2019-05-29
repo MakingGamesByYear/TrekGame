@@ -137,7 +137,6 @@ class Enterprise extends GameObject
         // but the first square along our line might be obstructed.  so we'll test that before changing sectors.
         while (sectorsToTravel > 0)
         {
-            console.log("Loop. " + sectorsToTravel);
             let intersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle, sectorsToTravel);
            
             this.sectorX = Math.floor(intersection.lastX);
