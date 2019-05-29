@@ -28,4 +28,10 @@ class StarBase extends GameObject
     {
         return 1;
     }
+
+    static quadrantInstanceProbabilities()
+    {
+        // 5% chance of a starbase in any given quadrant
+        return [.95, .05];
+    }
 }

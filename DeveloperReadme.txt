@@ -53,4 +53,20 @@ This tells the map generator the limits (high and low) of how many objects to ge
     onPhaserHit(energy, quadrant)
 	- Need to add to Enterprise.PhaserTargets[] list in Enterprise.js.  Or whatever other phaser target lists are relevant.
 	- Called when the GameObject is hit by a phaser.
+
+- Optionally, if you want a nonuniform probability for different instance counts of each gameobject type, overload static quadrantInstanceProbabilities() and return an array.
+
+For example: 
+
+  static quadrantInstanceProbabilities()
+    {
+        return [.6,  // 0 klingons, 60% probability
+                .15, // 1 klingon,  15% probability
+                .1,  // 2 klingons, 10% probability
+                .1,  // 3 klingons, 10% probability
+                .05   // 4 klingons, 5% probability
+        ];
+    }
+
+The length of this array must match the value returned by maxInstancesQuadrant() plus one
     

@@ -5,7 +5,7 @@ class GalaxyMap extends Grid
         checkArgumentsDefinedAndHaveValue(arguments);
         super(quadrantsX, quadrantsY, function(){return new Quadrant(quadrantWidthSectors,quadrantHeightSectors)});
 
-        this.createMinimumInstances(entityTypes);
+        this.createMinimumInstances(entityTypes, quadrantsX, quadrantsY);
 
         for (let i = 0; i < quadrantsX*quadrantsY; i++)
         {
@@ -35,26 +35,27 @@ class GalaxyMap extends Grid
         {
             let etype = entityTypes[x];
 
-            let instancesToCreate = etype.minInstancesGame() - etype.Instances;
+            let instancesToCreate = etype.minInstancesGame() ;//- etype.Instances;
 
+            console.log("Creating min instances of " + etype.name + " : " + instancesToCreate);
             if (instancesToCreate > 0)
             {
                 for (let i = 0; i < instancesToCreate; i++)
                 {
                     let inst = new etype();
-                    let randomQuadrant = randomInt(0, (quadrantsX * quadrantsY)-1);
+                    let randomQuadrant = randomInt(0, this.contents.length-1);
 
                     let instAssigned = false;
-                    for (let quad = 0; quad < quadrantsX*quadrantsY; quad++)
+                    for (let quad = 0; quad < this.contents.length; quad++)
                     {
-                        if (this.lookup1D(randomQuadrant).quadrantFreeSpaces())
+                        if (this.lookup1D(randomQuadrant).emptySquares())
                         {
                             this.lookup1D(randomQuadrant).addEntityInFreeSector(inst);
                             instAssigned = true;
                             break;
                         }
 
-                        randomQuadrant = (randomQuadrant + 1 ) % quadrantsX*quadrantsY;
+                        randomQuadrant = (randomQuadrant + 1 ) % this.contents.length;
                     }
                     
                     if (!instAssigned)

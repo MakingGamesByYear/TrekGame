@@ -184,6 +184,7 @@ class Quadrant
             let entityType = entityTypes[entityIdx];
 
             let numEntities = entityType.randomCountForQuadrant(this.emptySquares());
+            console.log("Generating " + numEntities + entityType.name);
 
             for (let i =0; i < numEntities; i++ )
             {

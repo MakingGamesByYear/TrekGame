@@ -59,3 +59,25 @@ function autosave(game)
         localStorage.setItem("autosave", null);
     }
 }
+
+function makeCDF(instanceProbabilities)
+{
+    var rval = [];
+    let totalSum = 0.0;
+
+    for (var x in instanceProbabilities)
+    {
+        totalSum += instanceProbabilities[x];
+        rval.push(totalSum);
+    }
+
+    for (var x in rval)
+    {
+        rval[x] /= totalSum;
+    }
+
+    // last value should always be exactly 1
+    rval[rval.length-1] = 1.0;
+
+    return rval;
+}

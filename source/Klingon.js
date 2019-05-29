@@ -53,6 +53,16 @@ class Klingon extends GameObject
         return 4;
     }
 
+    static quadrantInstanceProbabilities()
+    {
+        return [.9,  
+                .025,
+                .025,
+                .0125,
+                .00625
+        ];
+    }
+
     static maxInstancesGame()
     {
         return 18;

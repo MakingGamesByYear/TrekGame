@@ -230,4 +230,4 @@ Enterprise.StartTorpedoes = 10;
 Enterprise.StartEnergy = 3000;
 Enterprise.StartShields = 0;
 Enterprise.TorpedoEnergyCost = 2;
-Enterprise.PhaserTargets = [Klingon];
+Enterprise.PhaserTargets = [Klingon]; // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 

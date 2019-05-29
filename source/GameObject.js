@@ -38,7 +38,34 @@ class GameObject
     // randomly generate the number of GameObject instances to put in a new quadrant
     static randomCountForQuadrant(quadrantFreeSpaces)
     {
-        let rval = randomInt(0, this.maxInstancesQuadrant());
+        var rval = 0;
+
+        let instanceProbabilities = this.quadrantInstanceProbabilities();
+        if (instanceProbabilities == null)
+        {
+            console.log("Using uniform probability path");
+            rval = randomInt(0, this.maxInstancesQuadrant());
+        }
+        else
+        {
+            console.log("Using CDF Probability Path");
+            console.assert(instanceProbabilities.length == (1+this.maxInstancesQuadrant()));
+            
+            let randomVal = randomFloat(0.0, 1.0);
+            let cdf = makeCDF(instanceProbabilities);
+
+            console.log("" + cdf);
+            var x;
+            for (x in cdf)
+            {
+                if (randomVal < cdf[x])
+                {
+                    rval = x;
+                    break;
+                }
+            }
+        }
+
         rval = Math.min(rval, quadrantFreeSpaces);
 
         if (!this.Instances)
@@ -76,5 +103,19 @@ class GameObject
     static maxInstancesGame()
     {
         return this.maxInstancesQuadrant() * mapWidthQuadrants * mapHeightQuadrants;
+    }
+
+    // returns array containing the probability of each instance count appearing in a quadrant at map generation
+    // eg. [.1, .2, .15, .55]
+    // means that there's a 10% chance of no instances of the object in a given quadrant
+    // there's a 20% chance of 1 instance
+    // a 15% chance of 2 instances
+    // a 55% chance of 3 instances
+    // The base class GameObject method returns null, if we want to just generate uniform probabilities (default)
+    // eg. each number between min and max has an equal likelihood.
+    // So in the above example, there'd be a 25% chance of either no instance, 1 instance, 2 instances, or 3 instances
+    static quadrantInstanceProbabilities()
+    {
+        return null;
     }
 }
