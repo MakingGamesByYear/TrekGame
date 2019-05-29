@@ -186,7 +186,7 @@ class TrekGame
             return true;
         }
 
-        this.enterprise.firePhasers(energy, this.currentQuadrant.getEntitiesOfType(Klingon), this.currentQuadrant);
+        this.enterprise.firePhasers(energy, this.currentQuadrant);
         
         return true;
     }

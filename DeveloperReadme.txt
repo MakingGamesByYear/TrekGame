@@ -49,6 +49,8 @@ This tells the map generator the limits (high and low) of how many objects to ge
 
     onTorpedoHit()
         - when the object is hit by a torpedo
-
-Note : At present onPhaserHit(energy, quadrant) is only defined for Klingon and only called on Klingon objects.
+	
+    onPhaserHit(energy, quadrant)
+	- Need to add to Enterprise.PhaserTargets[] list in Enterprise.js.  Or whatever other phaser target lists are relevant.
+	- Called when the GameObject is hit by a phaser.
     

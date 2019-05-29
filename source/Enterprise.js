@@ -46,9 +46,20 @@ class Enterprise extends GameObject
         return "GREEN";
     }
 
-    firePhasers(energy, targets, quadrant)
+    firePhasers(energy, quadrant)
     {
         console.log("fire phasers");
+
+        let targets = [];
+
+        console.log("starty");
+
+        var x;
+        for (x in Enterprise.PhaserTargets)
+        {
+            console.log("loopy");
+            targets.push(...quadrant.getEntitiesOfType(Enterprise.PhaserTargets[x]));
+        }
 
         console.assert(energy <= this.freeEnergy);
 
@@ -222,3 +233,4 @@ Enterprise.StartTorpedoes = 10;
 Enterprise.StartEnergy = 3000;
 Enterprise.StartShields = 0;
 Enterprise.TorpedoEnergyCost = 2;
+Enterprise.PhaserTargets = [Klingon];
