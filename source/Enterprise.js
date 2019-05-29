@@ -52,12 +52,9 @@ class Enterprise extends GameObject
 
         let targets = [];
 
-        console.log("starty");
-
         var x;
         for (x in Enterprise.PhaserTargets)
         {
-            console.log("loopy");
             targets.push(...quadrant.getEntitiesOfType(Enterprise.PhaserTargets[x]));
         }
 
