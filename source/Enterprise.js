@@ -46,7 +46,6 @@ class Enterprise extends GameObject
         return "GREEN";
     }
 
-
     firePhasers(energy, targets, quadrant)
     {
         console.log("fire phasers");
@@ -95,7 +94,6 @@ class Enterprise extends GameObject
             //not enough energy
             gameOutputAppend("Not enough energy to fire torpedoes!");
         }
-
     }
 
     // long range scan
