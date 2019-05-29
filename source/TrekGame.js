@@ -254,6 +254,8 @@ class TrekGame
             {
                 this.awaitInput(defaultInputPrompt, 3, null);
             }
+
+            autosave(this);
             return;
         }
 
