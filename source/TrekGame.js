@@ -102,7 +102,6 @@ class TrekGame
         //gameOutputAppend(""+parsedVal);
 
         this.enterprise.setShieldLevel(parsedVal);
-        this.updateStatus();
 
         return true;
     }
@@ -143,15 +142,7 @@ class TrekGame
             gameOutputAppend("Warp factor is too small to get anywhere!");
         }
 
-        //console.log("Sectors to travel : "  + sectorsToTravel);
-
-        //console.log("intersect test");
-
         this.enterprise.warp(sectorsToTravel, angle, this);
-
-        //console.log("updating " + intersection.lastX + " " + intersection.lastY);
-        this.updateStatus();
-        updateMap();
 
         return true;
     }
@@ -170,8 +161,7 @@ class TrekGame
         }
 
         this.enterprise.fireTorpedo(this.currentQuadrant, angle);
-        this.updateStatus();
-        updateMap();
+
         return true;
     }
 
@@ -197,8 +187,6 @@ class TrekGame
         }
 
         this.enterprise.firePhasers(energy, this.currentQuadrant.getEntitiesOfType(Klingon), this.currentQuadrant);
-        this.updateStatus();
-        updateMap();
         
         return true;
     }
@@ -257,69 +245,71 @@ class TrekGame
             {
                 this.awaitInput(defaultInputPrompt, 3, null);
             }
-
-            autosave(this);
-            return;
-        }
-
-        inputStr = inputStr.toLowerCase();
-
-        if (inputStr == 'nav')
-        {
-            gameOutputAppend("Navigation");
-            this.awaitInput("Enter heading (degrees).", 3, this.navigationHandler);
-        }
-        else if (inputStr == "lrs")
-        {
-            gameOutputAppend("Long Range Scan");
-            document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
-        }
-        else if (inputStr == "pha")
-        {
-            gameOutputAppend("Fire phasers");
-            if (this.currentQuadrant.countEntitiesOfType(Klingon))
-            {
-                gameOutputAppend("Enter the energy to commit to the phasers.");
-                gameOutputAppend("Total available : " + this.enterprise.freeEnergy);
-                this.awaitInput("Energy:", 4, this.phaserHandler);
-            }
-            else
-            {
-                gameOutputAppend("No enemies detected in this Quadrant, captain.");
-            }
-        }
-        else if (inputStr == "tor")
-        {
-            gameOutputAppend("Fire torpedoes");
-            if (this.enterprise.torpedoes > 0)
-            {
-                gameOutputAppend("Enter torpedo heading (in degrees)");
-                this.awaitInput("Torpedo Heading (degrees)", 3, this.torpedoHandler);
-            }
-            else
-            {
-                gameOutputAppend("We're out of torpedoes, captain!");
-            }
-        }
-        else if (inputStr == "she")
-        {
-            gameOutputAppend("Configure shields");
-            gameOutputAppend("Enter the new energy level for the shields.");
-            gameOutputAppend("Total available is : " + (this.enterprise.freeEnergy + this.enterprise.shields));
-            
-            this.awaitInput("New shield level:", 4, this.shieldHandler);
-        }
-        else if (inputStr == "xxx")
-        {
-            gameOutputAppend("Resign command");
-            this.awaitInput("Are you sure you want to end your current game and erase your autosave? (Y/N)", 1, this.endGameHandler);
-            return;
         }
         else
         {
-            gameOutputAppend("Come again, captain?")
+
+            inputStr = inputStr.toLowerCase();
+
+            if (inputStr == 'nav')
+            {
+                gameOutputAppend("Navigation");
+                this.awaitInput("Enter heading (degrees).", 3, this.navigationHandler);
+            }
+            else if (inputStr == "lrs")
+            {
+                gameOutputAppend("Long Range Scan");
+                document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
+            }
+            else if (inputStr == "pha")
+            {
+                gameOutputAppend("Fire phasers");
+                if (this.currentQuadrant.countEntitiesOfType(Klingon))
+                {
+                    gameOutputAppend("Enter the energy to commit to the phasers.");
+                    gameOutputAppend("Total available : " + this.enterprise.freeEnergy);
+                    this.awaitInput("Energy:", 4, this.phaserHandler);
+                }
+                else
+                {
+                    gameOutputAppend("No enemies detected in this Quadrant, captain.");
+                }
+            }
+            else if (inputStr == "tor")
+            {
+                gameOutputAppend("Fire torpedoes");
+                if (this.enterprise.torpedoes > 0)
+                {
+                    gameOutputAppend("Enter torpedo heading (in degrees)");
+                    this.awaitInput("Torpedo Heading (degrees)", 3, this.torpedoHandler);
+                }
+                else
+                {
+                    gameOutputAppend("We're out of torpedoes, captain!");
+                }
+            }
+            else if (inputStr == "she")
+            {
+                gameOutputAppend("Configure shields");
+                gameOutputAppend("Enter the new energy level for the shields.");
+                gameOutputAppend("Total available is : " + (this.enterprise.freeEnergy + this.enterprise.shields));
+                
+                this.awaitInput("New shield level:", 4, this.shieldHandler);
+            }
+            else if (inputStr == "xxx")
+            {
+                gameOutputAppend("Resign command");
+                this.awaitInput("Are you sure you want to end your current game and erase your autosave? (Y/N)", 1, this.endGameHandler);
+                return;
+            }
+            else
+            {
+                gameOutputAppend("Come again, captain?")
+            }
         }
 
+        this.updateStatus();
+        updateMap();
         autosave(this);
     }
 }
