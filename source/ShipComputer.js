@@ -11,7 +11,7 @@ class ShipComputerMenu extends Menu
             (
                 "1",
                 ") ",
-                "Galactic Record",
+                "GALACTIC RECORD",
                 function()
                 {
                 }
@@ -21,7 +21,7 @@ class ShipComputerMenu extends Menu
             (
                 "2",
                 ") ", 
-                "Status Report",
+                "STATUS REPORT",
                 function()
                 {
                     /*
@@ -37,7 +37,7 @@ class ShipComputerMenu extends Menu
             (
                 "3",
                 ") ", 
-                "Scan Enemy Ships",
+                "SCAN ENEMY SHIPS",
                 function()
                 {
 
@@ -48,7 +48,7 @@ class ShipComputerMenu extends Menu
             (
                 "4",
                 ") ",
-                "Starbases",
+                "STARBASES",
                 function()
                 {
 
