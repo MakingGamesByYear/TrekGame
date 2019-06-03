@@ -16,7 +16,7 @@ class TrekGame
 
         gamerval.currentQuadrant.addEntity(gamerval.enterprise);
 
-        gamerval.mainMenu = new MainMenu(gamerval);
+        gamerval.createMenus();
 
         gamerval.setInputPrompt(gamerval.mainMenu.toString());
         
@@ -47,7 +47,7 @@ class TrekGame
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
 
-        this.mainMenu = new MainMenu(this);
+        this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
 
         autosave(this);
@@ -254,8 +254,6 @@ class TrekGame
         }
         else
         {
-            inputStr = inputStr.toLowerCase();
-
             if (!this.mainMenu.chooseOption(inputStr))
             {
                 gameOutputAppend("Come again, captain?")
@@ -265,6 +263,12 @@ class TrekGame
         this.updateStatus();
         updateMap();
         autosave(this);
+    }
+    
+    createMenus()
+    {
+        this.mainMenu = new MainMenu(this);
+        this.computerMenu = new ShipComputerMenu(this);
     }
 }
 

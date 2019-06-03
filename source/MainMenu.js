@@ -105,7 +105,7 @@ class MainMenu extends Menu
                 "(TO CALL ON LIBRARY-COMPUTER)",
                 function()
                 {
-
+                    return trekgame.awaitInput(trekgame.computerMenu.toString(), 1, function(inputline){trekgame.computerMenu.chooseOption(inputline);});
                 }
             ),
 
