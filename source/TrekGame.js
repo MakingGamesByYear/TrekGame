@@ -16,11 +16,16 @@ class TrekGame
 
         gamerval.currentQuadrant.addEntity(gamerval.enterprise);
 
+        gamerval.mainMenu = new MainMenu(gamerval);
+
+        gamerval.setInputPrompt(gamerval.mainMenu.toString());
+        
         return gamerval;
     }
 
     constructor()
     {
+
         this.gameOver = false;
 
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
@@ -42,7 +47,8 @@ class TrekGame
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
 
-        this.setInputPrompt(defaultInputPrompt);
+        this.mainMenu = new MainMenu(this);
+        this.setInputPrompt(this.mainMenu.toString());
 
         autosave(this);
     }
@@ -216,7 +222,7 @@ class TrekGame
         document.getElementById("status").innerHTML = this.statusString();
     }
 
-    awaitInput(inputPrompt=defaultInputPrompt, charactersToRead=3, inputHandler=null)
+    awaitInput(inputPrompt, charactersToRead=3, inputHandler=null)
     {
         document.getElementById("inputPrompt").style.display="Block";
         document.getElementById("gameInput").style.display="Block";
@@ -243,66 +249,14 @@ class TrekGame
         {
             if (this.inputHandler(inputStr))
             {
-                this.awaitInput(defaultInputPrompt, 3, null);
+                this.awaitInput(this.mainMenu.toString(), 3, null);
             }
         }
         else
         {
-
             inputStr = inputStr.toLowerCase();
 
-            if (inputStr == 'nav')
-            {
-                gameOutputAppend("Navigation");
-                this.awaitInput("Enter heading (degrees).", 3, this.navigationHandler);
-            }
-            else if (inputStr == "lrs")
-            {
-                gameOutputAppend("Long Range Scan");
-                document.getElementById("lrs").innerHTML = "<pre>" + this.enterprise.lrsString(this.galaxyMap) + "</pre>";
-            }
-            else if (inputStr == "pha")
-            {
-                gameOutputAppend("Fire phasers");
-                if (this.currentQuadrant.countEntitiesOfType(Klingon))
-                {
-                    gameOutputAppend("Enter the energy to commit to the phasers.");
-                    gameOutputAppend("Total available : " + this.enterprise.freeEnergy);
-                    this.awaitInput("Energy:", 4, this.phaserHandler);
-                }
-                else
-                {
-                    gameOutputAppend("No enemies detected in this Quadrant, captain.");
-                }
-            }
-            else if (inputStr == "tor")
-            {
-                gameOutputAppend("Fire torpedoes");
-                if (this.enterprise.torpedoes > 0)
-                {
-                    gameOutputAppend("Enter torpedo heading (in degrees)");
-                    this.awaitInput("Torpedo Heading (degrees)", 3, this.torpedoHandler);
-                }
-                else
-                {
-                    gameOutputAppend("We're out of torpedoes, captain!");
-                }
-            }
-            else if (inputStr == "she")
-            {
-                gameOutputAppend("Configure shields");
-                gameOutputAppend("Enter the new energy level for the shields.");
-                gameOutputAppend("Total available is : " + (this.enterprise.freeEnergy + this.enterprise.shields));
-                
-                this.awaitInput("New shield level:", 4, this.shieldHandler);
-            }
-            else if (inputStr == "xxx")
-            {
-                gameOutputAppend("Resign command");
-                this.awaitInput("Are you sure you want to end your current game and erase your autosave? (Y/N)", 1, this.endGameHandler);
-                return;
-            }
-            else
+            if (!this.mainMenu.chooseOption(inputStr))
             {
                 gameOutputAppend("Come again, captain?")
             }

@@ -25,6 +25,7 @@ IncludeSource Star.js
 IncludeSource Enterprise.js
 IncludeSource Quadrant.js
 IncludeSource GalaxyMap.js
+IncludeSource Menu.js
+IncludeSource MainMenu.js
 IncludeSource TrekGame.js
-
 
