@@ -19,6 +19,9 @@ class TrekGame
         gamerval.createMenus();
 
         gamerval.setInputPrompt(gamerval.mainMenu.toString());
+
+        gamerval.updateStatus();
+        updateMap(gamerval.updateMapScreen());
         
         return gamerval;
     }
@@ -49,6 +52,9 @@ class TrekGame
 
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
+
+        this.updateStatus();
+        updateMap(this.updateMapScreen());
 
         autosave(this);
     }
@@ -150,6 +156,8 @@ class TrekGame
 
         this.enterprise.warp(sectorsToTravel, angle, this);
 
+        this.currentQuadrant.klingonsFire(this.enterprise);
+
         return true;
     }
 
@@ -167,6 +175,8 @@ class TrekGame
         }
 
         this.enterprise.fireTorpedo(this.currentQuadrant, angle);
+
+        this.currentQuadrant.klingonsFire(this.enterprise);
 
         return true;
     }
@@ -193,6 +203,8 @@ class TrekGame
         }
 
         this.enterprise.firePhasers(energy, this.currentQuadrant);
+
+        this.currentQuadrant.klingonsFire(this.enterprise);
         
         return true;
     }
@@ -261,7 +273,7 @@ class TrekGame
         }
 
         this.updateStatus();
-        updateMap();
+        updateMap(this.updateMapScreen());
         autosave(this);
     }
     
@@ -269,6 +281,56 @@ class TrekGame
     {
         this.mainMenu = new MainMenu(this);
         this.computerMenu = new ShipComputerMenu(this);
+    }
+
+    updateMapScreen()
+    {
+        let quad = this.currentQuadrant;
+
+        let borderStringPost = "  -1---2---3---4---5---6---7---8--\n";
+        let borderStringPre = "  =---=---=---=---=---=---=---=---\n";
+
+        let quadrantStringGrid = new Grid(quad.width, quad.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
+
+        var gameObjectIndex;
+        for (gameObjectIndex in quad.quadrantEntities)
+        {
+            let gameObject = quad.quadrantEntities[gameObjectIndex];
+            var objStr;
+        
+            objStr = gameObject.toString().padStart(sectorDisplayWidthChars, ' ');
+
+            quadrantStringGrid.setValue(gameObject.sectorX, gameObject.sectorY, objStr);
+        }
+
+        let healthOK = this.enterprise.components.ShortRangeSensors.componentHealth > Enterprise.SRSFullyFunctionalHealth;
+
+        if (!healthOK)
+        {
+            console.log("!health ok, val " + this.enterprise.components.ShortRangeSensors.componentHealth);
+
+            // goes from 0 when the component is at the maximum health in range, to 1 when the component is at 0%
+            let hnorm = (Enterprise.SRSFullyFunctionalHealth - this.enterprise.components.ShortRangeSensors.componentHealth) / Enterprise.SRSFullyFunctionalHealth;
+
+            // lerp
+            let chanceCorrupt = (1.0 - hnorm) * Enterprise.SRSMinChanceCorrupt + hnorm * Enterprise.SRSMaxChanceCorrupt;
+
+            // randomly go through and corrupt the short range scan based on the health of the ship components
+            for (var x in quadrantStringGrid.contents)
+            {
+                let corrupt = Math.random() < chanceCorrupt;
+                
+                if (corrupt)
+                {
+                    quadrantStringGrid.setValue1D(x, '?'.padStart(sectorDisplayWidthChars, ' '));
+                }
+            }
+        }
+
+        let mapString = quadrantStringGrid.toString();
+
+        return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
+
     }
 }
 

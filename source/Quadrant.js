@@ -176,6 +176,16 @@ class Quadrant
         return this.quadrantEntities.filter(function(item){return item.constructor == classtype});
     }
 
+    klingonsFire(target)
+    {
+        let klist = this.getEntitiesOfType(Klingon);
+
+        for (var x in klist)
+        {
+            klist[x].firePhasers(target);
+        }
+    }
+
     createEntities(entityTypes)
     {
         var entityIdx;

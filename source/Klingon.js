@@ -43,6 +43,11 @@ class Klingon extends GameObject
         }
     }
 
+    firePhasers(target)
+    {
+
+    }
+
     toString()
     {
         return "+K+";

@@ -1,5 +1,29 @@
+class ShipComponent
+{
+    constructor (componentName, damProb)
+    {
+        this.componentHealth = 1.0; //percent
+        this.componentName = componentName;
+        this.componentDamageProbability = damProb
+    }
+}
+
 class Enterprise extends GameObject
 {
+
+    componentDamageProbabilities()
+    {
+        var probArray = [];
+
+        for (var key in this.components)
+        {
+            probArray.push(this.components[key].componentDamageProbability);
+        }
+
+        console.assert(probArray.length == this.components.length);
+        return probArray;
+    }
+
     constructor()
     {
         super(Enterprise);
@@ -7,6 +31,19 @@ class Enterprise extends GameObject
         this.shields = Enterprise.StartShields;
 
         this.freeEnergy = Enterprise.StartEnergy;
+
+        this.components =   {
+                                WarpEngines : new ShipComponent("Warp Engines", .0625), 
+                                ShortRangeSensors: new ShipComponent("Short Range Sensors", .0625),
+                                LongRangeSensors: new ShipComponent("Long Range Sensors", .25),
+                                PhaserControl : new ShipComponent("Phaser Control", .0625),
+                                PhotonTubes : new ShipComponent("Photon Tubes", .125),
+                                DamageControl : new ShipComponent("Damage Control", .0625),
+                                ShieldControl : new ShipComponent("Shield Control", .125), 
+                                LibraryComputer : new ShipComponent("Library Computer", .25)
+                            }
+
+        this.components.ShortRangeSensors.componentHealth = 0.70;
     }
 
     // assumes that the input value has been previously checked for the appropriate range and available value
@@ -44,6 +81,11 @@ class Enterprise extends GameObject
     conditionString()
     {
         return "GREEN";
+    }
+
+    onPhaserHit(energy, quadrant)
+    {
+
     }
 
     firePhasers(energy, quadrant)
@@ -231,3 +273,6 @@ Enterprise.StartEnergy = 3000;
 Enterprise.StartShields = 0;
 Enterprise.TorpedoEnergyCost = 2;
 Enterprise.PhaserTargets = [Klingon]; // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 
+Enterprise.SRSFullyFunctionalHealth = .7;
+Enterprise.SRSMinChanceCorrupt = .1;
+Enterprise.SRSMaxChanceCorrupt = .75;

@@ -40,9 +40,9 @@ function gameOutputAppend(str)
     document.getElementById("gameOutput").innerHTML += str + '\n';
 }
 
-function updateMap()
+function updateMap(mapString = game.currentQuadrant.toString())
 {
-    document.getElementById("map").innerHTML = game.currentQuadrant.toString();
+    document.getElementById("map").innerHTML = mapString;
 }
 
 function autosave(game)
@@ -80,4 +80,23 @@ function makeCDF(instanceProbabilities)
     rval[rval.length-1] = 1.0;
 
     return rval;
+}
+
+// generates a random value, between 0 and valueProbabilities.length-1, where each possible value's chance of
+// being generated is listed in the corresponding array entry
+function randomWithProbabilities(valueProbabilities)
+{
+    let randomVal = randomFloat(0.0, 1.0);
+    let cdf = makeCDF(valueProbabilities);
+
+    console.log("" + cdf);
+    var x;
+    for (x in cdf)
+    {
+        if (randomVal < cdf[x])
+        {
+            return x;
+        }
+    }
+    return cdf.length-1;
 }

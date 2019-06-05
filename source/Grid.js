@@ -35,6 +35,11 @@ class Grid
         this.contents [y * this.width + x] = val;
     }
 
+    setValue1D(x, val)
+    {
+        this.contents[x] = val;
+    }
+
     getEmptySquare()
     {
         let startIndex = randomInt(0, this.contents.length-1);
