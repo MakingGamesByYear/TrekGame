@@ -43,27 +43,15 @@ class GameObject
         let instanceProbabilities = this.quadrantInstanceProbabilities();
         if (instanceProbabilities == null)
         {
-            console.log("Using uniform probability path");
+            //console.log("Using uniform probability path");
             rval = randomInt(0, this.maxInstancesQuadrant());
         }
         else
         {
-            console.log("Using CDF Probability Path");
+            //console.log("Using CDF Probability Path");
             console.assert(instanceProbabilities.length == (1+this.maxInstancesQuadrant()));
             
-            let randomVal = randomFloat(0.0, 1.0);
-            let cdf = makeCDF(instanceProbabilities);
-
-            console.log("" + cdf);
-            var x;
-            for (x in cdf)
-            {
-                if (randomVal < cdf[x])
-                {
-                    rval = x;
-                    break;
-                }
-            }
+            rval = randomWithProbabilities(instanceProbabilities);
         }
 
         rval = Math.min(rval, quadrantFreeSpaces);

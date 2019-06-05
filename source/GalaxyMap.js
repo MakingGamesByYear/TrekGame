@@ -37,7 +37,7 @@ class GalaxyMap extends Grid
 
             let instancesToCreate = etype.minInstancesGame() ;//- etype.Instances;
 
-            console.log("Creating min instances of " + etype.name + " : " + instancesToCreate);
+            // console.log("Creating min instances of " + etype.name + " : " + instancesToCreate);
             if (instancesToCreate > 0)
             {
                 for (let i = 0; i < instancesToCreate; i++)

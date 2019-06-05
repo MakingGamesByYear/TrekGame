@@ -28,7 +28,6 @@ class TrekGame
 
     constructor()
     {
-
         this.gameOver = false;
 
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
@@ -307,8 +306,6 @@ class TrekGame
 
         if (!healthOK)
         {
-            console.log("!health ok, val " + this.enterprise.components.ShortRangeSensors.componentHealth);
-
             // goes from 0 when the component is at the maximum health in range, to 1 when the component is at 0%
             let hnorm = (Enterprise.SRSFullyFunctionalHealth - this.enterprise.components.ShortRangeSensors.componentHealth) / Enterprise.SRSFullyFunctionalHealth;
 

@@ -10,7 +10,6 @@ class ShipComponent
 
 class Enterprise extends GameObject
 {
-
     componentDamageProbabilities()
     {
         var probArray = [];
@@ -42,8 +41,6 @@ class Enterprise extends GameObject
                                 ShieldControl : new ShipComponent("Shield Control", .125), 
                                 LibraryComputer : new ShipComponent("Library Computer", .25)
                             }
-
-        this.components.ShortRangeSensors.componentHealth = 0.70;
     }
 
     // assumes that the input value has been previously checked for the appropriate range and available value

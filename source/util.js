@@ -89,7 +89,7 @@ function randomWithProbabilities(valueProbabilities)
     let randomVal = randomFloat(0.0, 1.0);
     let cdf = makeCDF(valueProbabilities);
 
-    console.log("" + cdf);
+    //console.log("" + cdf);
     var x;
     for (x in cdf)
     {
