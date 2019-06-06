@@ -45,9 +45,11 @@ class TrekGame
         this.currentQuadrant.addEntityInFreeSector(this.enterprise);
 
         this.klingonsRemaining = Klingon.Instances;
+        this.starbasesRemaining = StarBase.Instances;
 
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
+        this.endStarDate = this.starDate + TrekGame.BaseMissionTime + randomInt(0, TrekGame.MissionTimeSpread);
 
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
@@ -212,10 +214,7 @@ class TrekGame
     {
         if (inputline == 'Y' || inputline == 'y')
         {
-            this.gameOver = true;
-            autosave(null);
-            gameOutputAppend("Thanks for playing!  Refresh the page to play again.");
-            this.disableInput();
+            this.endGame();
             return false;
         }
         else if (inputline == 'n' || inputline == 'N')
@@ -274,6 +273,59 @@ class TrekGame
         this.updateStatus();
         updateMap(this.updateMapScreen());
         autosave(this);
+
+        this.checkEndConditions();
+    }
+
+    endGame()
+    {
+        this.gameOver = true;
+        autosave(null);
+        gameOutputAppend("Thanks for playing!  Refresh the page to play again.");
+        this.disableInput();
+    }
+
+    checkEndConditions()
+    {
+        if (this.gameOver) return;
+        
+        if (this.starDate > this.endStarDate)
+        {
+            gameOutputAppend("You were unable to complete your mission in time.");
+            gameOutputAppend("The Klingons were able to execute their plan to destroy the Federation starbases!");
+            gameOutputAppend("You'll be demoted for sure!");
+
+            this.endGame();
+        }
+        else if (this.enterprise.isStranded())
+        {
+            gameOutputAppend("You have insufficient energy to power the warp engines!");
+            gameOutputAppend("You are stranded, causing you to ultimately fail your mission.");
+            
+            this.endGame();
+        }
+        else if (this.enterprise.isDestroyed())
+        {
+            gameOutputAppend("Your vessel has taken too much damage and has been destroyed.");
+            gameOutputAppend("Your mission is failed.");
+
+            this.endGame();
+        }
+        else if (!this.starbasesRemaining)
+        {
+            gameOutputAppend("All the Federation starbases have been destroyed!");
+            gameOutputAppend("You've failed in your mission.  The Federation is doomed.");
+
+            this.endGame();
+        }
+        else if (!this.klingonsRemaining)
+        {
+            gameOutputAppend("You've managed to destroy all the enemy vessels, preventing the enemy from executing their plan!");
+            gameOutputAppend("You're sure to get a promotion!");
+            gameOutputAppend("Congratulations on your victory!");
+            
+            this.endGame();
+        }
     }
     
     createMenus()
@@ -332,6 +384,8 @@ class TrekGame
 }
 
 TrekGame.EntityTypes = [Star, StarBase, Klingon];
+TrekGame.BaseMissionTime = 25;
+TrekGame.MissionTimeSpread = 10;
 
 function createEntityMap(entityList)
 {

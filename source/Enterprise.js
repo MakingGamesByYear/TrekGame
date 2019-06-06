@@ -41,8 +41,26 @@ class Enterprise extends GameObject
                                 ShieldControl : new ShipComponent("Shield Control", .125), 
                                 LibraryComputer : new ShipComponent("Library Computer", .25)
                             }
+
+        this.hitNoShields = false;
     }
 
+    // is our total energy less than the minimum energy cost to get anywhere?
+    isStranded()
+    {
+        return (this.freeEnergy + this.shields) < this.warpEnergyCost(1.0 / quadrantHeightSectors);
+    }
+
+    isDestroyed()
+    {
+        return this.hitNoShields;
+    }
+
+    warpEnergyCost(warpFactor)
+    {
+        return Enterprise.EnergyCostPerWarpFactor * warpFactor;
+    }
+    
     // assumes that the input value has been previously checked for the appropriate range and available value
     setShieldLevel(newShields)
     {
@@ -273,3 +291,4 @@ Enterprise.PhaserTargets = [Klingon]; // future extension : this list could be d
 Enterprise.SRSFullyFunctionalHealth = .7;
 Enterprise.SRSMinChanceCorrupt = .1;
 Enterprise.SRSMaxChanceCorrupt = .75;
+Enterprise.EnergyCostPerWarpFactor = 8.0;
