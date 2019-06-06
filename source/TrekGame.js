@@ -250,11 +250,8 @@ class TrekGame
         document.getElementById("inputButton").style.display ="None";
     }
 
-    gameInput(inputStr)
+    handleInput(inputStr)
     {
-        console.log(inputStr);
-        //gameOutputAppend(inputStr);
-
         if (this.inputHandler)
         {
             if (this.inputHandler(inputStr))
@@ -269,7 +266,20 @@ class TrekGame
                 gameOutputAppend("Come again, captain?")
             }
         }
+    }
 
+    gameInput(inputStr)
+    {
+        console.log(inputStr);
+        //gameOutputAppend(inputStr);
+
+        this.handleInput(inputStr);
+
+        this.updateGame();
+    }
+
+    updateGame()
+    {
         this.updateStatus();
         updateMap(this.updateMapScreen());
         autosave(this);
@@ -288,7 +298,7 @@ class TrekGame
     checkEndConditions()
     {
         if (this.gameOver) return;
-        
+
         if (this.starDate > this.endStarDate)
         {
             gameOutputAppend("You were unable to complete your mission in time.");
