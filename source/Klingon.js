@@ -13,7 +13,7 @@ class Klingon extends GameObject
         gameOutputAppend("Klingon Fighter Destroyed");
 
         game.currentQuadrant.removeEntity(this);
-        this.Instances--;
+        Klingon.Instances--;
     }
 
     onPhaserHit(energy, game)
@@ -36,7 +36,7 @@ class Klingon extends GameObject
             {
                 gameOutputAppend("Klingon Fighter Destroyed");
                 game.currentQuadrant.removeEntity(this);
-                this.Instances--;
+                Klingon.Instances--;
             }
             else
             {
