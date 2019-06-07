@@ -48,7 +48,7 @@ class Enterprise extends GameObject
     // is our total energy less than the minimum energy cost to get anywhere?
     isStranded()
     {
-        return (this.freeEnergy + this.shields) < this.warpEnergyCost(1.0 / quadrantHeightSectors);
+        return (this.freeEnergy + this.shields) < this.warpEnergyCost(1); // energy cost to travel one square.
     }
 
     isDestroyed()
@@ -56,9 +56,9 @@ class Enterprise extends GameObject
         return this.hitNoShields;
     }
 
-    warpEnergyCost(warpFactor)
+    warpEnergyCost(numSectors)
     {
-        return Enterprise.EnergyCostPerWarpFactor * warpFactor;
+        return Enterprise.EnergyCostPerSector * numSectors;
     }
     
     // assumes that the input value has been previously checked for the appropriate range and available value
@@ -194,6 +194,16 @@ class Enterprise extends GameObject
 
     warp(sectorsToTravel, angle, game)
     {
+        let energyRequired = this.warpEnergyCost(sectorsToTravel);
+
+        if (this.freeEnergy < energyRequired)
+        {
+            gameOutputAppend("Not enough energy free to complete maneuver!");
+            return;
+        }
+
+        var maxSectorsToTravel = sectorsToTravel;
+
         // do an intersection test of the enterprise against the map, in the direction of warp.
         // update the enterprise position to the last valid sector square along the warp vector
         // if we have an obstacle ahead we're done.
@@ -207,13 +217,13 @@ class Enterprise extends GameObject
             this.sectorX = Math.floor(intersection.lastX);
             this.sectorY = Math.floor(intersection.lastY);
 
+            sectorsToTravel -= intersection.stepIterations
+
             if (intersection.intersects != null)
             {
                 gameOutputAppend("Obstruction ahead.  Exiting warp.");
                 break;
             }
-
-            sectorsToTravel -= intersection.stepIterations;
 
             if (sectorsToTravel <= 0.0)
             {
@@ -280,6 +290,11 @@ class Enterprise extends GameObject
                 break;
             }
         }
+
+        let actualEnergy = this.warpEnergyCost(maxSectorsToTravel - sectorsToTravel);
+
+        // get the energy cost of the sectors we actually travelled
+        this.freeEnergy -= actualEnergy
     }
 }
 
@@ -291,4 +306,4 @@ Enterprise.PhaserTargets = [Klingon]; // future extension : this list could be d
 Enterprise.SRSFullyFunctionalHealth = .7;
 Enterprise.SRSMinChanceCorrupt = .1;
 Enterprise.SRSMaxChanceCorrupt = .75;
-Enterprise.EnergyCostPerWarpFactor = 8.0;
+Enterprise.EnergyCostPerSector = 1.0;

@@ -153,6 +153,7 @@ class TrekGame
         if (sectorsToTravel < 1)
         {
             gameOutputAppend("Warp factor is too small to get anywhere!");
+            return true;
         }
 
         this.enterprise.warp(sectorsToTravel, angle, this);
