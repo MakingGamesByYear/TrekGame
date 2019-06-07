@@ -108,6 +108,8 @@ class TrekGame
 
         this.enterprise.setShieldLevel(parsedVal);
 
+        this.currentQuadrant.klingonsFire(this.enterprise, this);
+
         return true;
     }
 
