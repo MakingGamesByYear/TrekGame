@@ -110,7 +110,17 @@ class Enterprise extends GameObject
 
     onPhaserHit(energy, game)
     {
+        this.shields -= energy;
 
+        if (this.shields < 0.0)
+        {
+            this.hitNoShields = true;
+            this.shields = 0.0;
+
+            return;
+        }
+
+        gameOutputAppend("Shields at " + this.shields);
     }
 
     firePhasers(energy, game)

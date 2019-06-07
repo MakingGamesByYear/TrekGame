@@ -150,7 +150,7 @@ class TrekGame
 
         this.enterprise.warp(sectorsToTravel, angle, this);
 
-        this.currentQuadrant.klingonsFire(this.enterprise);
+        this.currentQuadrant.klingonsFire(this.enterprise, this);
 
         return true;
     }
@@ -170,7 +170,7 @@ class TrekGame
 
         this.enterprise.fireTorpedo(this, angle);
 
-        this.currentQuadrant.klingonsFire(this.enterprise);
+        this.currentQuadrant.klingonsFire(this.enterprise, this);
 
         return true;
     }
@@ -198,7 +198,7 @@ class TrekGame
 
         this.enterprise.firePhasers(energy, this);
 
-        this.currentQuadrant.klingonsFire(this.enterprise);
+        this.currentQuadrant.klingonsFire(this.enterprise, this);
         
         return true;
     }

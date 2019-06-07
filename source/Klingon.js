@@ -45,9 +45,14 @@ class Klingon extends GameObject
         }
     }
 
-    firePhasers(target)
+    firePhasers(target, game)
     {
+        let energyToFire = this.shields;
+        let dist = this.distanceToObject(target);
+        let phaserDamage = Math.round((energyToFire / dist) * randomInt(2, 3));
 
+        gameOutputAppend("Hit from sector " + this.sectorString() + " for " + phaserDamage + " units");
+        target.onPhaserHit(phaserDamage, game);
     }
 
     toString()

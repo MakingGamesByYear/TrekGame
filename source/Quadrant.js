@@ -176,13 +176,13 @@ class Quadrant
         return this.quadrantEntities.filter(function(item){return item.constructor == classtype});
     }
 
-    klingonsFire(target)
+    klingonsFire(target, game)
     {
         let klist = this.getEntitiesOfType(Klingon);
 
         for (var x in klist)
         {
-            klist[x].firePhasers(target);
+            klist[x].firePhasers(target, game);
         }
     }
 
