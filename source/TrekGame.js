@@ -44,9 +44,6 @@ class TrekGame
 
         this.currentQuadrant.addEntityInFreeSector(this.enterprise);
 
-        this.klingonsRemaining = Klingon.Instances;
-        this.starbasesRemaining = StarBase.Instances;
-
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
         this.endStarDate = this.starDate + TrekGame.BaseMissionTime + randomInt(0, TrekGame.MissionTimeSpread);
@@ -82,7 +79,7 @@ class TrekGame
         "PHOTON TORPEDOES   " + this.enterprise.torpedoes + '\n' + 
         "FREE ENERGY        " + this.enterprise.freeEnergy + '\n' + 
         "SHIELDS            " + this.enterprise.shields + '\n' + 
-        "KLINGONS REMAINING " + this.klingonsRemaining + '\n' + 
+        "KLINGONS REMAINING " + Klingon.Instances + '\n' + 
         "</pre>";
     }
 
@@ -171,7 +168,7 @@ class TrekGame
             return false;
         }
 
-        this.enterprise.fireTorpedo(this.currentQuadrant, angle);
+        this.enterprise.fireTorpedo(this, angle);
 
         this.currentQuadrant.klingonsFire(this.enterprise);
 
@@ -199,7 +196,7 @@ class TrekGame
             return true;
         }
 
-        this.enterprise.firePhasers(energy, this.currentQuadrant);
+        this.enterprise.firePhasers(energy, this);
 
         this.currentQuadrant.klingonsFire(this.enterprise);
         
@@ -317,14 +314,14 @@ class TrekGame
 
             this.endGame();
         }
-        else if (!this.starbasesRemaining)
+        else if (!StarBase.Instances)
         {
             gameOutputAppend("All the Federation starbases have been destroyed!");
             gameOutputAppend("You've failed in your mission.  The Federation is doomed.");
 
             this.endGame();
         }
-        else if (!this.klingonsRemaining)
+        else if (!Klingon.Instances)
         {
             gameOutputAppend("You've managed to destroy all the enemy vessels, preventing the enemy from executing their plan!");
             gameOutputAppend("You're sure to get a promotion!");

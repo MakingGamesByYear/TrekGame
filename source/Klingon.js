@@ -6,16 +6,17 @@ class Klingon extends GameObject
         this.shields = randomInt(100, 300);
     }
 
-    onTorpedoHit(quadrant)
+    onTorpedoHit(game)
     {
         console.log("hit a klingon");
         gameOutputAppend("\nReport from sector " + this.sectorString());
         gameOutputAppend("Klingon Fighter Destroyed");
 
-        quadrant.removeEntity(this);
+        game.currentQuadrant.removeEntity(this);
+        this.Instances--;
     }
 
-    onPhaserHit(energy, quadrant)
+    onPhaserHit(energy, game)
     {
         console.log("Klingon::onPhaserHit");
         let shieldDeflectionLevel = Klingon.shieldDeflectionPercent * this.shields;
@@ -34,7 +35,8 @@ class Klingon extends GameObject
             if (this.shields <= 0)
             {
                 gameOutputAppend("Klingon Fighter Destroyed");
-                quadrant.removeEntity(this);
+                game.currentQuadrant.removeEntity(this);
+                this.Instances--;
             }
             else
             {

@@ -5,13 +5,14 @@ class StarBase extends GameObject
         super(StarBase);
     }
 
-    onTorpedoHit(quadrant)
+    onTorpedoHit(game)
     {
         console.log("hit a starbase");
         gameOutputAppend("\nReport from sector " + this.sectorString());
         gameOutputAppend("The torpedo strikes and destroys the friendly starbase! I bet you'll be court martialled for that one!");
 
-        quadrant.removeEntity(this);
+        game.currentQuadrant.removeEntity(this);
+        this.Instances--;
     }
 
     toString()

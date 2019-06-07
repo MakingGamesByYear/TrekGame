@@ -108,12 +108,12 @@ class Enterprise extends GameObject
         return "GREEN";
     }
 
-    onPhaserHit(energy, quadrant)
+    onPhaserHit(energy, game)
     {
 
     }
 
-    firePhasers(energy, quadrant)
+    firePhasers(energy, game)
     {
         console.log("fire phasers");
 
@@ -122,7 +122,7 @@ class Enterprise extends GameObject
         var x;
         for (x in Enterprise.PhaserTargets)
         {
-            targets.push(...quadrant.getEntitiesOfType(Enterprise.PhaserTargets[x]));
+            targets.push(...game.currentQuadrant.getEntitiesOfType(Enterprise.PhaserTargets[x]));
         }
 
         console.assert(energy <= this.freeEnergy);
@@ -143,21 +143,21 @@ class Enterprise extends GameObject
             let damageAttenuated = damagePerTarget / dist;
             let damageFinal = Math.floor(randomFloat(2.0, 3.0) * damageAttenuated);
 
-            target.onPhaserHit(damageFinal, quadrant);
+            target.onPhaserHit(damageFinal, game);
         }
     }
 
-    fireTorpedo(quadrant, angle)
+    fireTorpedo(game, angle)
     {
         if (this.freeEnergy >= Enterprise.TorpedoEnergyCost)
         {
-            let torpedoIntersection = quadrant.intersectionTest(this.sectorX, this.sectorY, angle);
+            let torpedoIntersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle);
             this.torpedoes--;
             this.freeEnergy -= Enterprise.TorpedoEnergyCost;
             
             if (torpedoIntersection.intersects != null)
             {
-               torpedoIntersection.intersects.onTorpedoHit(quadrant);
+               torpedoIntersection.intersects.onTorpedoHit(game);
             }
             else
             {

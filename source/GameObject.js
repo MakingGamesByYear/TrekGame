@@ -30,7 +30,7 @@ class GameObject
         this.sectorY = sectorXY.y;
     }
 
-    onTorpedoHit(quadrant)
+    onTorpedoHit(game)
     {
         console.log("Torpedo hit (base class)");
     }
