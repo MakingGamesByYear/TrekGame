@@ -94,7 +94,6 @@ class Quadrant
         var steps = 0;
         while (steps < maxSectorsToTravel)
         {
-            console.log("ITERATION");
             // we have, given a start coordinate and a direction vector, the parametric equation of a line
             // Pt = P0 + D*t
             // From this we can derive the parameter t at which the line will reach a particular X or Y value

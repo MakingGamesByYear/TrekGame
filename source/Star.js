@@ -19,6 +19,6 @@ class Star extends GameObject
 
     static maxInstancesQuadrant()
     {
-        return 12;
+        return 9;//12;
     }
 }
