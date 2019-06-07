@@ -93,8 +93,18 @@ class Enterprise extends GameObject
         return 1;
     }
 
-    conditionString()
+    conditionString(game)
     {
+        if (game.currentQuadrant.countEntitiesOfType(Klingon))
+        {
+            return "RED";
+        }
+
+        if ((this.freeEnergy + this.shields) < .1 * Enterprise.StartEnergy)
+        {
+            return "YELLOW";
+        }
+
         return "GREEN";
     }
 
