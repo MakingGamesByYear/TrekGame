@@ -16,10 +16,11 @@ class Enterprise extends GameObject
 
         for (var key in this.components)
         {
+            console.log("" + this.components[key].componentDamageProbability);
             probArray.push(this.components[key].componentDamageProbability);
         }
 
-        console.assert(probArray.length == this.components.length);
+        console.assert(probArray.length == Object.keys(this.components).length);
         return probArray;
     }
 
@@ -108,11 +109,26 @@ class Enterprise extends GameObject
         return "GREEN";
     }
 
+    passthroughDamage(energy)
+    {
+        // we want to map (as a starting guess, pre balance) 500 energy to a total wipeout of a component
+        let passthroughDamage = energy * randomFloat(.001, .002);
+
+        // random component index
+        let idx = randomWithProbabilities(this.componentDamageProbabilities());
+
+        let component = this.components[Object.keys(this.components)[idx]];
+
+        component.componentHealth -= Math.min(passthroughDamage, component.componentHealth);
+
+        gameOutputAppend("" + component.componentName + " hit.  Now at " + Math.floor(component.componentHealth*100) + "% integrity" );
+    }
+
     onPhaserHit(energy, game)
     {
-        this.shields -= energy;
+        let hitRatio = energy / this.shields;
 
-        if (this.shields < 0.0)
+        if (this.shields < energy)
         {
             this.hitNoShields = true;
             this.shields = 0.0;
@@ -120,6 +136,12 @@ class Enterprise extends GameObject
             return;
         }
 
+        if ((hitRatio > Enterprise.DamagePassthroughRatio) || Math.random() < Enterprise.RandomPassthroughRatio)
+        {
+            this.passthroughDamage(energy);
+        }
+
+        this.shields -= energy;
         gameOutputAppend("Shields at " + this.shields);
     }
 
@@ -327,3 +349,5 @@ Enterprise.SRSFullyFunctionalHealth = .7;
 Enterprise.SRSMinChanceCorrupt = .1;
 Enterprise.SRSMaxChanceCorrupt = .75;
 Enterprise.EnergyCostPerSector = 1.0;
+Enterprise.DamagePassthroughRatio = .25; // if damage is 25% of shields or more, pass damage through to components
+Enterprise.RandomPassthroughRatio = .25; // 25% chance that damage will pass through to ship components regardless of shields

@@ -47,10 +47,10 @@ This tells the map generator the limits (high and low) of how many objects to ge
 
 - Optionally, implement callback member methods to handle various game events.  These include:
 
-    onTorpedoHit()
+    onTorpedoHit(trekGame)
         - when the object is hit by a torpedo
 	
-    onPhaserHit(energy, quadrant)
+    onPhaserHit(energy, trekGame)
 	- Need to add to Enterprise.PhaserTargets[] list in Enterprise.js.  Or whatever other phaser target lists are relevant.
 	- Called when the GameObject is hit by a phaser.
 
