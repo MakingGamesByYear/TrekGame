@@ -71,16 +71,11 @@ class TrekGame
         gameOutputAppend("Entering galactic quadrant " + this.enterprise.quadrantString());
     }
 
-    currentStardate()
-    {
-        return this.starDate;
-    }
-
     statusString()
     {
         return "<pre>" +
         "\n\n" + 
-        "STARDATE           " + this.currentStardate() + '\n' +  
+        "STARDATE           " + this.starDate + '\n' +  
         "CONDITION          " + this.enterprise.conditionString(this) + '\n' + 
         "QUADRANT           " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
         "SECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
