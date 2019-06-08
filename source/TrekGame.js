@@ -28,7 +28,7 @@ class TrekGame
         catch(err)
         {
             console.log("Corrupt save file.  Erasing.");
-            this.autosave(null);
+            autosave(null);
             gameOutputAppend("Corrupt save file.  Refresh page to start new game.");
         }
         return gamerval;
