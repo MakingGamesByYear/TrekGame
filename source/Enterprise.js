@@ -4,7 +4,7 @@ class ShipComponent
     {
         this.componentHealth = 1.0; //percent
         this.componentName = componentName;
-        this.componentDamageProbability = damProb
+        this.componentDamageProbability = damProb;
     }
 }
 
@@ -44,6 +44,7 @@ class Enterprise extends GameObject
                             }
 
         this.hitNoShields = false;
+        this.docked = false;
     }
 
     // is our total energy less than the minimum energy cost to get anywhere?

@@ -2,27 +2,35 @@ class TrekGame
 {
     static ConstructFromJSData(jsData)
     {
-        let gamerval = Object.create(TrekGame.prototype);
-        Object.assign(gamerval, jsData);
+        try
+        {
+            let gamerval = Object.create(TrekGame.prototype);
+            Object.assign(gamerval, jsData);
 
-        gamerval.enterprise = Object.create(Enterprise.prototype);
-        Object.assign(gamerval.enterprise, jsData.enterprise);
+            gamerval.enterprise = Object.create(Enterprise.prototype);
+            Object.assign(gamerval.enterprise, jsData.enterprise);
 
-        gamerval.galaxyMap = GalaxyMap.ConstructFromJSData(jsData.galaxyMap);
+            gamerval.galaxyMap = GalaxyMap.ConstructFromJSData(jsData.galaxyMap);
 
-        // console.log("galaxy map : " + gamerval.galaxyMap);
+            // console.log("galaxy map : " + gamerval.galaxyMap);
 
-        gamerval.currentQuadrant = gamerval.galaxyMap.lookup(gamerval.enterprise.quadrantX, gamerval.enterprise.quadrantY);
+            gamerval.currentQuadrant = gamerval.galaxyMap.lookup(gamerval.enterprise.quadrantX, gamerval.enterprise.quadrantY);
 
-        gamerval.currentQuadrant.addEntity(gamerval.enterprise);
+            gamerval.currentQuadrant.addEntity(gamerval.enterprise);
 
-        gamerval.createMenus();
+            gamerval.createMenus();
 
-        gamerval.setInputPrompt(gamerval.mainMenu.toString());
+            gamerval.setInputPrompt(gamerval.mainMenu.toString());
 
-        gamerval.updateStatus();
-        updateMap(gamerval.updateMapScreen());
-        
+            gamerval.updateStatus();
+            updateMap(gamerval.updateMapScreen());
+        }
+        catch(err)
+        {
+            console.log("Corrupt save file.  Erasing.");
+            this.autosave(null);
+            gameOutputAppend("Corrupt save file.  Refresh page to start new game.");
+        }
         return gamerval;
     }
 
