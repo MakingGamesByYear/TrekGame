@@ -24,6 +24,7 @@ class TrekGame
 
             gamerval.updateStatus();
             updateMap(gamerval.updateMapScreen());
+            return gamerval;
         }
         catch(err)
         {
@@ -31,7 +32,6 @@ class TrekGame
             autosave(null);
             gameOutputAppend("Corrupt save file.  Refresh page to start new game.");
         }
-        return gamerval;
     }
 
     constructor()
