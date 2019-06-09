@@ -88,16 +88,6 @@ class MainMenu extends Menu
                 }
             ),
 
-            new MenuOption(
-                "DAM", 
-                " ",
-                "(FOR DAMAGE CONTROL REPORTS)",
-                function()
-                {
-
-                }
-            ),
-
             new MenuOption
             (
                 "COM",

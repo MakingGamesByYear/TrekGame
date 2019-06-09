@@ -11,7 +11,7 @@ class ShipComputerMenu extends Menu
             (
                 "1",
                 ") ",
-                "GALACTIC RECORD",
+                "MAP / SENSOR RECORD",
                 function()
                 {
                 }
@@ -20,62 +20,13 @@ class ShipComputerMenu extends Menu
             new MenuOption
             (
                 "2",
-                ") ", 
-                "STATUS REPORT",
-                function()
-                {
-                    /*
-                    - KLINGONS REMAINING
-                    - TIME REMAINING
-                    - STARBASES REMAINING
-                    - DAMAGE REPORT
-                    */
-                }
-            ),
-
-            new MenuOption
-            (
-                "3",
-                ") ", 
-                "SCAN ENEMY SHIPS",
-                function()
-                {
-
-                }
-            ),
-
-            new MenuOption
-            (
-                "4",
                 ") ",
-                "STARBASES",
+                "DAMAGE REPORT",
                 function()
                 {
-
                 }
             ),
 
-            new MenuOption
-            (
-                "5",
-                ") ",
-                "DIRECTION / DISTANCE CALCULATOR",
-                function()
-                {
-
-                } 
-            ),
-
-            new MenuOption
-            (
-                "6",
-                ") ",
-                "QUADRANT NAME MAP",
-                function()
-                {
-
-                }
-            ) 
         );
     }
 }
