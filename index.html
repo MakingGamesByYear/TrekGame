@@ -10,6 +10,7 @@
                 flex-direction: column;
                 min-height: 100vh;
                 color:rgb(42, 197, 15);
+                margin-left: 10px;
             }
         
             footer {
@@ -28,28 +29,28 @@
 <!--
     <h2 style="font-size: 2vw">Star Trek Game - Making Games By Year Episode 1</h2>
 -->
-<div id="mapstatus">
-    <div id="map" style="display:inline-block; font-size: 2.5vmin"></div>
-    <div id="status" style="display:inline-block; vertical-align: top; font-size: 2.5vmin"></div>
+<div id="mapstatus" style="margin-top: 20px;">
+    <div id="map" style="margin-left: 10px; display:inline-block; font-size: 2.5vmin"></div>
+    <div id="status" style="margin-left: 10px;display:inline-block; vertical-align: top; font-size: 2.5vmin"></div>
 </div>
 
 <pre>
 <div id="gameOutput">
-<textarea readonly=true rows=10 cols="52" id="gameOutputBox" style="font-size: 2vh; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""></textarea>
+<textarea readonly=true rows=10 cols="52" id="gameOutputBox" style="margin-left: 10px;font-size: 2vh; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""></textarea>
 </div>
 </pre>
 
 <div id="inputline">
 <pre>
-<div id="inputPrompt" style="font-size: 2vh"></div>
-<input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-size: 2vh; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+<div id="inputPrompt" style="margin-left: 10px;font-size: 2vh"></div>
+<input maxlength="3" type="text" id="gameInput" name="gameinput" style="margin-left: 10px;font-size: 2vh; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
 
 <input type="button" 
     value="Make it so!" 
     onclick="handleInput(this)"
     id="inputButton"
-    style="font-size: 2vh;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
+    style="margin-left: 10px;font-size: 2vh;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
 </input>
 </div>
 
