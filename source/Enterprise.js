@@ -230,7 +230,7 @@ class Enterprise extends GameObject
                     rval += " *** |";
                 }
             }
-            rval += "\n" + border + "\n";
+            rval += "\n" + border;
         }
         return rval;
     }

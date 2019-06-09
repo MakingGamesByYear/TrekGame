@@ -28,7 +28,7 @@ class MainMenu extends Menu
                 function()
                 {
                     gameOutputAppend("Long Range Scan");
-                    document.getElementById("lrs").innerHTML = "<pre>" + trekgame.enterprise.lrsString(trekgame.galaxyMap) + "</pre>";
+                    gameOutputAppend(trekgame.enterprise.lrsString(trekgame.galaxyMap));
                 }
             ),
 

@@ -37,7 +37,9 @@ function randomFloat(min, max)
 
 function gameOutputAppend(str)
 {
-    document.getElementById("gameOutput").innerHTML += str + '\n';
+    let textarea = document.getElementById("gameOutputBox")
+    textarea.value += str + '\n';
+    textarea.scrollTop = textarea.scrollHeight;
 }
 
 function updateMap(mapString = game.currentQuadrant.toString())
