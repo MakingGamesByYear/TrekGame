@@ -5,6 +5,7 @@
         <!-- flexbox footer formatting : solution from https://medium.com/@paynoattn/flexbox-sticky-footer-d19dab50c34 -->
         <style>
             body {
+                font-size: 2vw
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
@@ -24,63 +25,25 @@
 
 <script src="trekgame.js"></script>
 
-<h2>Star Trek Game - Making Games By Year Episode 1</h2>
+<h2 style="font-size: 2vw">Star Trek Game - Making Games By Year Episode 1</h2>
 
 <div id="mapstatus">
-<div id="map" style="display:inline-block">
-<pre>
----------------------------------
-                      *           
-                          *       
-     +K+                          
-                                  
-     <*>      *                   
-                              *   
-          *                       
-  *                               
----------------------------------
-
-</pre>
-</div>
-
-<div id="status" style="display:inline-block; vertical-align: top">
-<pre>
-    
-STARDATE           2416 
-CONDITION          *RED*
-QUADRANT           4 , 1 
-SECTOR             5 , 2 
-PHOTON TORPEDOES   10 
-TOTAL ENERGY       2802 
-SHIELDS            0 
-KLINGONS REMAINING 15
-</pre>
-</div>
+    <div id="map" style="display:inline-block"></div>
+    <div id="status" style="display:inline-block; vertical-align: top"></div>
 </div>
 
 <pre>
 <div id="gameOutput">
-    <textarea readonly=true rows=10 cols="52" id="gameOutputBox" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""></textarea>
+<textarea readonly=true rows=10 cols="52" id="gameOutputBox" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""></textarea>
 </div>
 </pre>
 
 <div id="inputline">
 <pre>
-<div id="inputPrompt">
-ENTER ONE OF THE FOLLOWING:
-NAV  (TO SET COURSE)
-LRS  (FOR LONG RANGE SENSOR SCAN)
-PHA  (TO FIRE PHASERS)
-TOR  (TO FIRE PHOTON TORPEDOES)
-SHE  (TO RAISE OR LOWER SHIELDS)
-DAM  (FOR DAMAGE CONTROL REPORTS)
-COM  (TO CALL ON LIBRARY-COMPUTER)
-XXX  (TO RESIGN YOUR COMMAND)
-
-Your orders :
-</div>
+<div id="inputPrompt"></div>
 <input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
+
 <input type="button" 
     value="Make it so!" 
     onclick="handleInput(this)"
