@@ -57,6 +57,7 @@ function gameOutputAppend(str)
     let textarea = document.getElementById("gameOutputBox")
     textarea.value += str + '\n';
     textarea.scrollTop = textarea.scrollHeight;
+
 }
 
 function updateMap(mapString = game.currentQuadrant.toString())
@@ -1110,7 +1111,8 @@ class Quadrant
 
         let mapString = quadrantStringGrid.toString();
 
-        return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
+        return //"<pre>" + 
+        borderStringPre + mapString + borderStringPost ;//+ "</pre>";
     }
 }
 

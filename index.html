@@ -8,9 +8,12 @@
                 font-size: 2vh;
                 display: flex;
                 flex-direction: column;
-                min-height: 100vh;
+                max-height: 90%;
+                height: 90%;
                 color:rgb(42, 197, 15);
-                margin-left: 10px;
+                margin-left: 2.5%;
+                font-family: monospace;
+                justify-content: top;
             }
         
             footer {
@@ -29,38 +32,69 @@
 <!--
     <h2 style="font-size: 2vw">Star Trek Game - Making Games By Year Episode 1</h2>
 -->
-<div id="mapstatus" style="margin-top: 20px;">
-    <div id="map" style="margin-left: 10px; display:inline-block; font-size: 2.5vmin"></div>
-    <div id="status" style="margin-left: 10px;display:inline-block; vertical-align: top; font-size: 2.5vmin"></div>
+<div id="mapstatus" style="margin-top: 2%;
+display: flex;
+">
+    <div id="map" style="margin-left: 2%; display:inline-block; font-size: 2.5vmin"></div>
+    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2.5vmin"></div>
 </div>
 
 <pre>
-<div id="gameOutput">
-<textarea readonly=true rows=10 cols="52" id="gameOutputBox" style="margin-left: 10px;font-size: 2vh; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""></textarea>
+<div id="gameOutput" 
+style="
+
+font-size: 2.5vmin;
+display: flex;
+flex-direction: column;
+height: 150px;
+"
+>   
+<textarea readonly=true  id="gameOutputBox" rows="10"
+style="
+box-sizing: border-box;
+height: 100%;
+width: 96%;   
+display: block;
+flex-direction: column;
+margin-left: 2%;
+font-size: 2.0vmin; 
+max-height: 80vh;
+font-family: monospace;
+flex: 1;
+background-color: black; color:#39FF14; border-color: #39FF14"">
+</textarea>
+
 </div>
 </pre>
 
-<div id="inputline">
+<div id="inputline"  
+style=
+"flex-direction: column;
+display: flex
+"
+>
 <pre>
-<div id="inputPrompt" style="margin-left: 10px;font-size: 2vh"></div>
-<input maxlength="3" type="text" id="gameInput" name="gameinput" style="margin-left: 10px;font-size: 2vh; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+<div id="inputPrompt" style="margin-left: 2%;font-size: 2.5vmin"></div>
+<input maxlength="3" type="text" id="gameInput" name="gameinput" style="margin-left: 2%;font-size: 2.5vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
 
 <input type="button" 
     value="Make it so!" 
     onclick="handleInput(this)"
     id="inputButton"
-    style="margin-left: 10px;font-size: 2vh;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
+    style="margin-left: 2%;font-size: 3.0vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
 </input>
 </div>
 
 </p>
+<!--
 <footer>
     Game inspired by the BASIC game <a href="https://en.wikipedia.org/wiki/Star_Trek_(1971_video_game)" >"Star Trek"</a>, originally by Mike Mayfield, 1971<br>
     Created for the <a href="https://www.youtube.com/channel/UCw4fSSvUTfZnXYmcW7tUZKg">Youtube Show</a>, "Making Games By Year", Episode 1<br>
     GitHub for the games created for the show can be found <a href="https://github.com/MakingGamesByYear/Games <br>">here.</a><br>
     <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILggGaExem7zKai5?si=4nELQYb9SK6l2JHO3_ndHw">Spotify Playlist</a> for the episode. <br>
 </footer>
+-->
 </body>
 <script>
 
@@ -104,6 +138,24 @@
             }
         }
     );
+
+
+    console.log(""+ window.innerHeight);
+    let windowHeight = window.innerHeight;
+    let topHeight = document.getElementById("mapstatus").offsetHeight;
+    let bottomHeight = document.getElementById("inputline").offsetHeight;
+
+console.log("" + topHeight);
+console.log("" + bottomHeight);
+
+    let mainHeight = windowHeight - (topHeight + bottomHeight);
+
+    mainHeight = Math.max(.8*mainHeight, .3 * windowHeight);
+
+    document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
+    //document.getElementById("gameOutput").style.minHeight = ""+(.8*mainHeight)+"px";
+
+    console.log("" + mainHeight);
 </script>
 </html>
 
