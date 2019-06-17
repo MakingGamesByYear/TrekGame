@@ -71,7 +71,7 @@ class Grid
         let rval = "";
         for ( let y = 0; y < this.height; y++)
         {
-            rval += (y+1) + '|';
+            rval += padStringToLength(""+(y+1), 2) + '|';
             for (let x = 0; x < this.width; x++)
             {
                 let catstr = this.lookup(x,y).toString();

@@ -48,7 +48,7 @@ class MainMenu extends Menu
                     }
                     else
                     {
-                        gameOutputAppend("No enemies detected in this Quadrant, captain.");
+                        gameOutputAppend("No enemies detected in this sector, captain.");
                     }
                 }
             ),

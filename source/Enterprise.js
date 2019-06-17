@@ -322,7 +322,7 @@ class Enterprise extends GameObject
                 }
                 else
                 {
-                    gameOutputAppend("Obstruction in sector " + (sectorXNext+1) + ", " + (sectorYNext+1) + " of quadrant " + (quadrantXNext+1) + ", " + (quadrantYNext+1) );
+                    gameOutputAppend("Obstruction in subsector " + (sectorXNext+1) + ", " + (sectorYNext+1) + " of sector " + (quadrantXNext+1) + ", " + (quadrantYNext+1) );
                     gameOutputAppend("Exiting warp.");
                     break;
                 }

@@ -8,9 +8,11 @@ function checkArgumentsDefinedAndHaveValue(args)
     }
 }
 
-function padStringToLength(str, len)
+function padStringToLength(str, len, padWithChar = ' ')
 {
     console.assert(str.length <= len);
+    console.assert(padWithChar.length == 1);
+
     checkArgumentsDefinedAndHaveValue(arguments);
 
     let padLength = len - str.length;
@@ -18,9 +20,9 @@ function padStringToLength(str, len)
     let pad2 = padLength - pad1;
     let padLeft = Math.max(pad1,pad2);
 
-    let leftPadStr = str.padStart(padLeft + str.length, ' ');
+    let leftPadStr = str.padStart(padLeft + str.length, padWithChar);
 
-    return leftPadStr.padEnd(len, ' ');
+    return leftPadStr.padEnd(len, padWithChar);
 }
 
 function randomInt(min, max)
@@ -101,4 +103,28 @@ function randomWithProbabilities(valueProbabilities)
         }
     }
     return cdf.length-1;
+}
+
+function mapFooter(length)
+{
+    let rval = "";
+
+    for (var x = 0; x < length; x++)
+    {
+        rval += padStringToLength(""+x, 4, '-');
+    }
+
+    return rval;
+}
+
+function mapHeader(length)
+{
+    let rval = "";
+
+    for (var x = 0; x < length; x++)
+    {
+        rval += "=---";
+    }
+
+    return rval;
 }

@@ -73,7 +73,7 @@ class TrekGame
         this.enterprise.quadrantY = qY;
         this.currentQuadrant.addEntity(this.enterprise);
 
-        gameOutputAppend("Entering galactic quadrant " + this.enterprise.quadrantString());
+        gameOutputAppend("Entering galactic sector " + this.enterprise.quadrantString());
     }
 
     statusString()
@@ -82,8 +82,8 @@ class TrekGame
         "\n\n" + 
         "STARDATE           " + this.starDate + '\n' +  
         "CONDITION          " + this.enterprise.conditionString(this) + '\n' + 
-        "QUADRANT           " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
-        "SECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
+        "SECTOR             " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
+        "SUBSECTOR          " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
         "PHOTON TORPEDOES   " + this.enterprise.torpedoes + '\n' + 
         "FREE ENERGY        " + this.enterprise.freeEnergy + '\n' + 
         "SHIELDS            " + this.enterprise.shields + '\n' + 
@@ -351,8 +351,8 @@ class TrekGame
     {
         let quad = this.currentQuadrant;
 
-        let borderStringPost = "  -1---2---3---4---5---6---7---8--\n";
-        let borderStringPre = "  =---=---=---=---=---=---=---=---\n";
+        let borderStringPost = "   " + mapFooter(quadrantWidthSectors);
+        let borderStringPre = "   " + mapHeader(quadrantWidthSectors) + '\n';
 
         let quadrantStringGrid = new Grid(quad.width, quad.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
 
@@ -391,6 +391,7 @@ class TrekGame
 
         let mapString = quadrantStringGrid.toString();
 
+        console.log("poststring" + borderStringPost);
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
 
     }

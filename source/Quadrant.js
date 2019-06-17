@@ -260,8 +260,8 @@ class Quadrant
 
     toString()
     {
-        let borderStringPost = "  -1---2---3---4---5---6---7---8--\n";
-        let borderStringPre = "  =---=---=---=---=---=---=---=---\n";
+        let borderStringPost = "   " + mapFooter(quadrantWidthSectors) + '\n';
+        let borderStringPre = "   " + mapHeader(quadrantWidthSectors); 
 
         let quadrantStringGrid = new Grid(this.width, this.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
 
