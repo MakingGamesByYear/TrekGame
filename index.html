@@ -74,7 +74,7 @@ display: flex
 "
 >
 <pre>
-<div id="inputPrompt" style="margin-left: 2%;font-size: 2.5vmin"></div>
+<div id="inputPrompt" style="margin-left: 2%;font-size: 2vmin"></div> <!-- was 3, button also-->
 <input maxlength="3" type="text" id="gameInput" name="gameinput" style="margin-left: 2%;font-size: 2.5vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
 
@@ -82,7 +82,7 @@ display: flex
     value="Make it so!" 
     onclick="handleInput(this)"
     id="inputButton"
-    style="margin-left: 2%;font-size: 3.0vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
+    style="margin-left: 2%;font-size: 2.0vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
 </input>
 </div>
 
@@ -123,8 +123,6 @@ display: flex
         gameOutputAppend("Welcome back, captain!");
     }
 
-    //localStorage.clear();
-
     let inputBox =  document.getElementById("gameInput");
 
     // set up a listener on the input box to map the enter key to being the same as clicking the submit button
@@ -139,23 +137,30 @@ display: flex
         }
     );
 
-
     console.log(""+ window.innerHeight);
     let windowHeight = window.innerHeight;
     let topHeight = document.getElementById("mapstatus").offsetHeight;
     let bottomHeight = document.getElementById("inputline").offsetHeight;
 
-console.log("" + topHeight);
-console.log("" + bottomHeight);
-
     let mainHeight = windowHeight - (topHeight + bottomHeight);
 
-    mainHeight = Math.max(.8*mainHeight, .3 * windowHeight);
-
-    document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
-    //document.getElementById("gameOutput").style.minHeight = ""+(.8*mainHeight)+"px";
-
     console.log("" + mainHeight);
+
+    function onResize() 
+    {
+        console.log("RESIZE");
+        let windowHeight = window.innerHeight;
+        let mainHeight = windowHeight - (topHeight + bottomHeight);
+
+         mainHeight = Math.max(.65*mainHeight, .15 * windowHeight);
+
+        // really just set a default height here, in the css.  then get the difference with the whole document.
+        document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
+    }
+
+    window.onresize = onResize;
+
+    onResize();
 </script>
 </html>
 
