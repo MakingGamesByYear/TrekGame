@@ -4,20 +4,14 @@
 
         <!-- flexbox footer formatting : solution from https://medium.com/@paynoattn/flexbox-sticky-footer-d19dab50c34 -->
         <style>
-            body {
+            html,body 
+            {
                 font-size: 2vh;
-                display: flex;
-                flex-direction: column;
-                max-height: 90%;
-                height: 90%;
                 color:rgb(42, 197, 15);
                 margin-left: 2.5%;
                 font-family: monospace;
                 justify-content: top;
-            }
-        
-            footer {
-                margin: auto auto 0 auto;
+                height: 100%;
             }
         </style>
 
@@ -29,50 +23,29 @@
 
 <script src="trekgame.js"></script>
 
-<!--
-    <h2 style="font-size: 2vw">Star Trek Game - Making Games By Year Episode 1</h2>
--->
-<div id="mapstatus" style="margin-top: 2%;
-display: flex;
-">
+<div id="mapstatus">
     <div id="map" style="margin-left: 2%; display:inline-block; font-size: 2.0vmin"></div>
     <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2.0vmin"></div>
 </div>
 
+<div id="gameOutput" style="font-size: 2.5vmin;margin-left: 2%; margin-top: 0px;">   
 <pre>
-<div id="gameOutput" 
+<textarea 
+readonly=true  
+id="gameOutputBox" 
+rows="10"
 style="
-
-font-size: 2.5vmin;
-display: flex;
-flex-direction: column;
-height: 150px;
-"
->   
-<textarea readonly=true  id="gameOutputBox" rows="10"
-style="
-box-sizing: border-box;
-height: 100%;
-width: 96%;   
-display: block;
-flex-direction: column;
-margin-left: 2%;
+resize: none;
+height: 90%;
+width: 96%;
+padding: 0px;
 font-size: 2.0vmin; 
-max-height: 80vh;
 font-family: monospace;
-flex: 1;
 background-color: black; color:#39FF14; border-color: #39FF14"">
 </textarea>
-
-</div>
 </pre>
-
-<div id="inputline"  
-style=
-"flex-direction: column;
-display: flex
-"
->
+</div>
+<div id="inputline">
 <pre>
 <div id="inputPrompt" style="margin-left: 2%;font-size: 2vmin"></div> <!-- was 3, button also-->
 <input maxlength="3" type="text" id="gameInput" name="gameinput" style="margin-left: 2%;font-size: 2.5vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
@@ -87,14 +60,7 @@ display: flex
 </div>
 
 </p>
-<!--
-<footer>
-    Game inspired by the BASIC game <a href="https://en.wikipedia.org/wiki/Star_Trek_(1971_video_game)" >"Star Trek"</a>, originally by Mike Mayfield, 1971<br>
-    Created for the <a href="https://www.youtube.com/channel/UCw4fSSvUTfZnXYmcW7tUZKg">Youtube Show</a>, "Making Games By Year", Episode 1<br>
-    GitHub for the games created for the show can be found <a href="https://github.com/MakingGamesByYear/Games <br>">here.</a><br>
-    <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILggGaExem7zKai5?si=4nELQYb9SK6l2JHO3_ndHw">Spotify Playlist</a> for the episode. <br>
-</footer>
--->
+
 </body>
 <script>
 
@@ -148,14 +114,21 @@ display: flex
 
     function onResize() 
     {
-        console.log("RESIZE");
-        let windowHeight = window.innerHeight;
+
+        let topHeight = document.getElementById("mapstatus").offsetHeight;
+        let bottomHeight = document.getElementById("inputline").offsetHeight;
+
+        //console.log("RESIZE");
+        let windowHeight = document.documentElement.clientHeight;//window.screen.height;//window.innerHeight;
         let mainHeight = windowHeight - (topHeight + bottomHeight);
 
-         mainHeight = Math.max(.6*mainHeight, .15 * windowHeight);
+        mainHeight = Math.max(.85*mainHeight, .15 * windowHeight);
+
+        console.log("" + windowHeight + " " + topHeight + " " + bottomHeight + " " + mainHeight);
 
         // really just set a default height here, in the css.  then get the difference with the whole document.
         document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
+        document.getElementById("gameOutputBox").style.height = ""+(mainHeight)+"px";
     }
 
     window.onresize = onResize;

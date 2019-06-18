@@ -391,7 +391,6 @@ class TrekGame
 
         let mapString = quadrantStringGrid.toString();
 
-        console.log("poststring" + borderStringPost);
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
 
     }
