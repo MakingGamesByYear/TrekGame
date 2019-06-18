@@ -35,8 +35,8 @@
 <div id="mapstatus" style="margin-top: 2%;
 display: flex;
 ">
-    <div id="map" style="margin-left: 2%; display:inline-block; font-size: 2.5vmin"></div>
-    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2.5vmin"></div>
+    <div id="map" style="margin-left: 2%; display:inline-block; font-size: 2.0vmin"></div>
+    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2.0vmin"></div>
 </div>
 
 <pre>
@@ -137,14 +137,14 @@ display: flex
         }
     );
 
-    console.log(""+ window.innerHeight);
+    // console.log(""+ window.innerHeight);
     let windowHeight = window.innerHeight;
     let topHeight = document.getElementById("mapstatus").offsetHeight;
     let bottomHeight = document.getElementById("inputline").offsetHeight;
 
     let mainHeight = windowHeight - (topHeight + bottomHeight);
 
-    console.log("" + mainHeight);
+    // console.log("" + mainHeight);
 
     function onResize() 
     {
@@ -152,7 +152,7 @@ display: flex
         let windowHeight = window.innerHeight;
         let mainHeight = windowHeight - (topHeight + bottomHeight);
 
-         mainHeight = Math.max(.65*mainHeight, .15 * windowHeight);
+         mainHeight = Math.max(.6*mainHeight, .15 * windowHeight);
 
         // really just set a default height here, in the css.  then get the difference with the whole document.
         document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
