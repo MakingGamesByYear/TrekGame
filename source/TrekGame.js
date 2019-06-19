@@ -63,6 +63,30 @@ class TrekGame
         updateMap(this.updateMapScreen());
 
         autosave(this);
+
+        this.printStory();
+    }
+
+    printStory()
+    {
+        var storyString = "The stardate is " + this.starDate + ".\n\nYou are the captain of the USS Enterprise.  " +
+        "You have received word from Starfleet command of a plot by Klingon spies to destroy all the Federation " +
+        "starbases in the region so the Klingon Empire can assume control.\n\n";
+
+        storyString += 
+        "The Federation is in danger and you are the only ship in range.\n\n"
+
+        storyString+= 
+        "Your mission is to hunt down and destroy the " + Klingon.Instances + " Klingon warships in the region.\n" + 
+        "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
+        " stardates to succeed.";
+
+        storyString += 
+        "\n\nThere are " + StarBase.Instances + " Federation Starbases in the region for refueling, restocking torpedoes, and repairs.";
+
+        storyString += "\n\nGood luck, galactic peace is in your hands!";
+
+        gameOutputAppend(storyString);
     }
 
     changeToQuadrant(qX, qY)
