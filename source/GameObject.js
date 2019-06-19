@@ -16,6 +16,26 @@ class GameObject
         className.Instances++;
     }
 
+    angleToObject(obj2)
+    {
+        console.log("this subsector " + this.sectorString());
+        console.log("target subsector " + obj2.sectorString());
+
+        let xdiff = obj2.sectorX - this.sectorX;
+        let ydiff = obj2.sectorY - this.sectorY;
+
+        let radians = Math.atan2(ydiff, xdiff);
+
+        let degrees = radians * 180.0 / Math.PI;
+
+        if (degrees < 0.0)
+        {
+            degrees = 360.0 + degrees;
+        }
+
+        return 360.0 - degrees;
+    }
+
     distanceToObject(obj2)
     {
         // assumes objects are in the same quadrant, for now

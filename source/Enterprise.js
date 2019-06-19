@@ -352,3 +352,6 @@ Enterprise.SRSMaxChanceCorrupt = .75;       // For a particular sector on the ma
 Enterprise.EnergyCostPerSector = 1.0;       // Warp cost per sector moved
 Enterprise.DamagePassthroughRatio = .25;    // if damage is 25% of shields or more, pass damage through to components
 Enterprise.RandomPassthroughRatio = .25;    // 25% chance that damage will pass through to ship components regardless of shields
+
+Enterprise.torpedoTubesDamagedThreshold = .5; // 50% health = automatic targeting is down.
+Enterprise.torpedoTubesDisabledThreshold = .25; // 25% health = can't fire torpedoes.

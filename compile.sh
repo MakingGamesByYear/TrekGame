@@ -27,6 +27,7 @@ IncludeSource Quadrant.js
 IncludeSource GalaxyMap.js
 IncludeSource Menu.js
 IncludeSource MainMenu.js
+IncludeSource TorpedoMenu.js
 IncludeSource ShipComputer.js
 IncludeSource TrekGame.js
 

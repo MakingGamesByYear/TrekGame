@@ -279,6 +279,7 @@ class TrekGame
 
     handleInput(inputStr)
     {
+        gameOutputAppend("\n> "+inputStr+"\n");
         if (this.inputHandler)
         {
             if (this.inputHandler(inputStr))
@@ -297,7 +298,7 @@ class TrekGame
 
     gameInput(inputStr)
     {
-        console.log(inputStr);
+        //console.log(">"+inputStr+"\n");
         //gameOutputAppend(inputStr);
 
         this.handleInput(inputStr);

@@ -111,7 +111,8 @@ function mapFooter(length)
 
     for (var x = 0; x < length; x++)
     {
-        rval += padStringToLength(""+(x+1), 4, '-');
+        rval += "=";
+        rval += padStringToLength(""+(x+1), 3, '-');
     }
 
     return rval;

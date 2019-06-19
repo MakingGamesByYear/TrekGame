@@ -124,7 +124,7 @@ background-color: black; color:#39FF14; border-color: #39FF14"">
 
         mainHeight = Math.max(.8*mainHeight, .15 * windowHeight);
 
-        console.log("" + windowHeight + " " + topHeight + " " + bottomHeight + " " + mainHeight);
+        //console.log("" + windowHeight + " " + topHeight + " " + bottomHeight + " " + mainHeight);
 
         // really just set a default height here, in the css.  then get the difference with the whole document.
         document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
@@ -134,6 +134,7 @@ background-color: black; color:#39FF14; border-color: #39FF14"">
     window.onresize = onResize;
 
     onResize();
+    
 </script>
 </html>
 

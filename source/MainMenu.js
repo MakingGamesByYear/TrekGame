@@ -61,14 +61,28 @@ class MainMenu extends Menu
                 function()
                 {
                     gameOutputAppend("Fire torpedoes");
-                    if (trekgame.enterprise.torpedoes > 0)
+                    if (trekgame.enterprise.torpedoes <= 0)
                     {
-                        gameOutputAppend("Enter torpedo heading (in degrees)");
+                        gameOutputAppend("We're out of torpedoes, captain!");
+                    }
+                    else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDamagedThreshold)
+                    {
+                        // automatic targeting enabled. push a menu of targets.
+                        console.log("auto targeting path");
+
+                        let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame.enterprise);
+
+                        trekgame.awaitInput(torpMenu.toString(), 1, torpMenu.chooseOption);
+                    }
+                    else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
+                    {
+                        gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.");
+                        gameOutputAppend("Enter torpedo heading manually (in degrees).");
                         trekgame.awaitInput("Torpedo Heading (degrees)", 3, trekgame.torpedoHandler);
                     }
                     else
                     {
-                        gameOutputAppend("We're out of torpedoes, captain!");
+                        gameOutputAppend("Torpedo tubes too damaged to fire!");
                     }
                 }
             ),
