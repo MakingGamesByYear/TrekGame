@@ -70,9 +70,9 @@ class MainMenu extends Menu
                         // automatic targeting enabled. push a menu of targets.
                         console.log("auto targeting path");
 
-                        let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame.enterprise);
+                        let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame);
 
-                        trekgame.awaitInput(torpMenu.toString(), 1, torpMenu.chooseOption);
+                        trekgame.awaitInput(torpMenu.toString(), 1, function(inputline){torpMenu.chooseOption(inputline);});
                     }
                     else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
                     {

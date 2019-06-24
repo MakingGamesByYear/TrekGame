@@ -2,7 +2,7 @@ class MenuOption
 {
     constructor(option, separator, description, payload)
     {
-        this.option = option;
+        this.option = option.toString();
         this.separator = separator;
         this.description = description;
         this.payload = payload;
