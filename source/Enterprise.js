@@ -58,6 +58,25 @@ class Enterprise extends GameObject
         return this.hitNoShields;
     }
 
+    // suggested minimum shield level for the current battlefield, to survive at least one round of enemy fire
+    suggestedMinShieldLevel(enemyList)
+    {
+        let possibleDamageSum = 0.0;
+
+        for (var x in enemyList)
+        {
+            possibleDamageSum += enemyList[x].maxPhaserDamage();
+        }
+
+        return possibleDamageSum;
+    }
+
+    // is it possible for a single round of enemy fire to destroy the enterprise?
+    isShieldLevelCritical(enemyList)
+    {
+        return this.shields < this.suggestedShieldLevel(enemyList);
+    }
+
     warpEnergyCost(numSectors)
     {
         return Enterprise.EnergyCostPerSector * numSectors;

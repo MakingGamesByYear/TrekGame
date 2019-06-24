@@ -54,6 +54,7 @@ class TrekGame
 
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
+        this.starDateBegin = this.starDate;
         this.endStarDate = this.starDate + TrekGame.BaseMissionTime + randomInt(0, TrekGame.MissionTimeSpread);
 
         this.createMenus();
@@ -65,6 +66,22 @@ class TrekGame
         autosave(this);
 
         this.printStory();
+    }
+
+    generateScore(gameWon)
+    {
+        let baseScore = 1000 * (Klingon.InstancesDestroyed / (this.starDate - this.starDateBegin));
+        let winMultiplier = 2.0;
+
+        return gameWon ? winMultiplier * baseScore : baseScore;
+    }
+
+    destroyKlingon(k)
+    {
+        gameOutputAppend("Klingon Fighter Destroyed");
+        this.currentQuadrant.removeEntity(k);
+        Klingon.Instances--;
+        Klingon.InstancesDestroyed++;
     }
 
     printStory()
@@ -319,7 +336,7 @@ class TrekGame
     {
         this.gameOver = true;
         autosave(null);
-        gameOutputAppend("Thanks for playing!  Refresh the page to play again.");
+        gameOutputAppend("\nThanks for playing!  Refresh the page to play again.");
         this.disableInput();
     }
 
@@ -333,12 +350,16 @@ class TrekGame
             gameOutputAppend("The Klingons were able to execute their plan to destroy the Federation starbases!");
             gameOutputAppend("You'll be demoted for sure!");
 
+            gameOutputAppend("\nFinal Score : " + this.generateScore(false));
+
             this.endGame();
         }
         else if (this.enterprise.isStranded())
         {
             gameOutputAppend("You have insufficient energy to power the warp engines!");
             gameOutputAppend("You are stranded, causing you to ultimately fail your mission.");
+
+            gameOutputAppend("\nFinal Score : " + this.generateScore(false));
             
             this.endGame();
         }
@@ -347,12 +368,16 @@ class TrekGame
             gameOutputAppend("Your vessel has taken too much damage and has been destroyed.");
             gameOutputAppend("Your mission is failed.");
 
+            gameOutputAppend("\nFinal Score : " + this.generateScore(false));
+
             this.endGame();
         }
         else if (!StarBase.Instances)
         {
             gameOutputAppend("All the Federation starbases have been destroyed!");
             gameOutputAppend("You've failed in your mission.  The Federation is doomed.");
+
+            gameOutputAppend("\nFinal Score : " + this.generateScore(false));
 
             this.endGame();
         }
@@ -361,6 +386,8 @@ class TrekGame
             gameOutputAppend("You've managed to destroy all the enemy vessels, preventing the enemy from executing their plan!");
             gameOutputAppend("You're sure to get a promotion!");
             gameOutputAppend("Congratulations on your victory!");
+
+            gameOutputAppend("\nFinal Score : " + this.generateScore(true));
             
             this.endGame();
         }

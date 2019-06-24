@@ -10,10 +10,8 @@ class Klingon extends GameObject
     {
         console.log("hit a klingon");
         gameOutputAppend("\nReport from sector " + this.sectorString());
-        gameOutputAppend("Klingon Fighter Destroyed");
-
-        game.currentQuadrant.removeEntity(this);
-        Klingon.Instances--;
+        
+        game.destroyKlingon(this);
     }
 
     onPhaserHit(energy, game)
@@ -34,9 +32,7 @@ class Klingon extends GameObject
 
             if (this.shields <= 0)
             {
-                gameOutputAppend("Klingon Fighter Destroyed");
-                game.currentQuadrant.removeEntity(this);
-                Klingon.Instances--;
+                game.destroyKlingon(this);
             }
             else
             {
@@ -45,14 +41,29 @@ class Klingon extends GameObject
         }
     }
 
-    firePhasers(target, game)
+    phaserDamageBase()
     {
         let energyToFire = this.shields;
         let dist = this.distanceToObject(target);
-        let phaserDamage = Math.round((energyToFire / dist) * randomInt(2, 3));
+        return Math.round(energyToFire / dist);
+    }
+
+    firePhasers(target, game)
+    {
+        let phaserDamage = this.phaserDamageBase() * randomInt(Klingon.MinPhaserMultiplier, Klingon.MaxPhaserMultiplier);
 
         gameOutputAppend("Hit from sector " + this.sectorString() + " for " + phaserDamage + " units");
         target.onPhaserHit(phaserDamage, game);
+    }
+
+    minPhaserDamage()
+    {
+        return Klingon.MinPhaserMultiplier * this.phaserDamageBase();
+    }
+    
+    maxPhaserDamage()
+    {
+        return Klingon.MaxPhaserMultiplier * this.phaserDamageBase();
     }
 
     toString()
@@ -87,3 +98,6 @@ class Klingon extends GameObject
 }
 
 Klingon.shieldDeflectionPercent = .15;
+Klingon.InstancesDestroyed = 0;
+Klingon.MaxPhaserMultiplier = 3;
+Klingon.MinPhaserMultiplier = 2;
