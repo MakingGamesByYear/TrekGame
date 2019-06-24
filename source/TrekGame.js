@@ -104,14 +104,14 @@ class TrekGame
     {
         return "<pre>" +
         "\n\n" + 
-        "SECTOR              " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
-        "SUBSECTOR           " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
-        "PHOTON TORPEDOES    " + this.enterprise.torpedoes + '\n' + 
-        "FREE ENERGY         " + this.enterprise.freeEnergy + '\n' + 
-        "SHIELDS             " + this.enterprise.shields + '\n' + 
-        "KLINGONS REMAINING  " + Klingon.Instances + '\n' + 
-        "STARBASES REMAINING " + StarBase.Instances + '\n' +
-        "STARDATES REMAINING " + (this.endStarDate - this.starDate) +'\n' +
+        "STARDATES REMAINING   " + (this.endStarDate - this.starDate) +"\n" +
+        "SECTOR                " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
+        "SUBSECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + "\n" + 
+        "PHOTON TORPEDOES      " + this.enterprise.torpedoes + '\n' + 
+        "SHIELD ENERGY         " + this.enterprise.shields + '\n' + 
+        "FREE ENERGY           " + this.enterprise.freeEnergy + '\n' + 
+        "KLINGONS REMAINING    " + Klingon.Instances + '\n' + 
+        "STARBASES REMAINING   " + StarBase.Instances + '\n' +
         "</pre>";
     }
 
