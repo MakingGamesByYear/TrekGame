@@ -12,6 +12,8 @@
                 font-family: monospace;
                 justify-content: top;
                 height: 100%;
+                #overflow-y: hidden; // hide vertical
+                #overflow-x: hidden; // hide horizontal
             }
         </style>
 
@@ -24,7 +26,7 @@
 <script src="trekgame.js"></script>
 
 <div id="mapstatus">
-    <div id="map2" style="margin-left: 2%; display:inline-block; font-size: 2.0vmin">
+    <div id="map2" style="margin-left: 2%; display:inline-block; font-size: 2vmin">
 <div id="quadrant" style=" text-align: center;">
 SECTOR 4,5
 </div>
@@ -36,10 +38,10 @@ SHIELDS CRITICAL | RED ALERT
 </pre>
         </div>
     </div>
-    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2.0vmin"></div>
+    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2vmin"></div>
 </div>
 
-<div id="gameOutput" style="font-size: 2.5vmin;margin-left: 2%; margin-top: 0px;">   
+<div id="gameOutput" style="font-size: 2vmin;margin-left: 2%; margin-top: 0px;">   
 <pre>
 <textarea 
 readonly=true  
@@ -50,7 +52,7 @@ resize: none;
 height: 90%;
 width: 96%;
 padding: 0px;
-font-size: 2.0vmin; 
+font-size: 2vmin; 
 font-family: monospace;
 background-color: black; color:#39FF14; border-color: #39FF14"">
 </textarea>
@@ -58,26 +60,26 @@ background-color: black; color:#39FF14; border-color: #39FF14"">
 </div>
 
 
-<div id="bottomOfScreenLeft" style="display:inline-block; vertical-align: top; margin-left: 2%">
+<div id="bottomOfScreenLeft" style="display:inline-block; vertical-align: top; margin-left: 2%; font-size: 2vmin">
 
 <div id="inputline">
 <pre>
 <div id="inputPrompt" style="font-size: 2vmin"></div> <!-- was 3, button also-->
-<input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-size: 2.5vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+<input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-size: 2vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
 </pre>
 
 <input type="button" 
     value="Make it so!" 
     onclick="handleInput(this)"
     id="inputButton"
-    style="font-size: 2.0vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
+    style="font-size: 2vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
 </input>
 </div>
 
 </div> <!-- bottom left -->
 
 
-<div id="bottomOfScreenRight" style="display:inline-block; vertical-align: middle; margin-left: 5%; font-size: 2.0vmin; ">
+<div id="bottomOfScreenRight" style="display:inline-block; vertical-align: middle; margin-left: 5%; font-size: 2vmin ">
 <pre>
 
 KEY:

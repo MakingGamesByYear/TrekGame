@@ -120,7 +120,7 @@ class TrekGame
     statusString()
     {
         return "<pre>" +
-        "\n\n" + 
+        "\n\n\n" + 
         "STARDATES REMAINING   " + (this.endStarDate - this.starDate) +"\n" +
         "SECTOR                " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
         "SUBSECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + "\n" + 
