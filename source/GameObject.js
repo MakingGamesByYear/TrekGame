@@ -98,6 +98,13 @@ class GameObject
         return "" + (this.quadrantX+1) + ", " + (this.quadrantY+1);
     }
 
+    sectorStringFractional()
+    {
+        let sectorXFractional = (this.quadrantX+1) + (this.sectorX / quadrantWidthSectors);
+        let sectorYFractional = (this.quadrantY+1) + (this.sectorY / quadrantHeightSectors);
+        return "("+sectorXFractional+","+sectorYFractional+")";
+    }
+
     static minInstancesGame()
     {
         return 0;

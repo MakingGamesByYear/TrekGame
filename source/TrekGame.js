@@ -104,14 +104,14 @@ class TrekGame
     {
         return "<pre>" +
         "\n\n" + 
-        "STARDATE           " + this.starDate + '\n' +  
-        "CONDITION          " + this.enterprise.conditionString(this) + '\n' + 
-        "SECTOR             " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
-        "SUBSECTOR          " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
-        "PHOTON TORPEDOES   " + this.enterprise.torpedoes + '\n' + 
-        "FREE ENERGY        " + this.enterprise.freeEnergy + '\n' + 
-        "SHIELDS            " + this.enterprise.shields + '\n' + 
-        "KLINGONS REMAINING " + Klingon.Instances + '\n' + 
+        "SECTOR              " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
+        "SUBSECTOR           " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
+        "PHOTON TORPEDOES    " + this.enterprise.torpedoes + '\n' + 
+        "FREE ENERGY         " + this.enterprise.freeEnergy + '\n' + 
+        "SHIELDS             " + this.enterprise.shields + '\n' + 
+        "KLINGONS REMAINING  " + Klingon.Instances + '\n' + 
+        "STARBASES REMAINING " + StarBase.Instances + '\n' +
+        "STARDATES REMAINING " + (this.endStarDate - this.starDate) +'\n' +
         "</pre>";
     }
 
