@@ -49,6 +49,16 @@ function updateMap(mapString = game.currentQuadrant.toString())
     document.getElementById("map").innerHTML = mapString;
 }
 
+function updateMapHeader(str)
+{
+    document.getElementById("mapHeaderQuadrant").innerHTML = "<pre>"+str+"</pre>";
+}
+
+function updateMapFooter(str)
+{
+    document.getElementById("statusflags").innerHTML = "<pre>"+str+"</pre>";
+}
+
 function autosave(game)
 {
     //console.log("autosave func");

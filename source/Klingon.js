@@ -41,16 +41,16 @@ class Klingon extends GameObject
         }
     }
 
-    phaserDamageBase()
+    phaserDamageBase(dist)
     {
         let energyToFire = this.shields;
-        let dist = this.distanceToObject(target);
         return Math.round(energyToFire / dist);
     }
 
     firePhasers(target, game)
     {
-        let phaserDamage = this.phaserDamageBase() * randomInt(Klingon.MinPhaserMultiplier, Klingon.MaxPhaserMultiplier);
+        let dist = this.distanceToObject(target);
+        let phaserDamage = this.phaserDamageBase(dist) * randomInt(Klingon.MinPhaserMultiplier, Klingon.MaxPhaserMultiplier);
 
         gameOutputAppend("Hit from sector " + this.sectorString() + " for " + phaserDamage + " units");
         target.onPhaserHit(phaserDamage, game);
@@ -58,12 +58,12 @@ class Klingon extends GameObject
 
     minPhaserDamage()
     {
-        return Klingon.MinPhaserMultiplier * this.phaserDamageBase();
+        return Klingon.MinPhaserMultiplier * this.phaserDamageBase(1);
     }
     
     maxPhaserDamage()
     {
-        return Klingon.MaxPhaserMultiplier * this.phaserDamageBase();
+        return Klingon.MaxPhaserMultiplier * this.phaserDamageBase(1);
     }
 
     toString()

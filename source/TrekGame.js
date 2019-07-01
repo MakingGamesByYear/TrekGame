@@ -22,8 +22,7 @@ class TrekGame
 
             gamerval.setInputPrompt(gamerval.mainMenu.toString());
 
-            gamerval.updateStatus();
-            updateMap(gamerval.updateMapScreen());
+            gamerval.updateDisplay();
             return gamerval;
         }
         catch(err)
@@ -60,8 +59,7 @@ class TrekGame
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
 
-        this.updateStatus();
-        updateMap(this.updateMapScreen());
+        this.updateDisplay();
 
         autosave(this);
 
@@ -70,7 +68,7 @@ class TrekGame
 
     generateScore(gameWon)
     {
-        let baseScore = 1000 * (Klingon.InstancesDestroyed / (this.starDate - this.starDateBegin));
+        let baseScore = 1000 * (Klingon.InstancesDestroyed / (1 + this.starDate - this.starDateBegin));
         let winMultiplier = 2.0;
 
         return gameWon ? winMultiplier * baseScore : baseScore;
@@ -321,14 +319,20 @@ class TrekGame
         this.handleInput(inputStr);
 
         this.updateGame();
+        autosave(this);
+    }
+
+    updateDisplay()
+    {
+        this.updateStatus();
+        updateMap(this.updateMapScreen());
+        updateMapHeader("SECTOR : " + this.enterprise.quadrantString());
+        updateMapFooter(this.updateStatusFlags());
     }
 
     updateGame()
     {
-        this.updateStatus();
-        updateMap(this.updateMapScreen());
-        autosave(this);
-
+        this.updateDisplay();
         this.checkEndConditions();
     }
 
@@ -397,6 +401,28 @@ class TrekGame
     {
         this.mainMenu = new MainMenu(this);
         this.computerMenu = new ShipComputerMenu(this);
+    }
+
+
+    updateStatusFlags()
+    {
+        let flags = [];
+        
+        if (this.currentQuadrant.countEntitiesOfType(Klingon))
+        {
+            flags.push("RED ALERT");
+
+            if (this.enterprise.isShieldLevelCritical(this.currentQuadrant.getEntitiesOfType(Klingon)))
+            {
+                flags.push("SHIELDS CRITICAL");
+            }
+        }
+        else
+        {
+            flags.push("SECTOR CLEAR");
+        }
+
+        return flags.join(" | ");
     }
 
     updateMapScreen()

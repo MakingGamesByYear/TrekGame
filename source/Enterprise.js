@@ -74,7 +74,7 @@ class Enterprise extends GameObject
     // is it possible for a single round of enemy fire to destroy the enterprise?
     isShieldLevelCritical(enemyList)
     {
-        return this.shields < this.suggestedShieldLevel(enemyList);
+        return this.shields < this.suggestedMinShieldLevel(enemyList);
     }
 
     warpEnergyCost(numSectors)

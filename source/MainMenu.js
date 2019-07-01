@@ -98,6 +98,15 @@ class MainMenu extends Menu
                     gameOutputAppend("Enter the new energy level for the shields.");
                     gameOutputAppend("Total available is : " + (trekgame.enterprise.freeEnergy + trekgame.enterprise.shields));
                     
+                    if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
+                    {
+                        let klingonList = trekgame.currentQuadrant.getEntitiesOfType(Klingon);
+
+                        let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
+
+                        gameOutputAppend("Based on current combat conditions, the ship's computer suggests a minimum shield energy level of " + suggestedShieldLevel);
+                    }
+
                     trekgame.awaitInput("New shield level:", 4, trekgame.shieldHandler);
                 }
             ),
