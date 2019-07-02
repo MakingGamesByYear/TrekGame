@@ -72,7 +72,7 @@ class MainMenu extends Menu
 
                         let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame);
 
-                        trekgame.awaitInput(torpMenu.toString(), 1, function(inputline){torpMenu.chooseOption(inputline);});
+                        trekgame.awaitInput(torpMenu.toString(), 1, function(inputline){return torpMenu.chooseOption(inputline);});
                     }
                     else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
                     {
@@ -118,7 +118,7 @@ class MainMenu extends Menu
                 "(TO CALL ON LIBRARY-COMPUTER)",
                 function()
                 {
-                    return trekgame.awaitInput(trekgame.computerMenu.toString(), 1, function(inputline){trekgame.computerMenu.chooseOption(inputline);});
+                    return trekgame.awaitInput(trekgame.computerMenu.toString(), 1, function(inputline){return trekgame.computerMenu.chooseOption(inputline);});
                 }
             ),
 

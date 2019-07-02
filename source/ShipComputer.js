@@ -14,6 +14,7 @@ class ShipComputerMenu extends Menu
                 "MAP / SENSOR RECORD",
                 function()
                 {
+                    return true;
                 }
             ),
 
@@ -24,8 +25,20 @@ class ShipComputerMenu extends Menu
                 "DAMAGE REPORT",
                 function()
                 {
+                    return true;
                 }
             ),
+
+            new MenuOption
+            (
+                "3",
+                ") ",
+                "BACK",
+                function()
+                {
+                    return true;
+                }
+            )
 
         );
     }

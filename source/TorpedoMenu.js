@@ -21,6 +21,7 @@ class TorpedoMenu extends Menu
                     {
                         trekgame.enterprise.fireTorpedo(trekgame, targetHeading);
                         trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
+                        return true;
                     }
                 )
             );
@@ -32,11 +33,27 @@ class TorpedoMenu extends Menu
             (
                 this.options.length + 1, 
                 ") ",
-                "Manual targeting",
+                "MANUAL TARGETING",
                 function()
                 {
                     gameOutputAppend("Enter torpedo heading manually (in degrees).");
                     trekgame.awaitInput("Torpedo Heading (degrees)", 3, trekgame.torpedoHandler);
+                    return false;
+                }
+            )
+        );
+
+        this.options.push
+        (
+            new MenuOption
+            (
+                this.options.length + 1, 
+                ") ",
+                "BACK",
+                function()
+                {
+                    console.log("back button");
+                    return true;
                 }
             )
         );

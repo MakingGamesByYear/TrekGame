@@ -33,15 +33,20 @@ class Menu
         return null;
     }
 
+    invalidOption()
+    {
+        gameOutputAppend("Come again, captain?");
+        return false;
+    }
+
     chooseOption(optionText)
     {
         var menuopt = this.getSelectedOption(optionText);
         if (menuopt)
         {
-            menuopt.payload();
-            return true;
+            return menuopt.payload();
         }
-        return false;
+        return this.invalidOption(optionText);
     }
 
     toString()

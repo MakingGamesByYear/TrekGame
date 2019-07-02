@@ -304,10 +304,7 @@ class TrekGame
         }
         else
         {
-            if (!this.mainMenu.chooseOption(inputStr))
-            {
-                gameOutputAppend("Come again, captain?")
-            }
+            this.mainMenu.chooseOption(inputStr);
         }
     }
 
