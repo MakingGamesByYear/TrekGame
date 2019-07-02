@@ -7,7 +7,6 @@ class SensorHistory extends Grid
 
     updateSensorHistory(EntityType, galaxyMap, startLocX, startLocY, endLocX, endLocY)
     {
-        console.log("updating sensory history for " + EntityType);
         for (var y = startLocY; y <= endLocY; y++)
         {
             for (var x = startLocX; x <= endLocX; x++)
@@ -32,10 +31,11 @@ class SensorHistory extends Grid
         }
     }
 
-    // long range scan
     mapString(EntityType = Klingon, gameobject = null)
     {
-        let border = "---------------------------------------------------------";
+        let border = "------";
+        border = border.repeat(mapWidthQuadrants);
+
         let rval = border + '\n';
 
         for (let y = 0; y < this.height; y++)
@@ -46,10 +46,7 @@ class SensorHistory extends Grid
                 let quadrantDict = this.lookup(x, y);
                 
                 if (quadrantDict)
-                {
-                    console.log("not null");
-                     
-                    // klingons, starbases, stars
+                {    
                     var k = "";
 
                     if (EntityType in quadrantDict)

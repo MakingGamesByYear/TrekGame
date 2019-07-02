@@ -10,6 +10,9 @@ class TrekGame
             gamerval.enterprise = Object.create(Enterprise.prototype);
             Object.assign(gamerval.enterprise, jsData.enterprise);
 
+            gamerval.enterprise.sensorHistory = new SensorHistory();// Object.create(SensorHistory);
+            Object.assign(gamerval.enterprise.sensorHistory, jsData.enterprise.sensorHistory);
+
             gamerval.galaxyMap = GalaxyMap.ConstructFromJSData(jsData.galaxyMap);
 
             // console.log("galaxy map : " + gamerval.galaxyMap);

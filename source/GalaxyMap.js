@@ -31,13 +31,14 @@ class GalaxyMap extends Grid
     // long range scan
     mapString(galaxyMap, EntityType = Klingon, gameobject = null)
     {
-        let border = "---------------------------------------------------------";
+        let border = "------";
+        border = border.repeat(mapWidthQuadrants);
         let rval = border + '\n';
 
-        for (let y = -1; y <= mapHeightQuadrants; y++)
+        for (let y = 0; y < mapHeightQuadrants; y++)
         {
             rval += "|";
-            for (let x = -1; x <= mapWidthQuadrants; x++)
+            for (let x = 0; x < mapWidthQuadrants; x++)
             {
                 let quadrant = galaxyMap.lookup(x, y);
                 
