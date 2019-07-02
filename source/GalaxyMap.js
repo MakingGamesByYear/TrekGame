@@ -28,6 +28,41 @@ class GalaxyMap extends Grid
         return rval;
     }
 
+     // long range scan
+     mapString(galaxyMap)
+     {
+         let border = "---------------------------------------------------------";
+         let rval = border + '\n';
+ 
+         for (let y = -1; y <= mapHeightQuadrants; y++)
+         {
+             rval += "|";
+             for (let x = -1; x <= mapWidthQuadrants; x++)
+             {
+                 let quadrant = galaxyMap.lookup(x, y);
+                 
+                console.log("lookup " + x + " " + y);
+
+                 if (quadrant)
+                 {
+                     console.log("not null");
+                     // klingons, starbases, stars
+                     let k = quadrant.countEntitiesOfType(Klingon);
+                     let s = quadrant.countEntitiesOfType(StarBase);
+                     let st = quadrant.countEntitiesOfType(Star);
+ 
+                     rval += " " + k + s + st + " |";
+                 }
+                 else
+                 {  console.log(" null");
+                     rval += " *** |";
+                 }
+             }
+             rval += "\n" + border + "\n";
+         }
+         return rval;
+     }
+
     createMinimumInstances(entityTypes)
     {
         var x;

@@ -14,6 +14,7 @@ class ShipComputerMenu extends Menu
                 "MAP / SENSOR RECORD",
                 function()
                 {
+                    gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap));
                     return true;
                 }
             ),

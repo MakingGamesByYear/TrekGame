@@ -19,6 +19,12 @@ class Grid
     lookup(x,y)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
+
+        if (x < 0 || x >= this.width || y < 0 || y >= this.height)
+        {
+            return null;
+        }
+
         return this.contents [y * this.width + x];
     }
 
