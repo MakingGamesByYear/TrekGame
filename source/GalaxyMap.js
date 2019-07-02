@@ -28,31 +28,37 @@ class GalaxyMap extends Grid
         return rval;
     }
 
-     // long range scan
-     mapString(galaxyMap)
-     {
-         let border = "---------------------------------------------------------";
-         let rval = border + '\n';
- 
-         for (let y = -1; y <= mapHeightQuadrants; y++)
-         {
-             rval += "|";
-             for (let x = -1; x <= mapWidthQuadrants; x++)
-             {
-                 let quadrant = galaxyMap.lookup(x, y);
-                 
-                console.log("lookup " + x + " " + y);
+    // long range scan
+    mapString(galaxyMap, EntityType = Klingon, gameobject = null)
+    {
+        let border = "---------------------------------------------------------";
+        let rval = border + '\n';
 
-                 if (quadrant)
-                 {
-                     console.log("not null");
-                     // klingons, starbases, stars
-                     let k = quadrant.countEntitiesOfType(Klingon);
-                     let s = quadrant.countEntitiesOfType(StarBase);
-                     let st = quadrant.countEntitiesOfType(Star);
- 
-                     rval += " " + k + s + st + " |";
-                 }
+        for (let y = -1; y <= mapHeightQuadrants; y++)
+        {
+            rval += "|";
+            for (let x = -1; x <= mapWidthQuadrants; x++)
+            {
+                let quadrant = galaxyMap.lookup(x, y);
+                
+                if (quadrant)
+                {
+                    console.log("not null");
+                     
+                    // klingons, starbases, stars
+                    let k = quadrant.countEntitiesOfType(EntityType);
+
+                    if (gameobject)
+                    {
+                        if (gameobject.quadrantX == x && gameobject.quadrantY == y)
+                        {
+                            // put an "E" on the map for the enterprise's current location
+                            k += 'E';
+                        }
+                    }
+
+                    rval += " " + padStringToLength(""+k, 3, ' ') + " |";
+                }
                  else
                  {  console.log(" null");
                      rval += " *** |";

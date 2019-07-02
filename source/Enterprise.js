@@ -45,6 +45,7 @@ class Enterprise extends GameObject
 
         this.hitNoShields = false;
         this.docked = false;
+        this.sensorHistory = new SensorHistory();
     }
 
     // is our total energy less than the minimum energy cost to get anywhere?

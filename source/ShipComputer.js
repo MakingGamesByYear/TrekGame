@@ -11,18 +11,6 @@ class ShipComputerMenu extends Menu
             (
                 "1",
                 ") ",
-                "MAP / SENSOR RECORD",
-                function()
-                {
-                    gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap));
-                    return true;
-                }
-            ),
-
-            new MenuOption
-            (
-                "2",
-                ") ",
                 "DAMAGE REPORT",
                 function()
                 {
@@ -32,7 +20,45 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
+                "2",
+                ") ",
+                "STARBASE MAP",
+                function()
+                {
+                    gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap, StarBase, trekGame.enterprise));
+                    return true;
+                }
+            ),
+
+            new MenuOption
+            (
                 "3",
+                ") ",
+                "KLINGONS MAP",
+                function()
+                {
+                    gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Klingon, trekGame.enterprise));
+                    return true;
+                }
+            ),
+
+            new MenuOption
+            (
+                "4",
+                ") ",
+                "STAR DENSITY MAP",
+                function()
+                {
+                    gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Star, trekGame.enterprise));
+                    return true;
+                }
+            ),
+
+
+
+            new MenuOption
+            (
+                "5",
                 ") ",
                 "BACK",
                 function()

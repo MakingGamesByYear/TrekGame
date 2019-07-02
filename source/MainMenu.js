@@ -29,6 +29,17 @@ class MainMenu extends Menu
                 {
                     gameOutputAppend("Long Range Scan");
                     gameOutputAppend(trekgame.enterprise.lrsString(trekgame.galaxyMap));
+
+                    var sh = trekgame.enterprise.sensorHistory;
+                    sh.updateSensorHistoryForEntityTypes
+                    (
+                        [Star, Klingon], 
+                        trekgame.galaxyMap, 
+                        trekgame.enterprise.quadrantX-1, 
+                        trekgame.enterprise.quadrantY-1, 
+                        trekgame.enterprise.quadrantX+1, 
+                        trekgame.enterprise.quadrantY+1
+                    );
                 }
             ),
 
