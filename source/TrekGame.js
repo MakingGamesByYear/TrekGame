@@ -71,7 +71,7 @@ class TrekGame
         let baseScore = 1000 * (Klingon.InstancesDestroyed / (1 + this.starDate - this.starDateBegin));
         let winMultiplier = 2.0;
 
-        return gameWon ? winMultiplier * baseScore : baseScore;
+        return gameWon ? Math.round(winMultiplier * baseScore) : Math.round(baseScore);
     }
 
     destroyKlingon(k)
@@ -200,6 +200,8 @@ class TrekGame
         this.enterprise.warp(sectorsToTravel, angle, this);
 
         this.currentQuadrant.klingonsFire(this.enterprise, this);
+
+        this.starDate += 1.0;
 
         return true;
     }
