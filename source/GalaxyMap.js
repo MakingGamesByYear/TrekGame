@@ -3,7 +3,7 @@ class GalaxyMap extends Grid
     constructor(quadrantsX, quadrantsY, entityTypes)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
-        super(quadrantsX, quadrantsY, function(){return new Quadrant(quadrantWidthSectors,quadrantHeightSectors)});
+        super(quadrantsX, quadrantsY, function(x, y){return new Quadrant(quadrantWidthSectors,quadrantHeightSectors, x, y)});
 
         this.createMinimumInstances(entityTypes, quadrantsX, quadrantsY);
 

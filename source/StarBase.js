@@ -3,6 +3,7 @@ class StarBase extends GameObject
     constructor()
     {
         super(StarBase);
+        StarBase.starbaseList.push(this);
     }
 
     onTorpedoHit(game)
@@ -36,3 +37,5 @@ class StarBase extends GameObject
         return [.95, .05];
     }
 }
+
+StarBase.starbaseList = [];

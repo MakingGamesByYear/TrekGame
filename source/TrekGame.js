@@ -63,12 +63,33 @@ class TrekGame
         this.setInputPrompt(this.mainMenu.toString());
 
         this.updateDisplay();
+        this.starbasesScan();
+        this.enterpriseShortRangeScan();
 
         autosave(this);
 
         this.printStory();
     }
 
+    starbasesScan()
+    {
+        var sh = this.enterprise.sensorHistory;
+
+        for (var x in StarBase.starbaseList)
+        {
+            let starbase = StarBase.starbaseList[x];
+            sh.updateSensorHistoryForEntityTypes
+            (
+                [Star, Klingon], 
+                this.galaxyMap, 
+                starbase.quadrantX-1, 
+                starbase.quadrantY-1, 
+                starbase.quadrantX+1, 
+                starbase.quadrantY+1
+            );
+        }
+    }
+    
     generateScore(gameWon)
     {
         let baseScore = 1000 * (Klingon.InstancesDestroyed / (1 + this.starDate - this.starDateBegin));
@@ -336,6 +357,21 @@ class TrekGame
     {
         this.updateDisplay();
         this.checkEndConditions();
+        this.starbasesScan();
+        this.enterpriseShortRangeScan();
+    }
+
+    enterpriseShortRangeScan()
+    {
+        this.enterprise.sensorHistory.updateSensorHistoryForEntityTypes
+            (
+                [Star, Klingon], 
+                this.galaxyMap, 
+                this.enterprise.quadrantX, 
+                this.enterprise.quadrantY, 
+                this.enterprise.quadrantX, 
+                this.enterprise.quadrantY
+            );
     }
 
     endGame()

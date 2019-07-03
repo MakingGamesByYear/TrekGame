@@ -1,11 +1,13 @@
 class Quadrant
 {
-    constructor(widthSectorsIn, heightSectorsIn)
+    constructor(widthSectorsIn, heightSectorsIn, x, y)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
         this.width = widthSectorsIn;
         this.height = heightSectorsIn;
         this.quadrantEntities = new Array();
+        this.x = x;
+        this.y = y;
     }
 
     populateFromJSData(entitiesQuadrantJS)
@@ -198,19 +200,25 @@ class Quadrant
 
             for (let i =0; i < numEntities; i++ )
             {
-                this.addEntityInFreeSector(new entityType());
+                var ent = new entityType();
+                this.addEntityInFreeSector(ent);
             }
         }
     }
 
     addEntityInFreeSector(entity)
     {
+        entity.quadrantX = this.x;
+        entity.quadrantY = this.y;
         entity.setLocationSector(this.getEmptySquare());
         this.quadrantEntities.push(entity);
     }
 
     addEntity(entity)
     {
+        entity.quadrantX = this.x;
+        entity.quadrantY = this.y;
+
         this.quadrantEntities.push(entity);
     }
 

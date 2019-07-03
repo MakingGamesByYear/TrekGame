@@ -224,8 +224,7 @@ class Enterprise extends GameObject
         }
     }
 
-    // long range scan
-    lrsString(galaxyMap)
+    lrsStringEntityType(galaxyMap, entityType)
     {
         let border = "-------------------";
         let rval = border + '\n';
@@ -238,12 +237,9 @@ class Enterprise extends GameObject
                 let quadrant = galaxyMap.lookup(x, y);
                 if (quadrant)
                 {
-                    // klingons, starbases, stars
-                    let k = quadrant.countEntitiesOfType(Klingon);
-                    let s = quadrant.countEntitiesOfType(StarBase);
-                    let st = quadrant.countEntitiesOfType(Star);
+                    let k = quadrant.countEntitiesOfType(entityType);
 
-                    rval += " " + k + s + st + " |";
+                    rval += " " + padStringToLength(""+k, 3) + " |";
                 }
                 else
                 {
@@ -252,6 +248,28 @@ class Enterprise extends GameObject
             }
             rval += "\n" + border + "\n";
         }
+        return rval;
+    }
+
+    // long range scan
+    lrsString(galaxyMap)
+    {
+        let rval = "KLINGONS\t\tSTARS\t\t\tSTARBASES\n";
+
+        let klingonLRS = this.lrsStringEntityType(galaxyMap, Klingon);
+        let starLRS = this.lrsStringEntityType(galaxyMap, Star);
+        let starbaseLRS = this.lrsStringEntityType(galaxyMap, StarBase);
+
+        let klingonLRSLines = klingonLRS.split('\n');
+        let starLRSLines = starLRS.split('\n');
+        let starbaseLRSLines = starbaseLRS.split('\n');
+
+        console.assert(klingonLRSLines.length == starLRSLines.length);
+        for (var x in klingonLRSLines)
+        {
+            rval += klingonLRSLines[x] + "\t" + starLRSLines[x] + "\t" + starbaseLRSLines[x] + '\n';
+        }
+
         return rval;
     }
 
