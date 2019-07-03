@@ -28,6 +28,7 @@ class MainMenu extends Menu
                 function()
                 {
                     gameOutputAppend("Long Range Scan");
+                    gameOutputAppend("Adjacent sectors have been scanned.  The ship's computer has been updated with the following information:\n");
                     gameOutputAppend(trekgame.enterprise.lrsString(trekgame.galaxyMap));
 
                     var sh = trekgame.enterprise.sensorHistory;

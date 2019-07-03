@@ -25,6 +25,7 @@ class ShipComputerMenu extends Menu
                 "STARBASE MAP",
                 function()
                 {
+                    gameOutputAppend("MAP OF FEDERATION STARBASES");
                     gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap, StarBase, trekGame.enterprise));
                     return true;
                 }
@@ -37,6 +38,7 @@ class ShipComputerMenu extends Menu
                 "KLINGONS MAP",
                 function()
                 {
+                    gameOutputAppend("SENSOR RECORDS OF KLINGONS IN EACH SECTOR");
                     gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Klingon, trekGame.enterprise));
                     return true;
                 }
@@ -49,6 +51,7 @@ class ShipComputerMenu extends Menu
                 "STAR DENSITY MAP",
                 function()
                 {
+                    gameOutputAppend("SENSOR RECORDS SHOWING NUMBER OF STARS IN EACH SECTOR");
                     gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Star, trekGame.enterprise));
                     return true;
                 }
