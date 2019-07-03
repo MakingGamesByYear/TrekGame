@@ -28,7 +28,6 @@ class GalaxyMap extends Grid
         return rval;
     }
 
-    // long range scan
     mapString(galaxyMap, EntityType = Klingon, gameobject = null)
     {
         let border = "------";
@@ -43,10 +42,7 @@ class GalaxyMap extends Grid
                 let quadrant = galaxyMap.lookup(x, y);
                 
                 if (quadrant)
-                {
-                    console.log("not null");
-                     
-                    // klingons, starbases, stars
+                {    
                     let k = quadrant.countEntitiesOfType(EntityType);
 
                     if (gameobject)

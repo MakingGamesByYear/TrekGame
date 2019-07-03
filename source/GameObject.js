@@ -56,7 +56,7 @@ class GameObject
     }
 
     // randomly generate the number of GameObject instances to put in a new quadrant
-    static randomCountForQuadrant(quadrantFreeSpaces)
+    static randomCountForQuadrant(quadrantFreeSpaces, instancesInQuadrant)
     {
         var rval = 0;
 
@@ -76,6 +76,10 @@ class GameObject
 
         rval = Math.min(rval, quadrantFreeSpaces);
 
+        // createEntities occurs after we place our minimum number of entities around the map.
+        // so if we've already created some entities in this quadrant just deduct them from the ones
+        // the rng says we need to create.
+
         if (!this.Instances)
         {
             this.Instances = 0;
@@ -84,6 +88,8 @@ class GameObject
         rval = Math.min(rval, this.maxInstancesGame() - this.Instances);
 
         console.assert(this.Instances <= this.maxInstancesGame());
+
+        rval = Math.max(rval - instancesInQuadrant, 0);
 
         return rval;
     }
