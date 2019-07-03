@@ -10,9 +10,9 @@ class MainMenu extends Menu
         (
             new MenuOption
             (
-                "NAV",
-                " ",
-                "(TO SET COURSE)",
+                "1",
+                ") ",
+                "NAVIGATION",
                 function()
                 {
                     gameOutputAppend("Navigation");
@@ -22,9 +22,9 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "LRS",
-                " ",
-                "(FOR LONG RANGE SENSOR SCAN)",
+                "2",
+                ") ",
+                "LONG RANGE SENSORS (1 STARDATE)",
                 function()
                 {
                     gameOutputAppend("Long Range Scan");
@@ -40,14 +40,17 @@ class MainMenu extends Menu
                         trekgame.enterprise.quadrantX+1, 
                         trekgame.enterprise.quadrantY+1
                     );
+
+                    trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
+                    trekgame.starDate += 1.0;
                 }
             ),
 
             new MenuOption
             (
-                "PHA",
-                " ",
-                "(TO FIRE PHASERS)",
+                "3",
+                ") ",
+                "PHASERS",
                 function()
                 {
                     gameOutputAppend("Fire phasers");
@@ -66,9 +69,9 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "TOR",
-                " ",
-                "(TO FIRE PHOTON TORPEDOES)",
+                "4",
+                ") ",
+                "PHOTON TORPEDOES",
                 function()
                 {
                     gameOutputAppend("Fire torpedoes");
@@ -100,9 +103,9 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "SHE",
-                " ",
-                "(TO RAISE OR LOWER SHIELDS)",
+                "5",
+                ") ",
+                "SHIELD CONTROL",
                 function()
                 {
                     gameOutputAppend("Configure shields");
@@ -124,9 +127,9 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "COM",
-                " ",
-                "(TO CALL ON LIBRARY-COMPUTER)",
+                "6",
+                ") ",
+                "SHIP'S COMPUTER",
                 function()
                 {
                     return trekgame.awaitInput(trekgame.computerMenu.toString(), 1, function(inputline){return trekgame.computerMenu.chooseOption(inputline);});
@@ -135,9 +138,9 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "XXX",
-                " ",
-                "(TO RESIGN YOUR COMMAND)",
+                "7",
+                ") ",
+                "RESIGN YOUR COMMAND",
                 function()
                 {
                     gameOutputAppend("Resign command");
