@@ -21,6 +21,11 @@ class MenuOption
 
 class Menu
 {
+    constructor()
+    {
+        this.options = [];
+    }
+
     getSelectedOption(optionText)
     {
         for (var x in this.options)

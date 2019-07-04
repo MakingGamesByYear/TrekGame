@@ -132,9 +132,7 @@ class TrekGame
     {
         this.currentQuadrant.removeEntity(this.enterprise);
         this.currentQuadrant = this.galaxyMap.lookup(qX, qY);
-        this.enterprise.quadrantX = qX;
-        this.enterprise.quadrantY = qY;
-        this.currentQuadrant.addEntity(this.enterprise);
+        this.currentQuadrant.addEntityInFreeSector(this.enterprise);
 
         gameOutputAppend("Entering galactic sector " + this.enterprise.quadrantString());
     }
@@ -184,44 +182,124 @@ class TrekGame
         return true;
     }
 
-    navigationHandler(inputline)
+    navigationHandlerLongRangeX(inputline)
     {
         console.log("nav");
-        let angle = parseInt(inputline);
+        let quadrantX = parseInt(inputline) - 1;
 
-        if ((angle == null) || isNaN(angle) || angle < 0 || angle > 360.0)
+        if ((quadrantX == null) || isNaN(quadrantX) || quadrantX < 0 || quadrantX >= mapWidthQuadrants)
         {
             gameOutputAppend("Invalid value!");
             return false;
         }
 
-        this.awaitInput("Input warp factor (0-8).", 5, function(inputline){return this.navigationHandler2(inputline, angle)});
+        this.awaitInput(
+            "Enter destination sector Y coordinate.  Enter a value between 1 and " + mapHeightQuadrants,
+            2, 
+            
+            function(inputline)
+            {
+                return this.navigationHandlerLongRangeY(inputline, quadrantX);
+            }
+        );
+        
         return false;
     }
 
-    navigationHandler2(inputline, angle)
+    navigationHandlerLongRangeY(inputline, quadrantX)
     {
-        console.log("nav2");
-        let warpFactor = parseFloat(inputline);
+        let quadrantY = parseInt(inputline) - 1;
 
-        if ((warpFactor == null) || isNaN(warpFactor) || warpFactor < 0.0 || warpFactor > 8.0)
+        if ((quadrantY == null) || isNaN(quadrantY) || quadrantY < 0 || quadrantY >= mapHeightQuadrants)
         {
-            gameOutputAppend("Invalid value");
+            gameOutputAppend("Invalid value!");
             return false;
         }
 
-        console.assert(quadrantHeightSectors == quadrantWidthSectors);
-        let warpFactorScale = quadrantHeightSectors;
+        let xd = this.enterprise.quadrantX - quadrantX;
+        let yd = this.enterprise.quadrantY - quadrantY;
+        let travelDistance = Math.sqrt(xd*xd + yd*yd);
 
-        let sectorsToTravel = Math.round(warpFactorScale * warpFactor);
+        let jumpEnergyRequired = Math.floor(Enterprise.EnergyCostPerQuadrant * travelDistance);
 
-        if (sectorsToTravel < 1)
+        if (this.enterprise.freeEnergy < jumpEnergyRequired)
         {
-            gameOutputAppend("Warp factor is too small to get anywhere!");
+            gameOutputAppend("Insufficient energy for long range jump, captain.  Jump requires " + jumpEnergyRequired + " free energy.");
             return true;
         }
 
-        this.enterprise.warp(sectorsToTravel, angle, this);
+        let trekgame = this;
+        let confirmMenu = new Menu();
+        confirmMenu.options.push
+        (
+            new MenuOption
+            (
+                "1", 
+                ") ", 
+                "CONFIRM JUMP TO QUADRANT " + (quadrantX+1) + ", " + (quadrantY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
+                function()
+                {
+                    trekgame.enterprise.freeEnergy -= jumpEnergyRequired;
+                    trekgame.changeToQuadrant(quadrantX, quadrantY);
+                    trekgame.starDate += 1.0;
+                    return true;
+                }
+            ),
+
+            new MenuOption
+            (
+                "2",
+                ") ",
+                "CANCEL",
+                function()
+                {
+                    return true;
+                }
+            )
+        );
+
+        this.awaitInput(confirmMenu.toString(), 1, function(inputline){return confirmMenu.chooseOption(inputline);});
+    }
+
+    navigationHandlerShortRangeX(inputline)
+    {
+        console.log("nav");
+        let subsectorX = parseInt(inputline) - 1;
+
+        if ((subsectorX == null) || isNaN(subsectorX) || subsectorX < 0 || subsectorX >= quadrantWidthSectors)
+        {
+            gameOutputAppend("Invalid value!");
+            return false;
+        }
+
+        this.awaitInput(
+            "Enter destination subsector (Y coordinate)",
+            2, 
+            
+            function(inputline)
+            {
+                return this.navigationHandlerShortRangeY(inputline, subsectorX);
+            }
+        );
+        
+        return false;
+    }
+
+    navigationHandlerShortRangeY(inputline, subsectorX)
+    {
+        let subsectorY = parseInt(inputline) - 1;
+
+        if ((subsectorY == null) || isNaN(subsectorY) || subsectorY < 0 || subsectorY >= quadrantHeightSectors)
+        {
+            gameOutputAppend("Invalid value!");
+            return false;
+        }
+
+        let sectorsToTravel = this.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
+        //let angle = this.enterprise.angleToSubsector(subsectorX, subsectorY);
+
+       // this.enterprise.warp(sectorsToTravel, angle, this);
+       this.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, this);
 
         this.currentQuadrant.klingonsFire(this.enterprise, this);
 

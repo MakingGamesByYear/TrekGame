@@ -36,11 +36,35 @@ class GameObject
         return 360.0 - degrees;
     }
 
+    angleToSubsector(sectorX, sectorY)
+    {
+        let xdiff = sectorX - this.sectorX;
+        let ydiff = sectorY - this.sectorY;
+
+        let radians = Math.atan2(ydiff, xdiff);
+
+        let degrees = radians * 180.0 / Math.PI;
+
+        if (degrees < 0.0)
+        {
+            degrees = 360.0 + degrees;
+        }
+
+        return 360.0 - degrees;
+    }
+
     distanceToObject(obj2)
     {
         // assumes objects are in the same quadrant, for now
         let xdiff = this.sectorX - obj2.sectorX;
         let ydiff = this.sectorY - obj2.sectorY;
+        return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+    }
+
+    distanceToSectorLoc(sectorX, sectorY)
+    {
+        let xdiff = this.sectorX - sectorX;
+        let ydiff = this.sectorY - sectorY;
         return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
     }
 

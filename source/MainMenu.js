@@ -16,7 +16,37 @@ class MainMenu extends Menu
                 function()
                 {
                     gameOutputAppend("Navigation");
-                    trekgame.awaitInput("Enter heading (degrees).", 3, trekgame.navigationHandler);
+
+                    let navigationMenu = new Menu();
+                    navigationMenu.options.push
+                    (
+                        new MenuOption
+                        (
+                            "1",
+                            ") ",
+                            "SHORT RANGE JUMP (1 STARDATE)",
+                            function()
+                            {
+                                trekgame.awaitInput("Enter destination subsector (X coordinate)", 2, trekgame.navigationHandlerShortRangeX);
+                                return false;
+                            }
+                        ),
+                        new MenuOption
+                        (
+                            "2",
+                            ") ",
+                            "LONG RANGE JUMP  (1 STARDATE)",
+                            function()
+                            {
+                                trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthQuadrants, 2, trekgame.navigationHandlerLongRangeX);
+                                return false;
+                            }
+                        )
+                    );
+
+                    trekgame.awaitInput(navigationMenu.toString(), 1, function(inputline){return navigationMenu.chooseOption(inputline);});
+
+                    //trekgame.awaitInput("Enter heading (degrees).", 3, trekgame.navigationHandler);
                 }
             ), 
 

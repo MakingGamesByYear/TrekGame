@@ -273,7 +273,7 @@ class Enterprise extends GameObject
         return rval;
     }
 
-    warp(sectorsToTravel, angle, game)
+    warp(sectorXEnd, sectorYEnd, sectorsToTravel, game)
     {
         let energyRequired = this.warpEnergyCost(sectorsToTravel);
 
@@ -283,96 +283,18 @@ class Enterprise extends GameObject
             return;
         }
 
-        var maxSectorsToTravel = sectorsToTravel;
-
-        // do an intersection test of the enterprise against the map, in the direction of warp.
-        // update the enterprise position to the last valid sector square along the warp vector
-        // if we have an obstacle ahead we're done.
-        // if we have no squares left to travel we're done.
-        // if we have squares left to travel and the way ahead is clear, we need to go to the next sector.
-        // but the first square along our line might be obstructed.  so we'll test that before changing sectors.
-        while (sectorsToTravel > 0)
-        {
-            let intersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle, sectorsToTravel);
+        let intersection = game.currentQuadrant.intersectionTest2(this.sectorX, this.sectorY, sectorXEnd, sectorYEnd)
+        //game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle, sectorsToTravel);
            
-            this.sectorX = Math.floor(intersection.lastX);
-            this.sectorY = Math.floor(intersection.lastY);
+        this.sectorX = Math.floor(intersection.lastX);
+        this.sectorY = Math.floor(intersection.lastY);
 
-            sectorsToTravel -= intersection.stepIterations
-
-            if (intersection.intersects != null)
-            {
-                gameOutputAppend("Obstruction ahead.  Exiting warp.");
-                break;
-            }
-
-            if (sectorsToTravel <= 0.0)
-            {
-                break;
-            }
-
-            // if we get here that means we've gone out of bounds for the quadrant
-
-            var sectorXNext = this.sectorX;
-            var sectorYNext = this.sectorY;
-            var quadrantXNext = this.quadrantX;
-            var quadrantYNext = this.quadrantY;
-
-            if (intersection.nextX < 0)
-            {
-                quadrantXNext = this.quadrantX - 1;
-                sectorXNext = quadrantWidthSectors - 1;
-            }
-            if (intersection.nextX >= quadrantWidthSectors)
-            {
-                quadrantXNext = this.quadrantX + 1;
-                sectorXNext = 0;
-            }
-            if (intersection.nextY < 0)
-            {
-                quadrantYNext = this.quadrantY - 1;
-                sectorYNext = quadrantWidthSectors - 1;
-            }
-            if (intersection.nextY >= quadrantHeightSectors)
-            {
-                quadrantYNext = this.quadrantY + 1;
-                sectorYNext = 0;
-            }
-
-            // we should see SOME change in quadrant.  assert check.
-            console.assert((this.quadrantX != quadrantXNext) || (this.quadrantY != quadrantYNext));
-
-            var nextQuadrantValid = (quadrantXNext >= 0.0) && (quadrantXNext < mapWidthQuadrants) && (quadrantYNext >= 0.0) && (quadrantYNext < mapHeightQuadrants);
-
-            if (nextQuadrantValid)
-            {
-                var nextQuadrantTest = game.galaxyMap.lookup(quadrantXNext, quadrantYNext);
-
-                var startSquareFree = nextQuadrantTest.entityAtLocation(sectorXNext, sectorYNext) == null;
-
-                if (startSquareFree)
-                {
-                    this.sectorX = sectorXNext;
-                    this.sectorY = sectorYNext;
-                    sectorsToTravel -= 1.0;
-
-                    game.changeToQuadrant(quadrantXNext, quadrantYNext);
-                }
-                else
-                {
-                    gameOutputAppend("Obstruction in subsector " + (sectorXNext+1) + ", " + (sectorYNext+1) + " of sector " + (quadrantXNext+1) + ", " + (quadrantYNext+1) );
-                    gameOutputAppend("Exiting warp.");
-                    break;
-                }
-            }
-            else
-            {
-                gameOutputAppend("You are not authorized by Starfleet to cross the galactic perimeter.  Shutting down warp engines.");
-                break;
-            }
+        if (intersection.intersects != null)
+        {
+            gameOutputAppend("Obstruction ahead.  Exiting warp.");
         }
 
-        let actualEnergy = this.warpEnergyCost(maxSectorsToTravel - sectorsToTravel);
+        let actualEnergy = this.warpEnergyCost(intersection.stepIterations);
 
         // get the energy cost of the sectors we actually travelled
         this.freeEnergy -= actualEnergy
@@ -388,6 +310,7 @@ Enterprise.SRSFullyFunctionalHealth = .7;   // short range scan fully functional
 Enterprise.SRSMinChanceCorrupt = .1;        // For a particular sector on the map, minimum chance it'll be corrupt when integrity is high
 Enterprise.SRSMaxChanceCorrupt = .75;       // For a particular sector on the map, maximum chance it'll be corrupt when integrity is low
 Enterprise.EnergyCostPerSector = 1.0;       // Warp cost per sector moved
+Enterprise.EnergyCostPerQuadrant = 10.0;       // Warp cost per quadrant moved
 Enterprise.DamagePassthroughRatio = .25;    // if damage is 25% of shields or more, pass damage through to components
 Enterprise.RandomPassthroughRatio = .25;    // 25% chance that damage will pass through to ship components regardless of shields
 

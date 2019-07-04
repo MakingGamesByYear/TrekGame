@@ -58,6 +58,116 @@ class Quadrant
     // return a tuple containing
     // the last sector prior to the intersection
     // and the intersection object (null if none)
+    intersectionTest2(sectorX, sectorY, sectorXEnd, sectorYEnd)
+    {
+        checkArgumentsDefinedAndHaveValue(arguments);
+
+        // polar to euclidean coordinates
+        let xVec = sectorXEnd - sectorX;
+        let yVec = sectorYEnd - sectorY;
+
+        // we'll step through the grid in in increments of one cell; -1 if the x / y direction are negative
+        let xNextF = xVec > 0.0 ? 1.0 : -1.0;
+        let yNextF = yVec > 0.0 ? 1.0 : -1.0;
+
+        // start in the middle of the cell.
+        let startCoordX = Math.floor(sectorX) + .5;
+        let startCoordY = Math.floor(sectorY) + .5;
+        let endCoordX = Math.floor(sectorXEnd) + .5;
+        let endCoordY = Math.floor(sectorYEnd) + .5;
+
+        // return values
+        let lastCellBeforeIntersectionX = startCoordX;
+        let lastCellBeforeIntersectionY = startCoordY;
+        let intersectionObject = null;
+
+        //console.log("start coord " + (startCoordX) + " " + (startCoordY));
+        //console.log("end coord " + (endCoordX) + " " + (endCoordY));
+        //console.log("vec " + (xVec) + " " + (yVec));
+
+        var nextXCoord = 0;
+        var nextYCoord = 0;
+
+        let currentT = 0.0;
+
+        var steps = 0;
+        while (true)
+        {
+            // we have, given a start coordinate and a direction vector, the parametric equation of a line
+            // Pt = P0 + D*t
+            // From this we can derive the parameter t at which the line will reach a particular X or Y value
+            // X_t = X_0 + V_x * t
+            // Y_t = Y_0 + V_y * t
+            // implies
+            // (X_t - X_0) / V_x = t
+            // or
+            // (Y_t - Y_0) / V_y = t
+            // so we can figure out what the next cell on the x axis is (current plus or minus one) and figure
+            // out the t parameter where the line crosses it.  
+            // We can do the same for the next call on the y axis.
+            // Then, whichever cell has the lower t parameter the line crosses first.
+            // Because there's a division and it's possible the direction vector has a zero component, we'll check for divide by zero
+
+            nextXCoord = Math.floor(lastCellBeforeIntersectionX + xNextF);
+            nextYCoord = Math.floor(lastCellBeforeIntersectionY + yNextF);
+
+            //console.log("next " + nextXCoord + " " + nextYCoord);
+
+            let tXBound = ((nextXCoord+.5) - startCoordX) / xVec;
+            let tYBound = ((nextYCoord+.5) - startCoordY) / yVec;
+
+            tXBound = Math.abs(xVec) > .00001 ?  tXBound : Number.MAX_VALUE;
+            tYBound = Math.abs(yVec) > .00001 ?  tYBound : Number.MAX_VALUE;
+
+            if (tXBound < tYBound) // hit the x boundary first.
+            {
+                //console.log("xb " + tXBound);
+                currentT = tXBound;
+                nextYCoord = startCoordY + yVec * currentT;
+            }
+            else
+            {
+                //console.log("yb");
+                currentT = tYBound;
+                nextXCoord = startCoordX + xVec * currentT;
+            }
+
+            if (currentT > 1.0)
+            {
+                //console.log("Exceeded jump range "+ currentT);
+                break;
+            }
+
+            intersectionObject = this.entityAtLocation(nextXCoord, nextYCoord);
+
+            if (intersectionObject != null)
+            {
+                //console.log("intersection return");
+                break;
+            }
+
+            if (nextXCoord < 0 || nextXCoord >= quadrantWidthSectors || nextYCoord < 0 || nextYCoord >= quadrantHeightSectors)
+            {
+                //console.log("next out of bounds " + nextXCoord + " " + nextYCoord);
+                break;
+            }
+
+            //console.log("T is at " + currentT);
+            lastCellBeforeIntersectionX = nextXCoord;
+            lastCellBeforeIntersectionY = nextYCoord;
+
+            steps++;
+
+            //console.log("cell step" + (lastCellBeforeIntersectionX) + " " + (lastCellBeforeIntersectionY));
+        }
+
+        //console.log("cell end " + (lastCellBeforeIntersectionX) + " " + (lastCellBeforeIntersectionY)+ " " + intersectionObject);
+        return {lastX : lastCellBeforeIntersectionX, lastY : lastCellBeforeIntersectionY, intersects : intersectionObject, stepIterations:steps, nextX : nextXCoord, nextY : nextYCoord};
+    }
+
+    // return a tuple containing
+    // the last sector prior to the intersection
+    // and the intersection object (null if none)
     intersectionTest(sectorX, sectorY, angleDegrees, maxSectorsToTravel = Number.MAX_VALUE)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
@@ -66,7 +176,7 @@ class Quadrant
         // take angle in degrees to radians, then create a vector
         // start from 360 CCW because we have a top left origin (y axis goes down) internally
         // instead of y axis goes up like in your math textbook
-        let angle = 360.0 - angleDegrees
+        let angle = 360.0 - angleDegrees;
 
         let radians = angle * Math.PI / 180.0;
 
