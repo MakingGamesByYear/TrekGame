@@ -24,7 +24,7 @@ class MainMenu extends Menu
 
                     trekgame.showDockMenu(sb);
 
-                    trekgame.starDate += 1.0;
+                    trekgame.advanceStardate(1.0);
 
                     return false;
                 }
@@ -94,7 +94,7 @@ class MainMenu extends Menu
                     );
 
                     trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
-                    trekgame.starDate += 1.0;
+                    trekgame.advanceStardate(1.0);
                 }
             ),
 

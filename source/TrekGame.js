@@ -92,7 +92,7 @@ class TrekGame
                 "STAY DOCKED (1 STARDATE, REPAIRS A COMPONENT)",
                 function()
                 {
-                    trekgame.starDate += 1.0;
+                    trekgame.advanceStardate(1.0);
                     trekgame.enterprise.repairRandomComponent();
                     return false;
                 }
@@ -301,7 +301,7 @@ class TrekGame
                 {
                     trekgame.enterprise.freeEnergy -= jumpEnergyRequired;
                     trekgame.changeToQuadrant(quadrantX, quadrantY);
-                    trekgame.starDate += 1.0;
+                    trekgame.advanceStardate(1.0);
                     return true;
                 }
             ),
@@ -356,12 +356,12 @@ class TrekGame
         }
 
         let sectorsToTravel = this.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
-        
+
         this.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, this);
 
         this.currentQuadrant.klingonsFire(this.enterprise, this);
 
-        this.starDate += 1.0;
+        this.advanceStardate(1.0);
 
         return true;
     }
@@ -551,6 +551,12 @@ class TrekGame
         autosave(null);
         gameOutputAppend("\nThanks for playing!  Refresh the page to play again.");
         this.disableInput();
+    }
+
+    advanceStardate(adv)
+    {
+        this.starDate += adv;
+        this.enterprise.autoRepairComponents();
     }
 
     checkEndConditions()

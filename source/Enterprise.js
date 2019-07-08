@@ -55,7 +55,7 @@ class Enterprise extends GameObject
         {
             let oldHealth = this.components[key].componentHealth;
             this.components[key].componentHealth += (randomInt(Enterprise.MinComponentRepairPerTurn, Enterprise.MaxComponentRepairPerTurn) / 100);
-            this.components[key].componentHealth = Math.max(this.components[key].componentHealth, 1.0);
+            this.components[key].componentHealth = Math.min(this.components[key].componentHealth, 1.0);
 
             if (this.components[key].componentHealth == 1.0 && oldHealth != 1.0)
             {
