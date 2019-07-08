@@ -48,6 +48,22 @@ class Enterprise extends GameObject
         this.sensorHistory = new SensorHistory();
     }
 
+    // called on navigation
+    autoRepairComponents()
+    {
+        for (var key in this.components)
+        {
+            let oldHealth = this.components[key].componentHealth;
+            this.components[key].componentHealth += (randomInt(Enterprise.MinComponentRepairPerTurn, Enterprise.MaxComponentRepairPerTurn) / 100);
+            this.components[key].componentHealth = Math.max(this.components[key].componentHealth, 1.0);
+
+            if (this.components[key].componentHealth == 1.0 && oldHealth != 1.0)
+            {
+                gameOutputAppend("" + this.components[key].componentName + " has been fully repaired!");
+            }
+        }
+    }
+
     repairRandomComponent()
     {
         var damagedComponents = [];
@@ -353,6 +369,53 @@ class Enterprise extends GameObject
 
     damageReport()
     {
+        gameOutputAppend("DAMAGE REPORT:\n");
+        gameOutputAppend("Component Integrity:")
+        for (var key in this.components)
+        {
+            let component = this.components[key];
+            gameOutputAppend("" + component.componentName + " : " + Math.round(component.componentHealth * 100) + "%");
+        }
+
+        gameOutputAppend("\n\nNOTES:");
+
+        // torpedo tube functionality notes
+        if (this.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDamagedThreshold)
+        {
+        }
+        else if (this.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
+        {
+            gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.  You will need to input torpedo trajectories manually until the system is repaired.");
+        }
+        else
+        {
+            gameOutputAppend("Torpedo tubes too damaged to fire.");
+        }
+
+        // short range scan functionality notes
+        let srsHealthOK = this.components.ShortRangeSensors.componentHealth > Enterprise.SRSFullyFunctionalHealth;
+        if (!srsHealthOK)
+        {
+            gameOutputAppend("Short range sensors are damaged.  Map display may be corrupted.");
+        }
+
+        // library computer
+        if (this.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
+        {
+            gameOutputAppend("Ship computer is too damaged to access maps.");
+        }
+                    
+
+        /*
+        WarpEngines : new ShipComponent("Warp Engines", .0625), 
+        xx ShortRangeSensors: new ShipComponent("Short Range Sensors", .0625),
+        LongRangeSensors: new ShipComponent("Long Range Sensors", .25),
+        PhaserControl : new ShipComponent("Phaser Control", .0625),
+        PhotonTubes : new ShipComponent("Photon Tubes", .125),
+        DamageControl : new ShipComponent("Damage Control", .0625),
+        ShieldControl : new ShipComponent("Shield Control", .125), 
+        xx LibraryComputer : new ShipComponent("Library Computer", .25)
+        */
 
     }
 }
@@ -372,3 +435,7 @@ Enterprise.RandomPassthroughRatio = .25;    // 25% chance that damage will pass 
 
 Enterprise.torpedoTubesDamagedThreshold = .5; // 50% health = automatic targeting is down.
 Enterprise.torpedoTubesDisabledThreshold = .25; // 25% health = can't fire torpedoes.
+Enterprise.libraryComputerDamagedThreshold = .25; // 25% health = can't access maps.
+
+Enterprise.MinComponentRepairPerTurn = 1;  // integrity min autorepair per component
+Enterprise.MaxComponentRepairPerTurn = 5;  // integrity max autorepair per component

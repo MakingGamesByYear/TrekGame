@@ -106,6 +106,9 @@ class TrekGame
                 {
                     trekgame.enterprise.undock(sb);
                     gameOutputAppend("Undocking from starbase");
+
+                    // explicitly doesn't take a stardate to do this action.
+
                     return true;
                 }
             ),
@@ -353,10 +356,8 @@ class TrekGame
         }
 
         let sectorsToTravel = this.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
-        //let angle = this.enterprise.angleToSubsector(subsectorX, subsectorY);
-
-       // this.enterprise.warp(sectorsToTravel, angle, this);
-       this.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, this);
+        
+        this.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, this);
 
         this.currentQuadrant.klingonsFire(this.enterprise, this);
 
