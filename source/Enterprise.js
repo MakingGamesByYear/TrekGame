@@ -285,6 +285,11 @@ class Enterprise extends GameObject
                 {
                     let k = quadrant.countEntitiesOfType(entityType);
 
+                    if (x == this.quadrantX && y == this.quadrantY)
+                    {
+                        k = "" + k + "E";
+                    }
+
                     rval += " " + padStringToLength(""+k, 3) + " |";
                 }
                 else
