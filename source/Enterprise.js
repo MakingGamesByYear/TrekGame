@@ -48,6 +48,46 @@ class Enterprise extends GameObject
         this.sensorHistory = new SensorHistory();
     }
 
+    repairRandomComponent()
+    {
+        var damagedComponents = [];
+
+        for (var key in this.components)
+        {
+            if (this.components[key].componentHealth != 1.0)
+            {
+                damagedComponents.push(this.components[key]);
+            }
+        }
+
+        console.log("Enterprise has " + damagedComponents.length + " damaged components");
+
+        if (!damagedComponents.length)return;
+
+        let componentToRepair = damagedComponents[randomInt(0, damagedComponents.length-1)];
+        componentToRepair.componentHealth = 1.0;
+
+        gameOutputAppend(componentToRepair.componentName + " has been fully repaired!");
+    }
+
+    undock(starbase)
+    {
+        this.docked = false;
+    }
+
+    dockWithStarbase(starbase)
+    {
+        console.log("dock with starbase");
+
+        this.torpedoes = Enterprise.StartTorpedoes;
+        this.freeEnergy = Enterprise.StartEnergy - this.shields;
+        this.docked = true;
+
+        gameOutputAppend("Docked with starbase.  Torpedoes and energy replenished.  The starbase's shields protect the Enterprise.");
+
+        this.repairRandomComponent();
+    }
+
     // is our total energy less than the minimum energy cost to get anywhere?
     isStranded()
     {
@@ -147,6 +187,12 @@ class Enterprise extends GameObject
 
     onPhaserHit(energy, game)
     {
+        if (this.docked)
+        {
+            gameOutputAppend("The starbase shields protect you from the incoming phaser fire.");
+            return;
+        }
+
         let hitRatio = energy / this.shields;
 
         if (this.shields < energy)
@@ -298,6 +344,11 @@ class Enterprise extends GameObject
 
         // get the energy cost of the sectors we actually travelled
         this.freeEnergy -= actualEnergy
+    }
+
+    damageReport()
+    {
+
     }
 }
 

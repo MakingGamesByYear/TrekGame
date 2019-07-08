@@ -10,6 +10,27 @@ class MainMenu extends Menu
         (
             new MenuOption
             (
+                "0",
+                ") ",
+                "DOCK WITH STARBASE",
+                function()
+                {
+                    let adjacentStarbases = trekgame.currentQuadrant.getAdjacentEntitiesOfType(trekgame.enterprise, StarBase);
+                    console.assert(adjacentStarbases.length);
+
+                    let sb = adjacentStarbases[0];
+
+                    trekgame.enterprise.dockWithStarbase(sb);
+
+                    trekgame.showDockMenu(sb);
+
+                    trekgame.starDate += 1.0;
+
+                    return false;
+                }
+            ),
+            new MenuOption
+            (
                 "1",
                 ") ",
                 "NAVIGATION",
@@ -180,6 +201,9 @@ class MainMenu extends Menu
                 }
             )
         );
+
+        this.dockOption = this.options[0];
+        this.dockOption.enabled = false;
     }
 }
 

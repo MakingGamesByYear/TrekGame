@@ -6,6 +6,7 @@ class MenuOption
         this.separator = separator;
         this.description = description;
         this.payload = payload;
+        this.enabled = true;
     }
 
     compare(testString)
@@ -60,7 +61,10 @@ class Menu
 
         for (var x in this.options)
         {
-            rstring += this.options[x];
+            if (this.options[x].enabled)
+            {
+                rstring += this.options[x];
+            }
         }
 
         return rstring;

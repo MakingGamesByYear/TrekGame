@@ -16,6 +16,17 @@ class GameObject
         className.Instances++;
     }
 
+    isAdjacentTo(obj2)
+    {
+        let sameQuadrant = (this.quadrantX == obj2.quadrantX) && (this.quadrantY == obj2.quadrantY);
+        let xSectorDiff = Math.abs(this.sectorX - obj2.sectorX);
+        let ySectorDiff = Math.abs(this.sectorY - obj2.sectorY);
+
+        console.log("quad x y " + sameQuadrant + " " + xSectorDiff + " " + ySectorDiff);
+
+        return sameQuadrant && (xSectorDiff <= 1) && (ySectorDiff <= 1);
+    }
+
     angleToObject(obj2)
     {
         console.log("this subsector " + this.sectorString());

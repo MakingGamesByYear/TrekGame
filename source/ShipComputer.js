@@ -14,6 +14,7 @@ class ShipComputerMenu extends Menu
                 "DAMAGE REPORT",
                 function()
                 {
+                    trekGame.enterprise.damageReport();
                     return true;
                 }
             ),

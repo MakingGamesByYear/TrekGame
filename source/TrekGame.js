@@ -23,7 +23,16 @@ class TrekGame
 
             gamerval.createMenus();
 
-            gamerval.setInputPrompt(gamerval.mainMenu.toString());
+            gamerval.checkStarbaseDock();
+
+            if (gamerval.enterprise.docked)
+            {
+                gamerval.showDockMenu();
+            }
+            else
+            {
+                gamerval.setInputPrompt(gamerval.mainMenu.toString());
+            }
 
             gamerval.updateDisplay();
             return gamerval;
@@ -62,13 +71,61 @@ class TrekGame
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
 
-        this.updateDisplay();
-        this.starbasesScan();
-        this.enterpriseShortRangeScan();
+        this.updateGame();
 
         autosave(this);
 
         this.printStory();
+    }
+
+    showDockMenu(sb)
+    {
+        let dockMenu = new Menu();
+        let trekgame = this;
+
+        dockMenu.options.push
+        (
+            new MenuOption
+            (
+                "1",
+                ") ", 
+                "STAY DOCKED (1 STARDATE, REPAIRS A COMPONENT)",
+                function()
+                {
+                    trekgame.starDate += 1.0;
+                    trekgame.enterprise.repairRandomComponent();
+                    return false;
+                }
+            ),
+            new MenuOption
+            (
+                "2",
+                ") ",
+                "UNDOCK",
+                function()
+                {
+                    trekgame.enterprise.undock(sb);
+                    gameOutputAppend("Undocking from starbase");
+                    return true;
+                }
+            ),
+            new MenuOption
+            (
+                "3", ") ", "DAMAGE REPORT", 
+                function()
+                {
+                    trekgame.enterprise.damageReport();
+                    return false;
+                }
+            ),
+        );
+
+        this.awaitInput
+        (
+            dockMenu.toString(),
+            1,
+            function(inputline){return dockMenu.chooseOption(inputline);}
+        );
     }
 
     starbasesScan()
@@ -431,12 +488,47 @@ class TrekGame
         updateMapFooter(this.updateStatusFlags());
     }
 
+    checkStarbaseDock()
+    {
+        if (this.enterprise.docked)
+        {
+            console.log("already docked.");
+            return;
+        }
+
+        this.mainMenu.dockOption.enabled = false;
+
+        let starbases = this.currentQuadrant.getEntitiesOfType(StarBase);
+
+        for (var x in starbases)
+        {
+            var sb = starbases[x];
+
+            if (this.enterprise.isAdjacentTo(sb))
+            {
+                console.log("adjacent");
+                this.mainMenu.dockOption.enabled = true;
+            }
+            else
+            {
+                console.log("not adjacent");
+            }
+        }
+
+        if (!this.inputHandler)
+        {
+            this.awaitInput(this.mainMenu.toString(), 3, null);
+        }
+    }
+
     updateGame()
     {
         this.updateDisplay();
-        this.checkEndConditions();
         this.starbasesScan();
         this.enterpriseShortRangeScan();
+        this.checkStarbaseDock();
+
+        this.checkEndConditions();
     }
 
     enterpriseShortRangeScan()

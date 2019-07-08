@@ -288,6 +288,12 @@ class Quadrant
         return this.quadrantEntities.filter(function(item){return item.constructor == classtype});
     }
 
+    getAdjacentEntitiesOfType(adjacentToObj, classtype)
+    {
+        let sblist = this.getEntitiesOfType(classtype);
+        return sblist.filter(function(sb){return sb.isAdjacentTo(adjacentToObj)});
+    }
+
     klingonsFire(target, game)
     {
         let klist = this.getEntitiesOfType(Klingon);
