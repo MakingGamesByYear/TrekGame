@@ -377,7 +377,7 @@ class Enterprise extends GameObject
             gameOutputAppend("" + component.componentName + " : " + Math.round(component.componentHealth * 100) + "%");
         }
 
-        gameOutputAppend("\n\nNOTES:");
+        gameOutputAppend("\n\nNOTES:\nRepair crews can repair 1-5% damage per stardate.  A starbase will fully repair a single component every stardate.");
 
         // torpedo tube functionality notes
         if (this.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDamagedThreshold)
