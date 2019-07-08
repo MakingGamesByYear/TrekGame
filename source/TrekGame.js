@@ -556,7 +556,7 @@ class TrekGame
     {
         if (this.gameOver) return;
 
-        if (this.starDate > this.endStarDate)
+        if (this.starDate >= this.endStarDate)
         {
             gameOutputAppend("You were unable to complete your mission in time.");
             gameOutputAppend("The Klingons were able to execute their plan to destroy the Federation starbases!");
@@ -616,6 +616,11 @@ class TrekGame
     {
         let flags = [];
         
+        if (this.enterprise.docked)
+        {
+            flags.push("DOCKED");
+        }
+
         if (this.currentQuadrant.countEntitiesOfType(Klingon))
         {
             flags.push("RED ALERT");
