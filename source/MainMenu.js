@@ -73,7 +73,40 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "2",
+                "2", ") ", "WEAPONS",
+                function()
+                {
+                    MainMenu.showWeaponsMenu(trekgame);
+                }
+            ),
+
+            new MenuOption
+            (
+                "3",
+                ") ",
+                "SHIELD CONTROL",
+                function()
+                {
+                    gameOutputAppend("Configure shields");
+                    gameOutputAppend("Enter the new energy level for the shields.");
+                    gameOutputAppend("Total available is : " + (trekgame.enterprise.freeEnergy + trekgame.enterprise.shields));
+                    
+                    if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
+                    {
+                        let klingonList = trekgame.currentQuadrant.getEntitiesOfType(Klingon);
+
+                        let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
+
+                        gameOutputAppend("Based on current combat conditions, the ship's computer suggests a minimum shield energy level of " + suggestedShieldLevel);
+                    }
+
+                    trekgame.awaitInput("New shield level:", 4, trekgame.shieldHandler);
+                }
+            ),
+
+            new MenuOption
+            (
+                "4",
                 ") ",
                 "LONG RANGE SENSORS (1 STARDATE)",
                 function()
@@ -100,7 +133,28 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "3",
+                "5",
+                ") ",
+                "SHIP'S COMPUTER",
+                function()
+                {
+                    return trekgame.awaitInput(trekgame.computerMenu.toString(), 1, function(inputline){return trekgame.computerMenu.chooseOption(inputline);});
+                }
+            )
+        );
+
+        this.dockOption = this.options[0];
+        this.dockOption.enabled = false;
+    }
+
+    static showWeaponsMenu(trekgame)
+    {
+        var weaponsMenu = new Menu();
+
+        weaponsMenu.options.push(
+        new MenuOption
+            (
+                "1",
                 ") ",
                 "PHASERS",
                 function()
@@ -121,7 +175,7 @@ class MainMenu extends Menu
 
             new MenuOption
             (
-                "4",
+                "2",
                 ") ",
                 "PHOTON TORPEDOES",
                 function()
@@ -153,57 +207,12 @@ class MainMenu extends Menu
                 }
             ),
 
-            new MenuOption
-            (
-                "5",
-                ") ",
-                "SHIELD CONTROL",
-                function()
-                {
-                    gameOutputAppend("Configure shields");
-                    gameOutputAppend("Enter the new energy level for the shields.");
-                    gameOutputAppend("Total available is : " + (trekgame.enterprise.freeEnergy + trekgame.enterprise.shields));
-                    
-                    if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
-                    {
-                        let klingonList = trekgame.currentQuadrant.getEntitiesOfType(Klingon);
+            new MenuOption("3", ") ", "BACK", function(){return true;})
 
-                        let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
-
-                        gameOutputAppend("Based on current combat conditions, the ship's computer suggests a minimum shield energy level of " + suggestedShieldLevel);
-                    }
-
-                    trekgame.awaitInput("New shield level:", 4, trekgame.shieldHandler);
-                }
-            ),
-
-            new MenuOption
-            (
-                "6",
-                ") ",
-                "SHIP'S COMPUTER",
-                function()
-                {
-                    return trekgame.awaitInput(trekgame.computerMenu.toString(), 1, function(inputline){return trekgame.computerMenu.chooseOption(inputline);});
-                }
-            ),
-
-            new MenuOption
-            (
-                "7",
-                ") ",
-                "RESIGN YOUR COMMAND",
-                function()
-                {
-                    gameOutputAppend("Resign command");
-                    trekgame.awaitInput("Are you sure you want to end your current game and erase your autosave? (Y/N)", 1, trekgame.endGameHandler);
-                    return;
-                }
-            )
         );
 
-        this.dockOption = this.options[0];
-        this.dockOption.enabled = false;
+        return trekgame.awaitInput(weaponsMenu.toString(), 1, function(inputline){return weaponsMenu.chooseOption(inputline);});
     }
+
 }
 

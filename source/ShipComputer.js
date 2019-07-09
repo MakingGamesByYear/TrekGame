@@ -76,11 +76,29 @@ class ShipComputerMenu extends Menu
                 }
             ),
 
-
-
             new MenuOption
             (
                 "5",
+                ") ",
+                "SELF DESTRUCT",
+                function()
+                {
+                    let resignMenu = new Menu();
+
+                    resignMenu.options.push
+                    (
+                        new MenuOption("1", ") ", "END CURRENT GAME AND ERASE SAVE", function(){trekGame.endGame()}),
+                        new MenuOption("2", ") ", "CANCEL", function(){return true})
+                    );
+
+                    trekGame.awaitInput(resignMenu.toString(), "1", function(inputLine){return resignMenu.chooseOption(inputLine);});
+                    return;
+                }
+            ),
+
+            new MenuOption
+            (
+                "6",
                 ") ",
                 "BACK",
                 function()

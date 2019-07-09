@@ -414,23 +414,6 @@ class TrekGame
         return true;
     }
 
-    endGameHandler(inputline)
-    {
-        if (inputline == 'Y' || inputline == 'y')
-        {
-            this.endGame();
-            return false;
-        }
-        else if (inputline == 'n' || inputline == 'N')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     updateStatus()
     {
         document.getElementById("status").innerHTML = this.statusString();
