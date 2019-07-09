@@ -181,7 +181,7 @@ class MainMenu extends Menu
             (
                 "2",
                 ") ",
-                "PHOTON TORPEDOES",
+                "PHOTON TORPEDOES ("+Enterprise.TorpedoEnergyCost+" ENERGY)",
                 function()
                 {
                     gameOutputAppend("Fire torpedoes");
