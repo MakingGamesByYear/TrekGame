@@ -62,6 +62,10 @@ class MainMenu extends Menu
                                 trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthQuadrants, 2, trekgame.navigationHandlerLongRangeX);
                                 return false;
                             }
+                        ),
+                        new MenuOption
+                        (
+                            "3", ") ", "BACK", function(){return true;}
                         )
                     );
 
