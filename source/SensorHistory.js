@@ -33,14 +33,19 @@ class SensorHistory extends Grid
 
     mapString(EntityType = Klingon, gameobject = null)
     {
+        let header = "   ";
+        for (let x = 0; x < mapWidthQuadrants; x++)
+        {
+            header += padStringToLength((""+(x+1)), 6);
+        }
+
         let border = "------";
         border = border.repeat(mapWidthQuadrants);
-
-        let rval = border + '\n';
+        let rval = header + "\n   " + border + '\n';
 
         for (let y = 0; y < this.height; y++)
         {
-            rval += "|";
+            rval += " " + (y+1) + " |";
             for (let x = 0; x < this.width; x++)
             {
                 let quadrantDict = this.lookup(x, y);
@@ -74,7 +79,7 @@ class SensorHistory extends Grid
                     rval += " *** |";
                 }
              }
-             rval += "\n" + border + "\n";
+             rval += "\n   " + border + "\n";
          }
          return rval;
      }

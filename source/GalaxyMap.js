@@ -30,13 +30,19 @@ class GalaxyMap extends Grid
 
     mapString(galaxyMap, EntityType = Klingon, gameobject = null)
     {
+        let header = "   ";
+        for (let x = 0; x < mapWidthQuadrants; x++)
+        {
+            header += padStringToLength((""+(x+1)), 6);
+        }
+
         let border = "------";
         border = border.repeat(mapWidthQuadrants);
-        let rval = border + '\n';
+        let rval = header + "\n   " + border + '\n';
 
         for (let y = 0; y < mapHeightQuadrants; y++)
         {
-            rval += "|";
+            rval += " " + (y+1) + " |";
             for (let x = 0; x < mapWidthQuadrants; x++)
             {
                 let quadrant = galaxyMap.lookup(x, y);
@@ -56,15 +62,15 @@ class GalaxyMap extends Grid
 
                     rval += " " + padStringToLength(""+k, 3, ' ') + " |";
                 }
-                 else
-                 {  console.log(" null");
-                     rval += " *** |";
-                 }
+                else
+                {  console.log(" null");
+                    rval += " *** |";
+                }
              }
-             rval += "\n" + border + "\n";
+             rval += "\n   " + border + "\n";
          }
          return rval;
-     }
+    }
 
     createMinimumInstances(entityTypes)
     {
