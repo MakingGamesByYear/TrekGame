@@ -44,7 +44,7 @@ class Enterprise extends GameObject
                             }
 
         this.hitNoShields = false;
-        this.docked = false;
+        this.dockStarbase = null;
         this.sensorHistory = new SensorHistory();
     }
 
@@ -88,7 +88,7 @@ class Enterprise extends GameObject
 
     undock(starbase)
     {
-        this.docked = false;
+        this.dockStarbase = null;
     }
 
     dockWithStarbase(starbase)
@@ -97,7 +97,7 @@ class Enterprise extends GameObject
 
         this.torpedoes = Enterprise.StartTorpedoes;
         this.freeEnergy = Enterprise.StartEnergy - this.shields;
-        this.docked = true;
+        this.dockStarbase = starbase;
 
         gameOutputAppend("Docked with starbase.  Torpedoes and energy replenished.  The starbase's shields protect the Enterprise.");
 
@@ -131,7 +131,7 @@ class Enterprise extends GameObject
     // is it possible for a single round of enemy fire to destroy the enterprise?
     isShieldLevelCritical(enemyList)
     {
-        return !this.docked && (this.shields < this.suggestedMinShieldLevel(enemyList));
+        return !this.dockStarbase && (this.shields < this.suggestedMinShieldLevel(enemyList));
     }
 
     warpEnergyCost(numSectors)
@@ -203,7 +203,7 @@ class Enterprise extends GameObject
 
     onPhaserHit(energy, game)
     {
-        if (this.docked)
+        if (this.dockStarbase)
         {
             gameOutputAppend("The starbase shields protect you from the incoming phaser fire.");
             return;

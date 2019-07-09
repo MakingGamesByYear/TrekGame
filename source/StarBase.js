@@ -14,6 +14,14 @@ class StarBase extends GameObject
 
         game.currentQuadrant.removeEntity(this);
         StarBase.Instances--;
+
+        let removeSB = this;
+        StarBase.starbaseList = StarBase.starbaseList.filter(function(item){return item != removeSB});
+
+        if (game.enterprise.dockStarbase == removeSB)
+        {
+            game.enterprise.undock(removeSB);
+        }
     }
 
     toString()

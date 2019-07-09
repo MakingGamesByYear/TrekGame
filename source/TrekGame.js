@@ -25,7 +25,7 @@ class TrekGame
 
             gamerval.checkStarbaseDock();
 
-            if (gamerval.enterprise.docked)
+            if (gamerval.enterprise.dockStarbase)
             {
                 gamerval.showDockMenu();
             }
@@ -491,7 +491,7 @@ class TrekGame
 
     checkStarbaseDock()
     {
-        if (this.enterprise.docked)
+        if (this.enterprise.dockStarbase)
         {
             console.log("already docked.");
             return;
@@ -623,7 +623,7 @@ class TrekGame
     {
         let flags = [];
         
-        if (this.enterprise.docked)
+        if (this.enterprise.dockStarbase)
         {
             flags.push("DOCKED");
         }
