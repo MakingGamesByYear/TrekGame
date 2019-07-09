@@ -183,9 +183,151 @@ class TrekGame
         storyString += 
         "\n\nThere are " + StarBase.Instances + " Federation Starbases in the region for refueling, restocking torpedoes, and repairs.";
 
+        storyString += "\n\nCheck the ship's computer to access the captain's manual for a tutorial on how to complete your mission.";
+
         storyString += "\n\nGood luck, galactic peace is in your hands!";
 
         gameOutputAppend(storyString);
+    }
+
+    printTutorial()
+    {
+        let tutorialMenu = new Menu();
+
+        let trekGame = this;
+
+        tutorialMenu.options.push
+        (
+            new MenuOption
+            (
+                "1", ") ", "TUTORIAL: MAIN DISPLAY",
+                function()
+                {
+                    let tutorialString = "";
+
+                    tutorialString += "DISPLAY:\nThe map display at the top of your screen shows the map of the galactic sector where your ship is located.  ";
+                    tutorialString += "Your mission takes place in a region of the galaxy that is " + mapWidthQuadrants + " by " + mapHeightQuadrants + " sectors.";
+                    tutorialString += "  A galactic sector is about 2 light years across.";
+
+                    tutorialString += "\n\nThe sector map is made up of a grid of subsectors.  The X,Y coordinates of the subsectors are displayed across the horizontal and vertical axes of the map.  The key symbols corresponding to different objects occupying a subsector are listed below.";
+
+                    tutorialString += "\n\nTo the right of the map screen are important stats about your mission, your ship's status, and your ship's location. ";
+
+                    tutorialString += "\n\nBelow the map screen are important status flags, such as whether the shields are too low or whether we're at red alert when enemies are present. ";
+
+                    tutorialString += "\n\nMap key :\n" +
+                    "<*> : ENTERPRISE\n*  : STAR\n+K+ : KLINGON\n>!< : STARBASE\n";
+
+                    gameOutputAppend(tutorialString);
+
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+            new MenuOption("2", ") ", "TUTORIAL: SHIELDS AND TAKING DAMAGE",
+                function()
+                {
+                    let tutorialString = "";
+
+                    tutorialString += "\n\nSHIELDS:\nShield control will let you set the amount of the ship's energy you are committing to shields.  When shields are raised, they will absorb damage.";
+                    tutorialString += "\n\nShield control (if sufficiently undamaged) will suggest a minimum shield level for the current combat situation.";
+                    tutorialString += "\n\nYou can also reduce the damage you take by getting further from the enemy vessel.";
+                    tutorialString += "\n\nDAMAGE:\nIf you take a hit from enemy phaser fire with no shields up, you will be destroyed.  As you take hits, various components of your ship ";
+                    tutorialString += "may also degrade.  Each stardate, your repair teams will restore some small percentage of that component's integrity.  ";
+                    tutorialString += "When a component's integrity gets low enough, you may see functionality impaired.  Check the damage report in the ship's computer ";
+                    tutorialString += "to see both the current integrity of all your individual components as well as a list of any malfunctions.  \n\nYou can also get repairs at a starbase.";
+
+                    gameOutputAppend(tutorialString);
+
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+            new MenuOption("3", ") ", "TUTORIAL: STARBASES",
+                function()
+                {
+                    let tutorialString = "";
+
+                    tutorialString += "\n\STARBASES:\nDocking at a starbase will restore your energy and torpedoes to maximum and repair a random ship component to full integrity.  ";
+                    tutorialString += "Each additional date docked at the starbase will fully repair an additional random component.  The starbase's shields will protect you from enemy fire so long as you are docked.";
+
+                    tutorialString += "\n\nTo dock at a starbase, use a short range jump to navigate to a subsector adjacent to the starbase.  Then the option to dock will appear on the menu.\n\nA map of all the sectors containing starbases can be found in the ship's computer.";
+                   
+                    gameOutputAppend(tutorialString);
+
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+            new MenuOption("4", ") ", "TUTORIAL: NAVIGATION",
+                function()
+                {
+                    let tutorialString = "";
+
+                    tutorialString += "\n\nNAVIGATION:\nA short range jump lets you warp to a different subsector in the current sector (eg. a different location on the current map screen). ";
+                    tutorialString += "\nA long range jump lets you warp to a different sector in the galaxy (eg. change to a different map screen). ";
+                    tutorialString += "\n\nA short range jump needs a clear path to the target subsector or you will exit warp.  A long range jump will take you to a random subsector of your destination sector, and will ignore any obstacles along the way.";
+                    tutorialString += "\n\nBoth a short range and long range jump require more energy the further you attempt to travel.";
+                    tutorialString += "\n\nIf you are in a sector with enemies, make sure you raise your shields before making a short range jump.";
+            
+                    gameOutputAppend(tutorialString);
+
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+
+            new MenuOption("5", ") ", "TUTORIAL: MAPS AND SENSORS",
+                function()
+                {
+                    let tutorialString = "";
+
+                    tutorialString += "\n\MAPS AND SENSORS:\n";
+                    tutorialString += "Galaxy maps can be found in the ship's computer.\n\nThe starbase map shows the sectors that contain a starbase.  The locations of all starbases are known at the beginning of your mission.";
+                    tutorialString += "\n\nThe klingons map shows the number of enemies in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
+                    tutorialString += "\n\nThe star density map shows the number of stars in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
+                    tutorialString += "\n\nLong range sensors scan the 3x3 region of sectors surrounding your ship for stars and enemies, then updates the maps in the library computer.";
+            
+                    gameOutputAppend(tutorialString);
+
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+            new MenuOption("6", ") ", "TUTORIAL: WEAPONS",
+                function()
+                {
+                    let tutorialString = "";
+
+                    tutorialString += "\n\WEAPONS:\nTorpedoes will instantly destroy a single enemy vessel on impact.  ";
+                    tutorialString += "They cannot pass through stars or other obstructions though, and you have a limited supply (that can be replenished at a starbase).  ";
+                    tutorialString += "You should use a short range jump to navigate to a location with a clear shot.  \n\nThe targeting computer will list ";
+                    tutorialString += "all the targets in the sector for you to choose from.  If the targeting computer is damaged, you may need to target the torpedoes manually.";
+                    tutorialString += "\n\nPhasers ignore obstructions and target all targets in the sector at the same time.  To fire phasers you must commit some portion of your free energy to the phaser blast.\n\n";
+                    tutorialString += "The more targets in the sector and the further away you are from them, the more energy you will need to commit to do the same amount of damage.";
+            
+                    gameOutputAppend(tutorialString);
+
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+            new MenuOption("7", ") ", "BACK",
+                function()
+                {
+                    return true;
+                }
+            )
+        );
+
+        this.awaitInput(tutorialMenu.toString(), 1, function(inputline){return tutorialMenu.chooseOption(inputline);});
+        return false;
     }
 
     changeToQuadrant(qX, qY)
@@ -202,8 +344,8 @@ class TrekGame
         return "<pre>" +
         "\n\n\n" + 
         "STARDATES REMAINING   " + (this.endStarDate - this.starDate) +"\n" +
-        "SECTOR                " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
-        "SUBSECTOR             " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + "\n" + 
+        "SECTOR (X,Y)          " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
+        "SUBSECTOR (X,Y)       " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + "\n" + 
         "PHOTON TORPEDOES      " + this.enterprise.torpedoes + '\n' + 
         "SHIELD ENERGY         " + this.enterprise.shields + '\n' + 
         "FREE ENERGY           " + this.enterprise.freeEnergy + '\n' + 

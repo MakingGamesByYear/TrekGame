@@ -11,6 +11,18 @@ class ShipComputerMenu extends Menu
             (
                 "1",
                 ") ",
+                "CAPTAIN'S MANUAL",
+                function()
+                {
+                    trekGame.printTutorial();
+                    return false;
+                }
+            ),
+
+            new MenuOption
+            (
+                "2",
+                ") ",
                 "DAMAGE REPORT",
                 function()
                 {
@@ -21,7 +33,7 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "2",
+                "3",
                 ") ",
                 "STARBASE MAP",
                 function()
@@ -40,7 +52,7 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "3",
+                "4",
                 ") ",
                 "KLINGONS MAP",
                 function()
@@ -59,7 +71,7 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "4",
+                "5",
                 ") ",
                 "STAR DENSITY MAP",
                 function()
@@ -78,7 +90,7 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "5",
+                "6",
                 ") ",
                 "SELF DESTRUCT",
                 function()
@@ -98,7 +110,7 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "6",
+                "7",
                 ") ",
                 "BACK",
                 function()
