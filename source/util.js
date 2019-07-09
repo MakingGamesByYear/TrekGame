@@ -67,10 +67,14 @@ function autosave(game)
     if (game && !game.gameOver)
     {
         localStorage.setItem("autosave", JSON.stringify(game));
+
+        let textarea = document.getElementById("gameOutputBox")
+        localStorage.setItem("outputText", textarea.value);
     }
     else
     {
         localStorage.setItem("autosave", null);
+        localStorage.setItem("outputText", null);
     }
 }
 

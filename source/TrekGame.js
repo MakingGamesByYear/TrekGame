@@ -73,9 +73,9 @@ class TrekGame
 
         this.updateGame();
 
-        autosave(this);
-
         this.printStory();
+
+        autosave(this);
     }
 
     showDockMenu(sb)

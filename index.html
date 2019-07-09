@@ -118,6 +118,14 @@ KEY:
         
         game = TrekGame.ConstructFromJSData(gamedata);
 
+        var outputText = localStorage.getItem("outputText");
+        
+        // load previous output text
+        if (outputText)
+        {
+            gameOutputAppend(outputText);
+        }
+
         gameOutputAppend("Welcome back, captain!");
     }
 
