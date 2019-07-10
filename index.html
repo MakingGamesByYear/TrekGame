@@ -171,6 +171,8 @@ KEY:
         // really just set a default height here, in the css.  then get the difference with the whole document.
         document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
         document.getElementById("gameOutputBox").style.height = ""+(mainHeight)+"px";
+
+        gameOutputScrollToBottom();
     }
 
     window.onresize = onResize;

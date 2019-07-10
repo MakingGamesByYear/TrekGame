@@ -59,7 +59,7 @@ class Enterprise extends GameObject
 
             if (this.components[key].componentHealth == 1.0 && oldHealth != 1.0)
             {
-                gameOutputAppend("" + this.components[key].componentName + " has been fully repaired!");
+                gameOutputAppend("\n" + this.components[key].componentName + " fully repaired!");
             }
         }
     }
@@ -83,7 +83,7 @@ class Enterprise extends GameObject
         let componentToRepair = damagedComponents[randomInt(0, damagedComponents.length-1)];
         componentToRepair.componentHealth = 1.0;
 
-        gameOutputAppend(componentToRepair.componentName + " has been fully repaired!");
+        gameOutputAppend("\n"+componentToRepair.componentName + " has been fully repaired!");
     }
 
     undock(starbase)
@@ -99,7 +99,7 @@ class Enterprise extends GameObject
         this.freeEnergy = Enterprise.StartEnergy - this.shields;
         this.dockStarbase = starbase;
 
-        gameOutputAppend("Docked with starbase.  Torpedoes and energy replenished.  The starbase's shields protect the Enterprise.");
+        gameOutputAppend("\nDocked with starbase.  Torpedoes and energy replenished.  The starbase's shields protect the Enterprise.");
 
         this.repairRandomComponent();
     }
@@ -198,7 +198,7 @@ class Enterprise extends GameObject
 
         component.componentHealth -= Math.min(passthroughDamage, component.componentHealth);
 
-        gameOutputAppend("" + component.componentName + " hit.  Now at " + Math.floor(component.componentHealth*100) + "% integrity" );
+        gameOutputAppend(component.componentName + " hit.  Now at " + Math.floor(component.componentHealth*100) + "% integrity" );
     }
 
     onPhaserHit(energy, game)
@@ -244,7 +244,8 @@ class Enterprise extends GameObject
 
         this.freeEnergy -= energy;
 
-        gameOutputAppend("Firing phasers at " + targets.length + " targets.");
+        let endstr = targets.length > 1 ? "s." : ".";
+        gameOutputAppend("\nFiring phasers at " + targets.length + " target" + endstr);
         console.assert(targets.length > 0);
         let damagePerTarget = energy / targets.length;
 
@@ -264,6 +265,7 @@ class Enterprise extends GameObject
 
     fireTorpedo(game, angle)
     {
+        gameOutputAppend("\nTorpedo away!");
         if (this.freeEnergy >= Enterprise.TorpedoEnergyCost)
         {
             let torpedoIntersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle);
@@ -276,7 +278,7 @@ class Enterprise extends GameObject
             }
             else
             {
-                gameOutputAppend("The torpedo missed!");
+                gameOutputAppend("\nThe torpedo missed!");
             }
         }
         else
@@ -288,12 +290,18 @@ class Enterprise extends GameObject
 
     lrsStringEntityType(galaxyMap, entityType)
     {
+        let header = "   ";
+        for (let x = this.quadrantX - 1; x <= this.quadrantX + 1; x++)
+        {
+            header += padStringToLength((""+(x+1)), 6);
+        }
+
         let border = "-------------------";
-        let rval = border + '\n';
+        let rval = header + "\n   " + border + '\n';
 
         for (let y = this.quadrantY - 1; y <= this.quadrantY + 1; y++)
         {
-            rval += "|";
+            rval += " " + (y+1) + " |";
             for (let x = this.quadrantX - 1; x <= this.quadrantX + 1; x++)
             {
                 let quadrant = galaxyMap.lookup(x, y);
@@ -313,7 +321,7 @@ class Enterprise extends GameObject
                     rval += " *** |";
                 }
             }
-            rval += "\n" + border + "\n";
+            rval += "\n   " + border + "\n";
         }
         return rval;
     }
@@ -369,7 +377,7 @@ class Enterprise extends GameObject
 
     damageReport()
     {
-        gameOutputAppend("DAMAGE REPORT:\n");
+        gameOutputAppend("\nDAMAGE REPORT:\n");
         gameOutputAppend("Component Integrity:")
         for (var key in this.components)
         {

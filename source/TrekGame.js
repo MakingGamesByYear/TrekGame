@@ -291,6 +291,7 @@ class TrekGame
                     tutorialString += "\n\nThe klingons map shows the number of enemies in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
                     tutorialString += "\n\nThe star density map shows the number of stars in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
                     tutorialString += "\n\nLong range sensors scan the 3x3 region of sectors surrounding your ship for stars and enemies, then updates the maps in the library computer.";
+                    tutorialString += "\nThe galaxy maps in the ship computer show an E in the sector corresponding to the location of your ship.";
             
                     gameOutputAppend(tutorialString);
 
@@ -581,7 +582,6 @@ class TrekGame
 
     handleInput(inputStr)
     {
-        gameOutputAppend("\n> "+inputStr+"\n");
         if (this.inputHandler)
         {
             if (this.inputHandler(inputStr))
@@ -682,6 +682,25 @@ class TrekGame
     {
         this.starDate += adv;
         this.enterprise.autoRepairComponents();
+
+        let stardatesRemaining = (this.endStarDate - this.starDate);
+
+        if (stardatesRemaining == 10)
+        {
+            gameOutputAppend("\nYou have 10 stardates remaining to complete your mission!");
+        }
+        else if (stardatesRemaining == 5)
+        {
+            gameOutputAppend("\nWARNING : 5 STARDATES REMAIN.");
+        }
+        else if (stardatesRemaining == 1)
+        {
+            gameOutputAppend("" + stardatesRemaining + " STARDATE LEFT!");
+        }
+        else if (stardatesRemaining <= 3)
+        {
+            gameOutputAppend("" + stardatesRemaining + " STARDATES LEFT!");
+        }
     }
 
     checkEndConditions()
@@ -690,6 +709,7 @@ class TrekGame
 
         if (this.starDate >= this.endStarDate)
         {
+            gameOutputAppend("\n\n============================GAME OVER============================\n");
             gameOutputAppend("You were unable to complete your mission in time.");
             gameOutputAppend("The Klingons were able to execute their plan to destroy the Federation starbases!");
             gameOutputAppend("You'll be demoted for sure!");
@@ -700,6 +720,7 @@ class TrekGame
         }
         else if (this.enterprise.isStranded())
         {
+            gameOutputAppend("\n\n============================GAME OVER============================\n");
             gameOutputAppend("You have insufficient energy to power the warp engines!");
             gameOutputAppend("You are stranded, causing you to ultimately fail your mission.");
 
@@ -709,6 +730,7 @@ class TrekGame
         }
         else if (this.enterprise.isDestroyed())
         {
+            gameOutputAppend("\n\n============================GAME OVER============================\n");
             gameOutputAppend("Your vessel has taken too much damage and has been destroyed.");
             gameOutputAppend("Your mission is failed.");
 
@@ -718,6 +740,7 @@ class TrekGame
         }
         else if (!StarBase.Instances)
         {
+            gameOutputAppend("\n\n============================\GAME OVER============================\n");
             gameOutputAppend("All the Federation starbases have been destroyed!");
             gameOutputAppend("You've failed in your mission.  The Federation is doomed.");
 
@@ -727,6 +750,7 @@ class TrekGame
         }
         else if (!Klingon.Instances)
         {
+            gameOutputAppend("\n\n============================YOU WIN!!============================\n");
             gameOutputAppend("You've managed to destroy all the enemy vessels, preventing the enemy from executing their plan!");
             gameOutputAppend("You're sure to get a promotion!");
             gameOutputAppend("Congratulations on your victory!");

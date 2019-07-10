@@ -36,8 +36,6 @@ class MainMenu extends Menu
                 "NAVIGATION",
                 function()
                 {
-                    gameOutputAppend("Navigation");
-
                     let navigationMenu = new Menu();
                     navigationMenu.options.push
                     (
@@ -91,20 +89,19 @@ class MainMenu extends Menu
                 "SHIELD CONTROL",
                 function()
                 {
-                    gameOutputAppend("Configure shields");
-                    gameOutputAppend("Enter the new energy level for the shields.");
-                    gameOutputAppend("Total available is : " + (trekgame.enterprise.freeEnergy + trekgame.enterprise.shields));
+                    let totalEnergy = (trekgame.enterprise.freeEnergy + trekgame.enterprise.shields);
                     
+                    let suggestedStr = "";
                     if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
                     {
                         let klingonList = trekgame.currentQuadrant.getEntitiesOfType(Klingon);
 
                         let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
 
-                        gameOutputAppend("Based on current combat conditions, the ship's computer suggests a minimum shield energy level of " + suggestedShieldLevel);
+                        suggestedStr += "\nBased on current combat conditions, the ship's computer suggests a minimum shield energy level of " + suggestedShieldLevel;
                     }
 
-                    trekgame.awaitInput("New shield level:", 4, trekgame.shieldHandler);
+                    trekgame.awaitInput("ENTER NEW SHIELD ENERGY LEVEL. \nAVAILABLE: " + totalEnergy + suggestedStr, 4, trekgame.shieldHandler);
                 }
             ),
 
@@ -115,7 +112,7 @@ class MainMenu extends Menu
                 "LONG RANGE SENSORS (1 STARDATE)",
                 function()
                 {
-                    gameOutputAppend("Long Range Scan");
+                    gameOutputAppend("\nLong Range Scan completed.");
                     gameOutputAppend("Adjacent sectors have been scanned.  The ship's computer has been updated with the following information:\n");
                     gameOutputAppend(trekgame.enterprise.lrsString(trekgame.galaxyMap));
 
@@ -184,10 +181,9 @@ class MainMenu extends Menu
                 "PHOTON TORPEDOES ("+Enterprise.TorpedoEnergyCost+" ENERGY)",
                 function()
                 {
-                    gameOutputAppend("Fire torpedoes");
                     if (trekgame.enterprise.torpedoes <= 0)
                     {
-                        gameOutputAppend("We're out of torpedoes, captain!");
+                        gameOutputAppend("\nWe're out of torpedoes, captain!");
                     }
                     else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDamagedThreshold)
                     {

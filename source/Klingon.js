@@ -52,7 +52,7 @@ class Klingon extends GameObject
         let dist = this.distanceToObject(target);
         let phaserDamage = this.phaserDamageBase(dist) * randomInt(Klingon.MinPhaserMultiplier, Klingon.MaxPhaserMultiplier);
 
-        gameOutputAppend("Hit from sector " + this.sectorString() + " for " + phaserDamage + " units");
+        gameOutputAppend("\nHit from sector " + this.sectorString() + " for " + phaserDamage + " units");
         target.onPhaserHit(phaserDamage, game);
     }
 

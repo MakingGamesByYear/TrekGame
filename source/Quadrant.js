@@ -298,6 +298,15 @@ class Quadrant
     {
         let klist = this.getEntitiesOfType(Klingon);
 
+        if (klist.length > 1)
+        {
+            gameOutputAppend("\nThe Klingon vessels fire their phasers.");
+        }
+        else if (klist.length)
+        {
+            gameOutputAppend("\nThe Klingon vessel fires its phasers.");
+        }
+
         for (var x in klist)
         {
             klist[x].firePhasers(target, game);

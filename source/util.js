@@ -37,6 +37,12 @@ function randomFloat(min, max)
     return (Math.random() * (max-min) + min);
 }
 
+function gameOutputScrollToBottom()
+{
+    let textarea = document.getElementById("gameOutputBox");
+    textarea.scrollTop = textarea.scrollHeight;
+}
+
 function gameOutputAppend(str)
 {
     let textarea = document.getElementById("gameOutputBox")
