@@ -68,6 +68,8 @@ class TrekGame
         this.starDateBegin = this.starDate;
         this.endStarDate = this.starDate + TrekGame.BaseMissionTime + randomInt(0, TrekGame.MissionTimeSpread);
 
+        this.currentQuadrantScanned = false;
+
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
 
@@ -333,6 +335,8 @@ class TrekGame
 
     changeToQuadrant(qX, qY)
     {
+        this.currentQuadrantScanned = false;
+
         this.currentQuadrant.removeEntity(this.enterprise);
         this.currentQuadrant = this.galaxyMap.lookup(qX, qY);
         this.currentQuadrant.addEntityInFreeSector(this.enterprise);
@@ -507,6 +511,82 @@ class TrekGame
         this.advanceStardate(1.0);
 
         return true;
+    }
+
+    scanEnemyShips()
+    {
+        if (this.enterprise.freeEnergy < Enterprise.EnemyScanCost)
+        {
+            gameOutputAppend("\nNot enough energy to scan the enemy ships, captain!");
+            return;
+        }
+
+        let enemylist = this.currentQuadrant.getEntitiesOfType(Klingon);
+
+        if (!enemylist.length)
+        {
+            gameOutputAppend("\nNo enemies in this sector to scan, captain!");
+            return;
+        }
+
+        this.enterprise.freeEnergy -= Enterprise.EnemyScanCost;
+        this.currentQuadrantScanned = true;
+
+        gameOutputAppend("ENEMY SHIP SCANNER REPORTS");
+
+        let total_e_min = 0;
+        let total_e_max = 0;
+        for (var x in enemylist)
+        {
+            let k = enemylist[x];
+
+            // invert the enterprise phaser equations to get the estimate 
+            ///\todo make this a subfunction of Enterprise...
+
+            let kshields = k.shields;
+            let dist_to_k = this.enterprise.distanceToObject(k);
+
+            let minRandom = 2.0;
+            let maxRandom = 3.0;
+
+            let e_required_max = dist_to_k * kshields / minRandom;
+            let e_required_min = dist_to_k * kshields / maxRandom;
+
+            total_e_min += e_required_min;
+            total_e_max += e_required_max;
+
+            gameOutputAppend("\nEnemy in subsector (" + k.sectorString() + ")");
+            gameOutputAppend("Enemy shield level : " + kshields);
+            gameOutputAppend("Phaser energy to destroy : " + Math.round(e_required_min) + "-" + Math.round(e_required_max));
+            
+            ///\todo need to do some kind of max times enemy count thing instead of a sum
+            /// because of the even division thing.  we don't prioritize enemy ships.
+        }
+
+        gameOutputAppend("\nTotal enemies : " + enemylist.length);
+        gameOutputAppend("Total energy to destroy : " + Math.round(total_e_min) + "-" + Math.round(total_e_max));
+        gameOutputAppend("\n");
+    }
+
+    longRangeScan()
+    {
+        gameOutputAppend("\nLong Range Scan completed.");
+        gameOutputAppend("Adjacent sectors have been scanned.  The ship's computer has been updated with the following information:\n");
+        gameOutputAppend(this.enterprise.lrsString(this.galaxyMap));
+
+        var sh = this.enterprise.sensorHistory;
+        sh.updateSensorHistoryForEntityTypes
+        (
+            [Star, Klingon], 
+            this.galaxyMap, 
+            this.enterprise.quadrantX-1, 
+            this.enterprise.quadrantY-1, 
+            this.enterprise.quadrantX+1, 
+            this.enterprise.quadrantY+1
+        );
+
+        this.currentQuadrant.klingonsFire(this.enterprise, this);
+        this.advanceStardate(1.0);
     }
 
     torpedoHandler(inputline)

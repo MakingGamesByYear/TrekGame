@@ -109,26 +109,20 @@ class MainMenu extends Menu
             (
                 "4",
                 ") ",
-                "LONG RANGE SENSORS (1 STARDATE)",
+                "SENSORS",
                 function()
                 {
-                    gameOutputAppend("\nLong Range Scan completed.");
-                    gameOutputAppend("Adjacent sectors have been scanned.  The ship's computer has been updated with the following information:\n");
-                    gameOutputAppend(trekgame.enterprise.lrsString(trekgame.galaxyMap));
+                    let enemyScanAddendum = trekgame.currentQuadrantScanned ? "" : " (" + Enterprise.EnemyScanCost + " ENERGY)";
+                    let sensorMenu = new Menu();
 
-                    var sh = trekgame.enterprise.sensorHistory;
-                    sh.updateSensorHistoryForEntityTypes
+                    sensorMenu.options.push
                     (
-                        [Star, Klingon], 
-                        trekgame.galaxyMap, 
-                        trekgame.enterprise.quadrantX-1, 
-                        trekgame.enterprise.quadrantY-1, 
-                        trekgame.enterprise.quadrantX+1, 
-                        trekgame.enterprise.quadrantY+1
+                        new MenuOption("1", ") ", "SCAN ENEMY SHIPS" + enemyScanAddendum, function(){trekgame.scanEnemyShips(); return true;}),
+                        new MenuOption("2", ") ", "LONG RANGE SENSORS (1 STARDATE)", function(){trekgame.longRangeScan(); return true;}),
+                        new MenuOption("3", ") ", "BACK", function(){return true;})
                     );
 
-                    trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
-                    trekgame.advanceStardate(1.0);
+                    return trekgame.awaitInput(sensorMenu.toString(), 1, function(inputline){return sensorMenu.chooseOption(inputline);});
                 }
             ),
 

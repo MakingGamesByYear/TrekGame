@@ -433,7 +433,8 @@ class Enterprise extends GameObject
 Enterprise.StartTorpedoes = 10;
 Enterprise.StartEnergy = 3000;
 Enterprise.StartShields = 0;
-Enterprise.TorpedoEnergyCost = 2;
+Enterprise.TorpedoEnergyCost = 10;
+Enterprise.EnemyScanCost = 10;
 Enterprise.PhaserTargets = [Klingon];       // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 
 Enterprise.SRSFullyFunctionalHealth = .7;   // short range scan fully functional above this health
 Enterprise.SRSMinChanceCorrupt = .1;        // For a particular sector on the map, minimum chance it'll be corrupt when integrity is high
