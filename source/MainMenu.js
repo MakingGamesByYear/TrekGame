@@ -98,7 +98,7 @@ class MainMenu extends Menu
 
                         let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
 
-                        suggestedStr += "\nBased on current combat conditions, the ship's computer suggests a minimum shield energy level of " + suggestedShieldLevel;
+                        suggestedStr += "\nSUGGESTED SHIELD LEVEL FOR CURRENT COMBAT SITUATION: " + suggestedShieldLevel;
                     }
 
                     trekgame.awaitInput("ENTER NEW SHIELD ENERGY LEVEL. \nAVAILABLE: " + totalEnergy + suggestedStr, 4, trekgame.shieldHandler);
@@ -160,16 +160,16 @@ class MainMenu extends Menu
                 "PHASERS",
                 function()
                 {
-                    gameOutputAppend("Fire phasers");
                     if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
                     {
-                        gameOutputAppend("Enter the energy to commit to the phasers.");
-                        gameOutputAppend("Total available : " + trekgame.enterprise.freeEnergy);
-                        trekgame.awaitInput("Energy:", 4, trekgame.phaserHandler);
+                        let freestring = "\nFREE ENERGY : " + trekgame.enterprise.freeEnergy;
+                        trekgame.awaitInput("ENTER ENERGY TO EXPEND ON PHASER FIRE"+freestring, 4, trekgame.phaserHandler);
+                        return false;
                     }
                     else
                     {
-                        gameOutputAppend("No enemies detected in this sector, captain.");
+                        gameOutputAppend("\nPhaser control : No enemies detected in this sector, captain.");
+                        return true;
                     }
                 }
             ),

@@ -337,7 +337,7 @@ class TrekGame
         this.currentQuadrant = this.galaxyMap.lookup(qX, qY);
         this.currentQuadrant.addEntityInFreeSector(this.enterprise);
 
-        gameOutputAppend("Entering galactic sector " + this.enterprise.quadrantString());
+        gameOutputAppend("\nEntering galactic sector " + this.enterprise.quadrantString());
     }
 
     statusString()

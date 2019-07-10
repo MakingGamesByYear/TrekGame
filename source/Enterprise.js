@@ -149,6 +149,8 @@ class Enterprise extends GameObject
 
         this.freeEnergy += this.shields - newShields;
         this.shields = newShields;
+
+        gameOutputAppend("\nShields set to " + this.shields + ".  " + this.freeEnergy + " free energy remaining.");
     }
 
     toString()
@@ -265,9 +267,9 @@ class Enterprise extends GameObject
 
     fireTorpedo(game, angle)
     {
-        gameOutputAppend("\nTorpedo away!");
         if (this.freeEnergy >= Enterprise.TorpedoEnergyCost)
         {
+            gameOutputAppend("\nTorpedo fired!");
             let torpedoIntersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle);
             this.torpedoes--;
             this.freeEnergy -= Enterprise.TorpedoEnergyCost;
@@ -284,7 +286,7 @@ class Enterprise extends GameObject
         else
         {
             //not enough energy
-            gameOutputAppend("Not enough energy to fire torpedoes!");
+            gameOutputAppend("\nNot enough energy to fire torpedoes!");
         }
     }
 
@@ -329,7 +331,7 @@ class Enterprise extends GameObject
     // long range scan
     lrsString(galaxyMap)
     {
-        let rval = "KLINGONS\t\tSTARS\t\t\tSTARBASES\n";
+        let rval = "\t KLINGONS\t\t  STARS\t\t\tSTARBASES\n";
 
         let klingonLRS = this.lrsStringEntityType(galaxyMap, Klingon);
         let starLRS = this.lrsStringEntityType(galaxyMap, Star);
@@ -354,7 +356,7 @@ class Enterprise extends GameObject
 
         if (this.freeEnergy < energyRequired)
         {
-            gameOutputAppend("Not enough energy free to complete maneuver!");
+            gameOutputAppend("\nNot enough energy free to complete maneuver!");
             return;
         }
 
@@ -366,7 +368,7 @@ class Enterprise extends GameObject
 
         if (intersection.intersects != null)
         {
-            gameOutputAppend("Obstruction ahead.  Exiting warp.");
+            gameOutputAppend("\nObstruction ahead.  Exiting warp.");
         }
 
         let actualEnergy = this.warpEnergyCost(intersection.stepIterations);
