@@ -33,64 +33,17 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "3",
-                ") ",
-                "STARBASE MAP",
+                "3", ") ", "MAPS",
                 function()
                 {
-                    if (trekGame.enterprise.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
-                    {
-                        gameOutputAppend("\nShip's computer too damaged to access maps.");
-                        return true;
-                    }
-
-                    gameOutputAppend("\nFEDERATION STARBASES");
-                    gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap, StarBase, trekGame.enterprise));
-                    return true;
+                    ShipComputerMenu.showMapMenu(trekGame);
+                    return false;
                 }
             ),
 
             new MenuOption
             (
                 "4",
-                ") ",
-                "KLINGONS MAP",
-                function()
-                {
-                    if (trekGame.enterprise.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
-                    {
-                        gameOutputAppend("\nShip's computer too damaged to access maps.");
-                        return true;
-                    }
-
-                    gameOutputAppend("\nSENSOR RECORDS OF KLINGONS IN EACH SECTOR");
-                    gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Klingon, trekGame.enterprise));
-                    return true;
-                }
-            ),
-
-            new MenuOption
-            (
-                "5",
-                ") ",
-                "STAR DENSITY MAP",
-                function()
-                {
-                    if (trekGame.enterprise.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
-                    {
-                        gameOutputAppend("\nShip's computer too damaged to access maps.");
-                        return true;
-                    }
-                    
-                    gameOutputAppend("\nSENSOR RECORDS SHOWING NUMBER OF STARS IN EACH SECTOR");
-                    gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Star, trekGame.enterprise));
-                    return true;
-                }
-            ),
-
-            new MenuOption
-            (
-                "6",
                 ") ",
                 "SELF DESTRUCT",
                 function()
@@ -110,7 +63,7 @@ class ShipComputerMenu extends Menu
 
             new MenuOption
             (
-                "7",
+                "5",
                 ") ",
                 "BACK",
                 function()
@@ -120,5 +73,73 @@ class ShipComputerMenu extends Menu
             )
 
         );
+    }
+
+    static showMapMenu(trekGame)
+    {
+        let mapMenu = new Menu();
+
+        mapMenu.options.push(
+        new MenuOption
+            (
+                "1",
+                ") ",
+                "STARBASE MAP",
+                function()
+                {
+                    if (trekGame.enterprise.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
+                    {
+                        gameOutputAppend("\nShip's computer too damaged to access maps.");
+                        return true;
+                    }
+
+                    gameOutputAppend("\nFEDERATION STARBASES");
+                    gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap, StarBase, trekGame.enterprise));
+                    return true;
+                }
+            ),
+
+            new MenuOption
+            (
+                "2",
+                ") ",
+                "KLINGONS MAP",
+                function()
+                {
+                    if (trekGame.enterprise.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
+                    {
+                        gameOutputAppend("\nShip's computer too damaged to access maps.");
+                        return true;
+                    }
+
+                    gameOutputAppend("\nSENSOR RECORDS OF KLINGONS IN EACH SECTOR");
+                    gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Klingon, trekGame.enterprise));
+                    return true;
+                }
+            ),
+
+            new MenuOption
+            (
+                "3",
+                ") ",
+                "STAR DENSITY MAP",
+                function()
+                {
+                    if (trekGame.enterprise.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
+                    {
+                        gameOutputAppend("\nShip's computer too damaged to access maps.");
+                        return true;
+                    }
+                    
+                    gameOutputAppend("\nSENSOR RECORDS SHOWING NUMBER OF STARS IN EACH SECTOR");
+                    gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Star, trekGame.enterprise));
+                    return true;
+                }
+            ), 
+
+            new MenuOption("4", ") ", "BACK", function(){return true;})
+        );
+
+        trekGame.awaitInput(mapMenu.toString(), "1", function(inputLine){return mapMenu.chooseOption(inputLine);});
     }
 }
