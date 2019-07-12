@@ -20,6 +20,7 @@ class Klingon extends GameObject
         let shieldDeflectionLevel = Klingon.shieldDeflectionPercent * this.shields;
 
         gameOutputAppend("\nReport from sector " + this.sectorString());
+
         if (energy <= shieldDeflectionLevel)
         {
             gameOutputAppend("Phaser hit did no damage!");
@@ -36,7 +37,10 @@ class Klingon extends GameObject
             }
             else
             {
-                gameOutputAppend("" + this.shields + " units remain.");
+                if (game.currentQuadrantScanned)
+                {
+                    gameOutputAppend("" + this.shields + " units remain.");
+                }
             }
         }
     }

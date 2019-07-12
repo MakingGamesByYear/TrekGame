@@ -263,6 +263,11 @@ class Enterprise extends GameObject
 
             target.onPhaserHit(damageFinal, game);
         }
+
+        if (!game.currentQuadrantScanned)
+        {
+            gameOutputAppend("\nRun combat sensor scan to see enemy shield levels.");
+        }
     }
 
     fireTorpedo(game, angle)
