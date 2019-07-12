@@ -357,7 +357,7 @@ class Enterprise extends GameObject
         if (this.freeEnergy < energyRequired)
         {
             gameOutputAppend("\nNot enough energy free to complete maneuver!");
-            return;
+            return false;
         }
 
         let intersection = game.currentQuadrant.intersectionTest2(this.sectorX, this.sectorY, sectorXEnd, sectorYEnd)
@@ -371,10 +371,17 @@ class Enterprise extends GameObject
             gameOutputAppend("\nObstruction ahead.  Exiting warp.");
         }
 
+        if (!intersection.stepIterations)
+        {
+            return false;
+        }
+
         let actualEnergy = this.warpEnergyCost(intersection.stepIterations);
 
         // get the energy cost of the sectors we actually travelled
-        this.freeEnergy -= actualEnergy
+        this.freeEnergy -= actualEnergy;
+
+        return true;
     }
 
     damageReport()

@@ -443,7 +443,7 @@ class TrekGame
             (
                 "1", 
                 ") ", 
-                "CONFIRM JUMP TO QUADRANT " + (quadrantX+1) + ", " + (quadrantY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
+                "CONFIRM JUMP TO SECTOR " + (quadrantX+1) + ", " + (quadrantY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
                 function()
                 {
                     trekgame.enterprise.freeEnergy -= jumpEnergyRequired;
@@ -504,13 +504,45 @@ class TrekGame
 
         let sectorsToTravel = this.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
 
-        this.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, this);
+        let trekgame = this;
+        let confirmFunc = function()
+        {
+            if (trekgame.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, trekgame))
+            {
+                trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
+                trekgame.advanceStardate(1.0);
+            }
 
-        this.currentQuadrant.klingonsFire(this.enterprise, this);
+            return true;
+        }
 
-        this.advanceStardate(1.0);
+        let jumpEnergyRequired = Math.round(this.enterprise.warpEnergyCost(sectorsToTravel));
 
-        return true;
+        let confirmMenu = new Menu();
+        confirmMenu.options.push
+        (
+            new MenuOption
+            (
+                "1", 
+                ") ", 
+                "CONFIRM JUMP TO SUBSECTOR " + (subsectorX+1) + ", " + (subsectorY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
+                confirmFunc
+            ),
+
+            new MenuOption
+            (
+                "2",
+                ") ",
+                "CANCEL",
+                function()
+                {
+                    return true;
+                }
+            )
+        )
+        
+        this.awaitInput(confirmMenu.toString(), 1, function(inputline){return confirmMenu.chooseOption(inputline);});
+        return false;
     }
 
     scanEnemyShips()
@@ -534,8 +566,9 @@ class TrekGame
 
         gameOutputAppend("ENEMY SHIP SCANNER REPORTS");
 
-        let total_e_min = 0;
-        let total_e_max = 0;
+        let e_max_of_min = 0;
+        let e_max_of_max = 0;
+
         for (var x in enemylist)
         {
             let k = enemylist[x];
@@ -552,19 +585,16 @@ class TrekGame
             let e_required_max = dist_to_k * kshields / minRandom;
             let e_required_min = dist_to_k * kshields / maxRandom;
 
-            total_e_min += e_required_min;
-            total_e_max += e_required_max;
+            e_max_of_min = Math.max(e_required_min, e_max_of_min);
+            e_max_of_max = Math.max(e_required_max, e_max_of_max);
 
             gameOutputAppend("\nEnemy in subsector (" + k.sectorString() + ")");
             gameOutputAppend("Enemy shield level : " + kshields);
             gameOutputAppend("Phaser energy to destroy : " + Math.round(e_required_min) + "-" + Math.round(e_required_max));
-            
-            ///\todo need to do some kind of max times enemy count thing instead of a sum
-            /// because of the even division thing.  we don't prioritize enemy ships.
         }
 
         gameOutputAppend("\nTotal enemies : " + enemylist.length);
-        gameOutputAppend("Total energy to destroy : " + Math.round(total_e_min) + "-" + Math.round(total_e_max));
+        gameOutputAppend("Total energy to destroy : " + Math.round(enemylist.length * e_max_of_min) + "-" + Math.round(enemylist.length * e_max_of_max));
         gameOutputAppend("\n");
     }
 
