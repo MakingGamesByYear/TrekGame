@@ -8,12 +8,15 @@ class GameObject
         this.quadrantY = 0;
         this.entityType = this.constructor.name;
 
-        if (!className.Instances)
+        if (className)
         {
-            className.Instances = 0;
-        }
+            if (!className.Instances)
+            {
+                className.Instances = 0;
+            }
 
-        className.Instances++;
+            className.Instances++;
+        }
     }
 
     isAdjacentTo(obj2)

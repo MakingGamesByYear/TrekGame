@@ -46,7 +46,7 @@ class MainMenu extends Menu
                             "SHORT RANGE JUMP (1 STARDATE)",
                             function()
                             {
-                                trekgame.awaitInput("Enter destination subsector (X coordinate)", 2, trekgame.navigationHandlerShortRangeX);
+                                trekgame.getSubsectorMenu(trekgame.shortRangeNavigationHandler);
                                 return false;
                             }
                         ),
@@ -190,9 +190,9 @@ class MainMenu extends Menu
                     }
                     else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
                     {
-                        gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.");
-                        gameOutputAppend("Enter torpedo heading manually (in degrees).");
-                        trekgame.awaitInput("Torpedo Heading (degrees)", 3, trekgame.torpedoHandler);
+                        gameOutputAppend("\nDue to damage, torpedo targeting computer is nonfunctional.");
+                        gameOutputAppend("You will have to enter the torpedo destination coordinates manually!");
+                        trekgame.manualTorpedoHandler();
                     }
                     else
                     {

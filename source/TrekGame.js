@@ -393,6 +393,59 @@ class TrekGame
         return true;
     }
 
+
+    // finalHandler has prototype (game, x, y)
+    getSubsectorMenu(finalHandler)
+    {
+        let promptstringX = "Enter destination subsector X coordinate.  Enter a value between 1 and " + quadrantWidthSectors;
+        let promptstringY = "Enter destination subsector Y coordinate.  Enter a value between 1 and " + quadrantHeightSectors;
+
+        let trekgame = this;
+
+        let yhandler = function(inputline, subsectorX)
+        {
+            let subsectorY = parseInt(inputline) - 1;
+
+            if ((subsectorY == null) || isNaN(subsectorY) || subsectorY < 0 || subsectorY >= quadrantHeightSectors)
+            {
+                gameOutputAppend("Invalid value!");
+                return false;
+            }
+
+            return finalHandler(game, subsectorX, subsectorY);
+        };
+
+        let xhandler = function(inputline)
+        {
+            let subsectorX = parseInt(inputline) - 1;
+
+            if ((subsectorX == null) || isNaN(subsectorX) || subsectorX < 0 || subsectorX >= quadrantWidthSectors)
+            {
+                gameOutputAppend("Invalid value!");
+                return false;
+            }
+
+            this.awaitInput
+            (
+                promptstringY,
+                2, 
+                function(inputline)
+                {
+                    return yhandler(inputline, subsectorX)
+                }
+            );
+            
+            return false;
+        }
+
+        this.awaitInput(
+            promptstringX,
+            2,
+            xhandler
+        );
+
+    }
+
     navigationHandlerLongRangeX(inputline)
     {
         console.log("nav");
@@ -472,43 +525,10 @@ class TrekGame
         this.awaitInput(confirmMenu.toString(), 1, function(inputline){return confirmMenu.chooseOption(inputline);});
     }
 
-    navigationHandlerShortRangeX(inputline)
+    shortRangeNavigationHandler(trekgame, subsectorX, subsectorY)
     {
-        console.log("nav");
-        let subsectorX = parseInt(inputline) - 1;
+        let sectorsToTravel = trekgame.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
 
-        if ((subsectorX == null) || isNaN(subsectorX) || subsectorX < 0 || subsectorX >= quadrantWidthSectors)
-        {
-            gameOutputAppend("Invalid value!");
-            return false;
-        }
-
-        this.awaitInput(
-            "Enter destination subsector (Y coordinate)",
-            2, 
-            
-            function(inputline)
-            {
-                return this.navigationHandlerShortRangeY(inputline, subsectorX);
-            }
-        );
-        
-        return false;
-    }
-
-    navigationHandlerShortRangeY(inputline, subsectorX)
-    {
-        let subsectorY = parseInt(inputline) - 1;
-
-        if ((subsectorY == null) || isNaN(subsectorY) || subsectorY < 0 || subsectorY >= quadrantHeightSectors)
-        {
-            gameOutputAppend("Invalid value!");
-            return false;
-        }
-
-        let sectorsToTravel = this.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
-
-        let trekgame = this;
         let confirmFunc = function()
         {
             if (trekgame.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, trekgame))
@@ -520,7 +540,7 @@ class TrekGame
             return true;
         }
 
-        let jumpEnergyRequired = Math.round(this.enterprise.warpEnergyCost(sectorsToTravel));
+        let jumpEnergyRequired = Math.round(trekgame.enterprise.warpEnergyCost(sectorsToTravel));
 
         let confirmMenu = new Menu();
         confirmMenu.options.push
@@ -545,7 +565,7 @@ class TrekGame
             )
         )
         
-        this.awaitInput(confirmMenu.toString(), 1, function(inputline){return confirmMenu.chooseOption(inputline);});
+        trekgame.awaitInput(confirmMenu.toString(), 1, function(inputline){return confirmMenu.chooseOption(inputline);});
         return false;
     }
 
@@ -623,20 +643,22 @@ class TrekGame
         this.advanceStardate(1.0);
     }
 
-    torpedoHandler(inputline)
+    manualTorpedoHandler()
     {
-        let angle = parseInt(inputline);
+        let tfunc = function(trekgame, x, y){
+            let gobj = new GameObject();
+            gobj.sectorX = x;
+            gobj.sectorY = y;
+            trekgame.torpedoHandler(gobj)
+            return true;
+        };
 
-        //console.log(""+angle);
-        gameOutputAppend(""+angle);
+        this.getSubsectorMenu(tfunc);
+    }
 
-        if ((angle == null) || isNaN(angle) || angle < 0 || angle > 360.0)
-        {
-            gameOutputAppend("Invalid value!");
-            return false;
-        }
-
-        this.enterprise.fireTorpedo(this, angle);
+    torpedoHandler(target)
+    {
+        this.enterprise.fireTorpedo(this, target);
 
         this.currentQuadrant.klingonsFire(this.enterprise, this);
 

@@ -270,12 +270,12 @@ class Enterprise extends GameObject
         }
     }
 
-    fireTorpedo(game, angle)
+    fireTorpedo(game, target)
     {
         if (this.freeEnergy >= Enterprise.TorpedoEnergyCost)
         {
-            gameOutputAppend("\nTorpedo fired!");
-            let torpedoIntersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle);
+            gameOutputAppend("\nFiring torpedoes towards subsector " + target.sectorString());
+            let torpedoIntersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, target.sectorX, target.sectorY, Infinity);
             this.torpedoes--;
             this.freeEnergy -= Enterprise.TorpedoEnergyCost;
             
@@ -365,8 +365,7 @@ class Enterprise extends GameObject
             return false;
         }
 
-        let intersection = game.currentQuadrant.intersectionTest2(this.sectorX, this.sectorY, sectorXEnd, sectorYEnd)
-        //game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, angle, sectorsToTravel);
+        let intersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, sectorXEnd, sectorYEnd)
            
         this.sectorX = Math.floor(intersection.lastX);
         this.sectorY = Math.floor(intersection.lastY);

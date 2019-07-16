@@ -10,17 +10,18 @@ class TorpedoMenu extends Menu
         {
             let targetHeading = trekgame.enterprise.angleToObject(targetList[x]);
 
+            let tgt = targetList[x];
+
             this.options.push
             (
                 new MenuOption
                 (
                     x + 1,
                     ") ",
-                    "TARGET AT SUBSECTOR ("+targetList[x].sectorString() + ") : AT HEADING " + Math.round(targetHeading) + " DEGREES",
+                    "TARGET AT SUBSECTOR ("+targetList[x].sectorString() + ")",
                     function()
                     {
-                        trekgame.enterprise.fireTorpedo(trekgame, targetHeading);
-                        trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
+                        trekgame.torpedoHandler(tgt);
                         return true;
                     }
                 )
@@ -36,9 +37,7 @@ class TorpedoMenu extends Menu
                 "MANUAL TARGETING",
                 function()
                 {
-                    gameOutputAppend("Enter torpedo heading manually (in degrees).");
-                    trekgame.awaitInput("Torpedo Heading (degrees)", 3, trekgame.torpedoHandler);
-                    return false;
+                    trekgame.manualTorpedoHandler();
                 }
             )
         );
