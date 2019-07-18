@@ -951,15 +951,9 @@ class TrekGame
             quadrantStringGrid.setValue(gameObject.sectorX, gameObject.sectorY, objStr);
         }
 
-        let healthOK = this.enterprise.components.ShortRangeSensors.componentHealth > Enterprise.SRSFullyFunctionalHealth;
-
-        if (!healthOK)
+        if (!this.enterprise.components.ShortRangeSensors.fullyFunctional())
         {
-            // goes from 0 when the component is at the maximum health in range, to 1 when the component is at 0%
-            let hnorm = (Enterprise.SRSFullyFunctionalHealth - this.enterprise.components.ShortRangeSensors.componentHealth) / Enterprise.SRSFullyFunctionalHealth;
-
-            // lerp
-            let chanceCorrupt = (1.0 - hnorm) * Enterprise.SRSMinChanceCorrupt + hnorm * Enterprise.SRSMaxChanceCorrupt;
+            this.enterprise.components.ShortRangeSensors.chanceCorrupt();
 
             // randomly go through and corrupt the short range scan based on the health of the ship components
             for (var x in quadrantStringGrid.contents)

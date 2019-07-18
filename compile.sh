@@ -22,6 +22,7 @@ IncludeSource GameObject.js
 IncludeSource StarBase.js
 IncludeSource Klingon.js
 IncludeSource Star.js
+IncludeSource ShipComponents.js
 IncludeSource Enterprise.js
 IncludeSource Quadrant.js
 IncludeSource GalaxyMap.js

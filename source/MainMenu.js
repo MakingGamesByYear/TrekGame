@@ -179,20 +179,23 @@ class MainMenu extends Menu
                     {
                         gameOutputAppend("\nWe're out of torpedoes, captain!");
                     }
-                    else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDamagedThreshold)
+                    else if (trekgame.enterprise.components.PhotonTubes.canFire())
                     {
-                        // automatic targeting enabled. push a menu of targets.
-                        console.log("auto targeting path");
+                        if (trekgame.enterprise.components.PhotonTubes.targetingAvailable())
+                        {
+                            // automatic targeting enabled. push a menu of targets.
+                            console.log("auto targeting path");
 
-                        let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame);
+                            let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame);
 
-                        trekgame.awaitInput(torpMenu.toString(), 1, function(inputline){return torpMenu.chooseOption(inputline);});
-                    }
-                    else if (trekgame.enterprise.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
-                    {
-                        gameOutputAppend("\nDue to damage, torpedo targeting computer is nonfunctional.");
-                        gameOutputAppend("You will have to enter the torpedo destination coordinates manually!");
-                        trekgame.manualTorpedoHandler();
+                            trekgame.awaitInput(torpMenu.toString(), 1, function(inputline){return torpMenu.chooseOption(inputline);});
+                        }
+                        else
+                        {
+                            gameOutputAppend("\nDue to damage, torpedo targeting computer is nonfunctional.");
+                            gameOutputAppend("You will have to enter the torpedo destination coordinates manually!");
+                            trekgame.manualTorpedoHandler();
+                        }
                     }
                     else
                     {

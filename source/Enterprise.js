@@ -1,13 +1,3 @@
-class ShipComponent
-{
-    constructor (componentName, damProb)
-    {
-        this.componentHealth = 1.0; //percent
-        this.componentName = componentName;
-        this.componentDamageProbability = damProb;
-    }
-}
-
 class Enterprise extends GameObject
 {
     componentDamageProbabilities()
@@ -33,14 +23,14 @@ class Enterprise extends GameObject
         this.freeEnergy = Enterprise.StartEnergy;
 
         this.components =   {
-                                WarpEngines : new ShipComponent("Warp Engines", .0625), 
-                                ShortRangeSensors: new ShipComponent("Short Range Sensors", .0625),
-                                LongRangeSensors: new ShipComponent("Long Range Sensors", .25),
-                                PhaserControl : new ShipComponent("Phaser Control", .0625),
-                                PhotonTubes : new ShipComponent("Photon Tubes", .125),
-                                DamageControl : new ShipComponent("Damage Control", .0625),
-                                ShieldControl : new ShipComponent("Shield Control", .125), 
-                                LibraryComputer : new ShipComponent("Library Computer", .25)
+                                WarpEngines : new WarpEnginesComponent(), 
+                                ShortRangeSensors: new ShortRangeSensorsComponent(),
+                                LongRangeSensors: new LongRangeSensorsComponent(),
+                                PhaserControl : new PhaserControlComponent(),
+                                PhotonTubes : new PhotonTubesComponent(),
+                                DamageControl : new DamageControlComponent(),
+                                ShieldControl : new ShieldControlComponent(), 
+                                LibraryComputer : new LibraryComputerComponent()
                             }
 
         this.hitNoShields = false;
@@ -400,44 +390,11 @@ class Enterprise extends GameObject
 
         gameOutputAppend("\n\nNOTES:\nRepair crews can repair 1-5% damage per stardate.  A starbase will fully repair a single component every stardate.");
 
-        // torpedo tube functionality notes
-        if (this.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDamagedThreshold)
+        for (var key in this.components)
         {
+            let component = this.components[key];
+            component.damageReport();
         }
-        else if (this.components.PhotonTubes.componentHealth > Enterprise.torpedoTubesDisabledThreshold)
-        {
-            gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.  You will need to input torpedo trajectories manually until the system is repaired.");
-        }
-        else
-        {
-            gameOutputAppend("Torpedo tubes too damaged to fire.");
-        }
-
-        // short range scan functionality notes
-        let srsHealthOK = this.components.ShortRangeSensors.componentHealth > Enterprise.SRSFullyFunctionalHealth;
-        if (!srsHealthOK)
-        {
-            gameOutputAppend("Short range sensors are damaged.  Map display may be corrupted.");
-        }
-
-        // library computer
-        if (this.components.LibraryComputer.componentHealth <= Enterprise.libraryComputerDamagedThreshold)
-        {
-            gameOutputAppend("Ship computer is too damaged to access maps.");
-        }
-                    
-
-        /*
-        WarpEngines : new ShipComponent("Warp Engines", .0625), 
-        xx ShortRangeSensors: new ShipComponent("Short Range Sensors", .0625),
-        LongRangeSensors: new ShipComponent("Long Range Sensors", .25),
-        PhaserControl : new ShipComponent("Phaser Control", .0625),
-        PhotonTubes : new ShipComponent("Photon Tubes", .125),
-        DamageControl : new ShipComponent("Damage Control", .0625),
-        ShieldControl : new ShipComponent("Shield Control", .125), 
-        xx LibraryComputer : new ShipComponent("Library Computer", .25)
-        */
-
     }
 }
 
@@ -447,17 +404,9 @@ Enterprise.StartShields = 0;
 Enterprise.TorpedoEnergyCost = 10;
 Enterprise.EnemyScanCost = 10;
 Enterprise.PhaserTargets = [Klingon];       // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 
-Enterprise.SRSFullyFunctionalHealth = .7;   // short range scan fully functional above this health
-Enterprise.SRSMinChanceCorrupt = .1;        // For a particular sector on the map, minimum chance it'll be corrupt when integrity is high
-Enterprise.SRSMaxChanceCorrupt = .75;       // For a particular sector on the map, maximum chance it'll be corrupt when integrity is low
 Enterprise.EnergyCostPerSector = 1.0;       // Warp cost per sector moved
 Enterprise.EnergyCostPerQuadrant = 10.0;       // Warp cost per quadrant moved
 Enterprise.DamagePassthroughRatio = .25;    // if damage is 25% of shields or more, pass damage through to components
 Enterprise.RandomPassthroughRatio = .25;    // 25% chance that damage will pass through to ship components regardless of shields
-
-Enterprise.torpedoTubesDamagedThreshold = .5; // 50% health = automatic targeting is down.
-Enterprise.torpedoTubesDisabledThreshold = .25; // 25% health = can't fire torpedoes.
-Enterprise.libraryComputerDamagedThreshold = .25; // 25% health = can't access maps.
-
 Enterprise.MinComponentRepairPerTurn = 1;  // integrity min autorepair per component
 Enterprise.MaxComponentRepairPerTurn = 5;  // integrity max autorepair per component
