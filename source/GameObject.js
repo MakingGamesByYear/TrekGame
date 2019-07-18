@@ -30,49 +30,9 @@ class GameObject
         return sameQuadrant && (xSectorDiff <= 1) && (ySectorDiff <= 1);
     }
 
-    angleToObject(obj2)
-    {
-        console.log("this subsector " + this.sectorString());
-        console.log("target subsector " + obj2.sectorString());
-
-        let xdiff = obj2.sectorX - this.sectorX;
-        let ydiff = obj2.sectorY - this.sectorY;
-
-        let radians = Math.atan2(ydiff, xdiff);
-
-        let degrees = radians * 180.0 / Math.PI;
-
-        if (degrees < 0.0)
-        {
-            degrees = 360.0 + degrees;
-        }
-
-        return 360.0 - degrees;
-    }
-
-    angleToSubsector(sectorX, sectorY)
-    {
-        let xdiff = sectorX - this.sectorX;
-        let ydiff = sectorY - this.sectorY;
-
-        let radians = Math.atan2(ydiff, xdiff);
-
-        let degrees = radians * 180.0 / Math.PI;
-
-        if (degrees < 0.0)
-        {
-            degrees = 360.0 + degrees;
-        }
-
-        return 360.0 - degrees;
-    }
-
     distanceToObject(obj2)
     {
-        // assumes objects are in the same quadrant, for now
-        let xdiff = this.sectorX - obj2.sectorX;
-        let ydiff = this.sectorY - obj2.sectorY;
-        return Math.sqrt(xdiff*xdiff + ydiff*ydiff);
+        return this.distanceToSectorLoc(obj2.sectorX, obj2.sectorY);
     }
 
     distanceToSectorLoc(sectorX, sectorY)

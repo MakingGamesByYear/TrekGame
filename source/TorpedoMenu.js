@@ -8,8 +8,6 @@ class TorpedoMenu extends Menu
 
         for (var x = 0; x < targetList.length; x++)
         {
-            let targetHeading = trekgame.enterprise.angleToObject(targetList[x]);
-
             let tgt = targetList[x];
 
             this.options.push

@@ -47,6 +47,13 @@ class TrekGame
 
     constructor()
     {
+        this.primeUniverse = true;
+
+        if (!this.primeUniverse)
+        {
+            TrekGame.EntityTypes.push(Planet);
+        }
+
         this.gameOver = false;
 
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
