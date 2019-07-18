@@ -533,6 +533,7 @@ class TrekGame
         {
             if (trekgame.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, trekgame))
             {
+                gameOutputAppend("\nComing out of warp in sector " + trekgame.enterprise.quadrantString());
                 trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
                 trekgame.advanceStardate(1.0);
             }

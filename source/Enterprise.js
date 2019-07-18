@@ -372,7 +372,7 @@ class Enterprise extends GameObject
 
         if (intersection.intersects != null)
         {
-            gameOutputAppend("\nObstruction ahead.  Exiting warp.");
+            gameOutputAppend("\nObstruction ahead.  Shutting down warp engines.");
         }
 
         if (!intersection.stepIterations)
