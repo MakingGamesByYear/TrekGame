@@ -39,7 +39,14 @@ class Klingon extends GameObject
             {
                 if (game.currentQuadrantScanned)
                 {
-                    gameOutputAppend("" + this.shields + " units remain.");
+                    if (game.enterprise.canSeeEntity(this))
+                    {
+                       gameOutputAppend("" + this.shields + " units remain.");
+                    }
+                    else
+                    {
+                        gameOutputAppend("Sensor damage prevents reading the enemy's shields!");
+                    }
                 }
             }
         }
@@ -56,7 +63,8 @@ class Klingon extends GameObject
         let dist = this.distanceToObject(target);
         let phaserDamage = this.phaserDamageBase(dist) * randomInt(Klingon.MinPhaserMultiplier, Klingon.MaxPhaserMultiplier);
 
-        gameOutputAppend("\nHit from sector " + this.sectorString() + " for " + phaserDamage + " units");
+        let sstr = game.enterprise.canSeeEntity(this) ? this.sectorString() : " ???? ";
+        gameOutputAppend("\nHit from sector " + sstr + " for " + phaserDamage + " units");
         target.onPhaserHit(phaserDamage, game);
     }
 

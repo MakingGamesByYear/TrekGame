@@ -395,7 +395,7 @@ class TrekGame
 
         this.enterprise.setShieldLevel(parsedVal);
 
-        this.currentQuadrant.klingonsFire(this.enterprise, this);
+        this.combatStep();
 
         return true;
     }
@@ -541,7 +541,6 @@ class TrekGame
             if (trekgame.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, trekgame))
             {
                 gameOutputAppend("\nComing out of warp in sector " + trekgame.enterprise.quadrantString());
-                trekgame.currentQuadrant.klingonsFire(trekgame.enterprise, trekgame);
                 trekgame.advanceStardate(1.0);
             }
 
@@ -596,10 +595,12 @@ class TrekGame
         this.enterprise.freeEnergy -= Enterprise.EnemyScanCost;
         this.currentQuadrantScanned = true;
 
-        gameOutputAppend("ENEMY SHIP SCANNER REPORTS");
+        gameOutputAppend("\nENEMY SHIP SCANNER REPORTS");
 
         let e_max_of_min = 0;
         let e_max_of_max = 0;
+
+        let allEnemiesVisible = true;
 
         for (var x in enemylist)
         {
@@ -619,14 +620,34 @@ class TrekGame
 
             e_max_of_min = Math.max(e_required_min, e_max_of_min);
             e_max_of_max = Math.max(e_required_max, e_max_of_max);
-
-            gameOutputAppend("\nEnemy in subsector (" + k.sectorString() + ")");
-            gameOutputAppend("Enemy shield level : " + kshields);
-            gameOutputAppend("Phaser energy to destroy : " + Math.round(e_required_min) + "-" + Math.round(e_required_max));
+            
+            let entityVisible = this.enterprise.canSeeEntity(k);
+            if (!entityVisible)
+            {
+                allEnemiesVisible = false;
+                gameOutputAppend("\n---SENSOR CORRUPTION DETECTED!---");
+                gameOutputAppend("Enemy in subsector : ???");
+                gameOutputAppend("Enemy shield level : ????");
+                gameOutputAppend("Phaser energy to destroy : ??????");
+            }
+            else
+            {
+                gameOutputAppend("\nEnemy in subsector (" + k.sectorString() + ")");
+                gameOutputAppend("Enemy shield level : " + kshields);
+                gameOutputAppend("Phaser energy to destroy : " + Math.round(e_required_min) + "-" + Math.round(e_required_max));
+            }
         }
 
         gameOutputAppend("\nTotal enemies : " + enemylist.length);
-        gameOutputAppend("Total energy to destroy : " + Math.round(enemylist.length * e_max_of_min) + "-" + Math.round(enemylist.length * e_max_of_max));
+        
+        if (allEnemiesVisible)
+        {
+            gameOutputAppend("Total energy to destroy : " + Math.round(enemylist.length * e_max_of_min) + "-" + Math.round(enemylist.length * e_max_of_max));
+        }
+        else
+        {
+            gameOutputAppend("Total energy to destroy : ?????");
+        }
         gameOutputAppend("\n");
     }
 
@@ -647,7 +668,6 @@ class TrekGame
             this.enterprise.quadrantY+1
         );
 
-        this.currentQuadrant.klingonsFire(this.enterprise, this);
         this.advanceStardate(1.0);
     }
 
@@ -668,7 +688,7 @@ class TrekGame
     {
         this.enterprise.fireTorpedo(this, target);
 
-        this.currentQuadrant.klingonsFire(this.enterprise, this);
+        this.combatStep();
 
         return true;
     }
@@ -694,11 +714,18 @@ class TrekGame
             return true;
         }
 
-        this.enterprise.firePhasers(energy, this);
+        if (this.enterprise.firePhasers(energy, this))
+        {
+            this.combatStep();
+        }
 
-        this.currentQuadrant.klingonsFire(this.enterprise, this);
-        
         return true;
+    }
+
+    combatStep()
+    {
+        this.currentQuadrant.klingonsFire(this.enterprise, this);
+        this.enterprise.components.ShortRangeSensors.generateCorruptGrid();
     }
 
     updateStatus()
@@ -824,6 +851,8 @@ class TrekGame
 
     advanceStardate(adv)
     {
+        this.combatStep();
+
         this.starDate += adv;
         this.enterprise.autoRepairComponents();
 
@@ -960,14 +989,10 @@ class TrekGame
 
         if (!this.enterprise.components.ShortRangeSensors.fullyFunctional())
         {
-            this.enterprise.components.ShortRangeSensors.chanceCorrupt();
-
             // randomly go through and corrupt the short range scan based on the health of the ship components
             for (var x in quadrantStringGrid.contents)
-            {
-                let corrupt = Math.random() < chanceCorrupt;
-                
-                if (corrupt)
+            {   
+                if (this.enterprise.components.ShortRangeSensors.isSectorCorrupt1D(x))
                 {
                     quadrantStringGrid.setValue1D(x, '?'.padStart(sectorDisplayWidthChars, ' '));
                 }

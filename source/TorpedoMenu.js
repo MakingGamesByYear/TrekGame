@@ -10,20 +10,40 @@ class TorpedoMenu extends Menu
         {
             let tgt = targetList[x];
 
-            this.options.push
-            (
-                new MenuOption
+            if (trekgame.enterprise.canSeeEntity(tgt))
+            {
+                this.options.push
                 (
-                    x + 1,
-                    ") ",
-                    "TARGET AT SUBSECTOR ("+targetList[x].sectorString() + ")",
-                    function()
-                    {
-                        trekgame.torpedoHandler(tgt);
-                        return true;
-                    }
-                )
-            );
+                    new MenuOption
+                    (
+                        x + 1,
+                        ") ",
+                        "TARGET AT SUBSECTOR ("+targetList[x].sectorString() + ")",
+                        function()
+                        {
+                            trekgame.torpedoHandler(tgt);
+                            return true;
+                        }
+                    )
+                );
+            }
+            else
+            {
+                this.options.push
+                (
+                    new MenuOption
+                    (
+                        x + 1,
+                        ") ",
+                        "???????#####?#??#???#??#??????????",
+                        function()
+                        {
+                            gameOutputAppend("\nUnable to lock on to target due to short range sensor damage");
+                            return true;
+                        }
+                    )
+                );
+            }
         }
 
         this.options.push

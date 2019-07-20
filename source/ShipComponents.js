@@ -50,6 +50,30 @@ class ShortRangeSensorsComponent extends ShipComponent
             gameOutputAppend("Short range sensors are damaged.  Map display may be corrupted.");
         }
     }
+
+    generateCorruptGrid()
+    {
+        this.corruptGrid = new Grid(quadrantWidthSectors, quadrantHeightSectors);
+
+        let corruptChance = this.chanceCorrupt();
+
+        for (var x in this.corruptGrid.contents)
+        {
+            this.corruptGrid.setValue1D(x, Math.random() < corruptChance);
+        }
+
+        console.log(this.corruptGrid);
+    }
+
+    isSectorCorrupt1D(x)
+    {
+        return this.corruptGrid.lookup1D(x);
+    }
+
+    isSectorCorrupt(x, y)
+    {
+        return this.corruptGrid.lookup(x,y);
+    }
 }
 
 ShortRangeSensorsComponent.FullyFunctionalHealth = .7;   // short range scan fully functional above this health

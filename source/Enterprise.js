@@ -1,5 +1,10 @@
 class Enterprise extends GameObject
 {
+    canSeeEntity(entity)
+    {
+        return !this.components.ShortRangeSensors.isSectorCorrupt(entity.sectorX, entity.sectorY);
+    }
+
     componentDamageProbabilities()
     {
         var probArray = [];
@@ -36,6 +41,7 @@ class Enterprise extends GameObject
         this.hitNoShields = false;
         this.dockStarbase = null;
         this.sensorHistory = new SensorHistory();
+        this.components.ShortRangeSensors.generateCorruptGrid();
     }
 
     // called on navigation
@@ -232,20 +238,39 @@ class Enterprise extends GameObject
             targets.push(...game.currentQuadrant.getEntitiesOfType(Enterprise.PhaserTargets[x]));
         }
 
+        let enterprise = this;
+        let targetsFiltered = targets.filter(function(item){return enterprise.canSeeEntity(item)});
+
         console.assert(energy <= this.freeEnergy);
+
+        if (!targetsFiltered.length)
+        {
+            gameOutputAppend("\nUnable to lock phasers onto targets because of sensor damage!");
+            return false;
+        }
 
         this.freeEnergy -= energy;
 
-        let endstr = targets.length > 1 ? "s." : ".";
-        gameOutputAppend("\nFiring phasers at " + targets.length + " target" + endstr);
-        console.assert(targets.length > 0);
-        let damagePerTarget = energy / targets.length;
+        let endstr = targetsFiltered.length > 1 ? "s." : ".";
+        gameOutputAppend("\nFiring phasers at " + targetsFiltered.length + " target" + endstr);
+        
+        let invisibleEnemies = targets.length - targetsFiltered.length;
+        if (invisibleEnemies > 1)
+        {
+            gameOutputAppend("" + invisibleEnemies + " enemies not able to be targeted due to sensor damage!");
+        }
+        else if (invisibleEnemies == 1)
+        {
+            gameOutputAppend("" + 1 + " enemy not able to be targeted due to sensor damage!");
+        }
+      
+        let damagePerTarget = energy / targetsFiltered.length;
 
         var x;
-        for (x in targets)
+        for (x in targetsFiltered)
         {
             console.log("target");
-            let target = targets[x];
+            let target = targetsFiltered[x];
             let dist = this.distanceToObject(target);
 
             let damageAttenuated = damagePerTarget / dist;
@@ -258,6 +283,8 @@ class Enterprise extends GameObject
         {
             gameOutputAppend("\nRun combat sensor scan to see enemy shield levels.");
         }
+
+        return true;
     }
 
     fireTorpedo(game, target)

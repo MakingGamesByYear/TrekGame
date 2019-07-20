@@ -1,6 +1,6 @@
 class Grid
 {
-    constructor(gridX, gridY, gridItemConstructor)
+    constructor(gridX, gridY, gridItemConstructor = function(){return null;})
     {
         checkArgumentsDefinedAndHaveValue(arguments);
 
