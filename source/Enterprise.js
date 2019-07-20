@@ -407,6 +407,12 @@ class Enterprise extends GameObject
 
     damageReport()
     {
+        if (!this.components.LibraryComputer.damageReportAvailable())
+        {
+            gameOutputAppend("\nDamage report unavailable due to computer damage!");
+            return;
+        }
+
         gameOutputAppend("\nDAMAGE REPORT:\n");
         gameOutputAppend("Component Integrity:")
         for (var key in this.components)

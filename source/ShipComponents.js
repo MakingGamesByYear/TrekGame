@@ -147,15 +147,6 @@ class PhotonTubesComponent extends ShipComponent
 PhotonTubesComponent.DamagedThreshold = .5; // 50% health = automatic targeting is down.
 PhotonTubesComponent.DisabledThreshold = .25; // 25% health = can't fire torpedoes.
 
-class DamageControlComponent extends ShipComponent
-{
-    constructor()
-    {
-        super("Damage Control", .0625);
-    }
-}
-
-
 // make the shield scan thing conditional.  in both places.
 // inefficiency?  Or max shields.
 class ShieldControlComponent extends ShipComponent
@@ -170,12 +161,17 @@ class LibraryComputerComponent extends ShipComponent
 {
     constructor()
     {
-        super ("Library Computer", .25);
+        super ("Library Computer", .3125);
     }
 
     mapsAccessible()
     {
-        return this.componentHealth > LibraryComputerComponent.DamagedThreshold;
+        return this.componentHealth > LibraryComputerComponent.MapsThreshold;
+    }
+
+    damageReportAvailable()
+    {
+        return this.componentHealth > LibraryComputerComponent.DamageReportThreshold;
     }
 
     damageReport()
@@ -187,4 +183,5 @@ class LibraryComputerComponent extends ShipComponent
     }
 }
 
-LibraryComputerComponent.DamagedThreshold = .25; // 25% health = can't access maps.
+LibraryComputerComponent.MapsThreshold = .25; // 25% health = can't access maps.
+LibraryComputerComponent.DamageReportThreshold = .5; // 50% health = can't access damage report
