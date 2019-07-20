@@ -12,6 +12,9 @@ class ShipComponent
     }
 }
 
+// possible damage effects
+// 10% chance of coming out of short range jump early.
+// +- 1 from target on long range jump.
 class WarpEnginesComponent extends ShipComponent
 {
     constructor()
@@ -80,14 +83,25 @@ ShortRangeSensorsComponent.FullyFunctionalHealth = .7;   // short range scan ful
 ShortRangeSensorsComponent.MinChanceCorrupt = .1;        // For a particular sector on the map, minimum chance it'll be corrupt when integrity is high
 ShortRangeSensorsComponent.MaxChanceCorrupt = .75;       // For a particular sector on the map, maximum chance it'll be corrupt when integrity is low
 
+
 class LongRangeSensorsComponent extends ShipComponent
 {
     constructor()
     {
         super ("Long Range Sensors", .25);
     }
+
+    functional()
+    {
+        return this.componentHealth >= LongRangeSensorsComponent.FullyFunctionalHealth;
+    }
 }
 
+LongRangeSensorsComponent.FullyFunctionalHealth = .8;
+
+
+// chance of missing phasers? 
+// phasers inoperable vs inefficient
 class PhaserControlComponent extends ShipComponent
 {
     constructor()
@@ -96,6 +110,7 @@ class PhaserControlComponent extends ShipComponent
     }
 }
 
+// chance of torpedoes missing?
 class PhotonTubesComponent extends ShipComponent
 {
     constructor()
@@ -140,6 +155,9 @@ class DamageControlComponent extends ShipComponent
     }
 }
 
+
+// make the shield scan thing conditional.  in both places.
+// inefficiency?  Or max shields.
 class ShieldControlComponent extends ShipComponent
 {
     constructor()

@@ -512,7 +512,7 @@ class TrekGame
                 {
                     trekgame.enterprise.freeEnergy -= jumpEnergyRequired;
                     trekgame.changeToQuadrant(quadrantX, quadrantY);
-                    trekgame.advanceStardate(1.0);
+                    trekgame.advanceStardateNoCombat(1.0); // don't get blown up as soon as we enter a new Sector!
                     return true;
                 }
             ),
@@ -653,6 +653,13 @@ class TrekGame
 
     longRangeScan()
     {
+
+        if (!this.enterprise.components.LongRangeSensors.functional())
+        {
+            gameOutputAppend("\nLong range scan unavailable due to damage.");
+            return;
+        }
+
         gameOutputAppend("\nLong Range Scan completed.");
         gameOutputAppend("Adjacent sectors have been scanned.  The ship's computer has been updated with the following information:\n");
         gameOutputAppend(this.enterprise.lrsString(this.galaxyMap));
@@ -852,7 +859,11 @@ class TrekGame
     advanceStardate(adv)
     {
         this.combatStep();
+        this.advanceStardateNoCombat(adv);
+    }
 
+    advanceStardateNoCombat(adv)
+    {
         this.starDate += adv;
         this.enterprise.autoRepairComponents();
 
