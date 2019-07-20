@@ -33,7 +33,6 @@ class Enterprise extends GameObject
                                 LongRangeSensors: new LongRangeSensorsComponent(),
                                 PhaserControl : new PhaserControlComponent(),
                                 PhotonTubes : new PhotonTubesComponent(),
-                                DamageControl : new DamageControlComponent(),
                                 ShieldControl : new ShieldControlComponent(), 
                                 LibraryComputer : new LibraryComputerComponent()
                             }
