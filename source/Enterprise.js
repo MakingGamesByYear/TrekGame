@@ -314,7 +314,7 @@ class Enterprise extends GameObject
             this.torpedoes--;
             this.freeEnergy -= Enterprise.TorpedoEnergyCost;
             
-            if (torpedoIntersection.intersects != null)
+            if (this.components.PhotonTubesComponent.isHit() && torpedoIntersection.intersects != null)
             {
                torpedoIntersection.intersects.onTorpedoHit(game);
             }

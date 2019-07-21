@@ -135,7 +135,7 @@ class PhaserControlComponent extends ShipComponent
     damageReport()
     {
         gameOutputAppend("Phasers Operable : " + (this.canFire() ? "YES" : "NO"));
-        gameOutputAppend("Phaser Accuracy : " + this.phaserAccuracy());
+        gameOutputAppend("Phaser Accuracy : " + this.phaserAccuracy() + "%");
     }
 }
 
@@ -143,7 +143,7 @@ PhaserControlComponent.DisabledThreshold = .5;
 PhaserControlComponent.FullyFunctionalHealth = .75;
 PhaserControlComponent.MinAccuracy = .5;
 
-// chance of torpedoes missing?  if manual.
+
 class PhotonTubesComponent extends ShipComponent
 {
     constructor()
@@ -169,16 +169,31 @@ class PhotonTubesComponent extends ShipComponent
             {
                gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.  You will need to input torpedo trajectories manually until the system is repaired.");
             }
+
+            gameOutputAppend("Expected accuracy : " + this.torpedoAccuracy() + "%");
         }
         else
         {
             gameOutputAppend("Torpedo tubes too damaged to fire.");
         }
     }
+
+    torpedoAccuracy()
+    {
+        let t = (this.componentHealth - PhotonTubesComponent.DisabledThreshold) / (PhotonTubesComponent.DamagedThreshold - PhotonTubesComponent.DisabledThreshold);
+        t = Math.min(t, 1.0);
+        return (1.0 - t) * PhotonTubesComponent.MinAccuracy + t;
+    }
+
+    isHit()
+    {
+        return Math.random() <= this.phaserAccuracy();
+    }
 }
 
-PhotonTubesComponent.DamagedThreshold = .5; // 50% health = automatic targeting is down.
-PhotonTubesComponent.DisabledThreshold = .25; // 25% health = can't fire torpedoes.
+PhotonTubesComponent.MinAccuracy = .25;         // 25% chance to hit minimum for torpedoes
+PhotonTubesComponent.DamagedThreshold = .5;     // 50% health = automatic targeting is down.
+PhotonTubesComponent.DisabledThreshold = .25;   // 25% health = can't fire torpedoes.
 
 // make the shield scan thing conditional.  in both places.
 class ShieldControlComponent extends ShipComponent
