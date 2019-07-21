@@ -129,7 +129,7 @@ class PhaserControlComponent extends ShipComponent
 
     isHit()
     {
-        return random() <= this.phaserAccuracy();
+        return Math.random() <= this.phaserAccuracy();
     }
 
     damageReport()

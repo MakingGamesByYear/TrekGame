@@ -205,7 +205,7 @@ class Enterprise extends GameObject
 
         let component = this.components[Object.keys(this.components)[idx]];
 
-        component.damage(this, passthroughDamage);
+        component.passthroughDamage(this, passthroughDamage);
 
         gameOutputAppend(component.componentName + " hit.  Now at " + Math.floor(component.componentHealth*100) + "% integrity" );
     }
@@ -454,10 +454,10 @@ Enterprise.StartEnergy = 3000;
 Enterprise.StartShields = 0;
 Enterprise.TorpedoEnergyCost = 10;
 Enterprise.EnemyScanCost = 10;
-Enterprise.PhaserTargets = [Klingon];       // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 
-Enterprise.EnergyCostPerSector = 1.0;       // Warp cost per sector moved
-Enterprise.EnergyCostPerQuadrant = 10.0;       // Warp cost per quadrant moved
-Enterprise.DamagePassthroughRatio = .25;    // if damage is 25% of shields or more, pass damage through to components
-Enterprise.RandomPassthroughRatio = .25;    // 25% chance that damage will pass through to ship components regardless of shields
-Enterprise.MinComponentRepairPerTurn = 1;  // integrity min autorepair per component
-Enterprise.MaxComponentRepairPerTurn = 5;  // integrity max autorepair per component
+Enterprise.PhaserTargets = [Klingon];           // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 
+Enterprise.EnergyCostPerSector = 1.0;           // Warp cost per sector moved
+Enterprise.EnergyCostPerQuadrant = 10.0;        // Warp cost per quadrant moved
+Enterprise.DamagePassthroughRatio = .25;        // if damage is 25% of shields or more, pass damage through to components
+Enterprise.RandomPassthroughRatio = .25;        // 25% chance that damage will pass through to ship components regardless of shields
+Enterprise.MinComponentRepairPerTurn = 1;       // integrity min autorepair per component
+Enterprise.MaxComponentRepairPerTurn = 5;       // integrity max autorepair per component
