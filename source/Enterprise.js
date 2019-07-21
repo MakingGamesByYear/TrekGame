@@ -287,7 +287,14 @@ class Enterprise extends GameObject
             let damageAttenuated = damagePerTarget / dist;
             let damageFinal = Math.floor(randomFloat(2.0, 3.0) * damageAttenuated);
 
-            target.onPhaserHit(damageFinal, game);
+            if (this.components.PhaserControl.isHit())
+            {
+               target.onPhaserHit(damageFinal, game);
+            }
+            else
+            {
+                gameOutputAppend("Phasers miss!");
+            }
         }
 
         if (!game.currentQuadrantScanned)

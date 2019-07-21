@@ -96,13 +96,19 @@ class LongRangeSensorsComponent extends ShipComponent
     {
         return this.componentHealth >= LongRangeSensorsComponent.FullyFunctionalHealth;
     }
+
+    damageReport()
+    {
+        if (!this.functional())
+        {
+            gameOutputAppend("Long range sensors disabled.");
+        }
+    }
 }
 
 LongRangeSensorsComponent.FullyFunctionalHealth = .8;
 
 
-
-// chance of missing phasers
 class PhaserControlComponent extends ShipComponent
 {
     constructor()
@@ -113,6 +119,23 @@ class PhaserControlComponent extends ShipComponent
     canFire()
     {
         return this.componentHealth >= PhaserControlComponent.DisabledThreshold;
+    }
+
+    phaserAccuracy()
+    {
+        let t = Math.min(this.componentHealth / PhaserControlComponent.FullyFunctionalHealth, 1.0);
+        return (1.0 - t) * PhaserControlComponent.MinAccuracy + t; //lerp
+    }
+
+    isHit()
+    {
+        return random() <= this.phaserAccuracy();
+    }
+
+    damageReport()
+    {
+        gameOutputAppend("Phasers Operable : " + (this.canFire() ? "YES" : "NO"));
+        gameOutputAppend("Phaser Accuracy : " + this.phaserAccuracy());
     }
 }
 
@@ -184,6 +207,11 @@ class ShieldControlComponent extends ShipComponent
             enterprise.shields = this.maxShields();
             gameOutputAppend("Deflector shields hit!  Shield energy dropped to " + this.maxShields());
         }
+    }
+
+    damageReport()
+    {
+        gameOutputAppend("Deflector shield system can process " + this.maxShields() + " units of energy out of a possible " + ShieldControlComponent.MaxShields);
     }
 }
 
