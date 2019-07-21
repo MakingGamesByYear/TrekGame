@@ -161,7 +161,7 @@ class PhaserControlComponent extends ShipComponent
     damageReport()
     {
         gameOutputAppend("Phasers Operable : " + (this.canFire() ? "YES" : "NO"));
-        gameOutputAppend("Phaser Accuracy : " + this.phaserAccuracy() + "%");
+        gameOutputAppend("Phaser Accuracy : " + (100*this.phaserAccuracy()) + "%");
     }
 }
 
@@ -196,7 +196,7 @@ class PhotonTubesComponent extends ShipComponent
                gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.  You will need to input torpedo trajectories manually until the system is repaired.");
             }
 
-            gameOutputAppend("Expected accuracy : " + this.torpedoAccuracy() + "%");
+            gameOutputAppend("Expected accuracy : " + (100 * this.torpedoAccuracy()) + "%");
         }
         else
         {
@@ -213,7 +213,7 @@ class PhotonTubesComponent extends ShipComponent
 
     isHit()
     {
-        return Math.random() <= this.phaserAccuracy();
+        return Math.random() <= this.torpedoAccuracy();
     }
 }
 

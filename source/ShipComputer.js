@@ -87,7 +87,7 @@ class ShipComputerMenu extends Menu
                 "STARBASE MAP",
                 function()
                 {
-                    if (trekGame.enterprise.components.LibraryComputer.mapsAccessible())
+                    if (!trekGame.enterprise.components.LibraryComputer.mapsAccessible())
                     {
                         gameOutputAppend("\nShip's computer too damaged to access maps.");
                         return true;
@@ -106,7 +106,7 @@ class ShipComputerMenu extends Menu
                 "KLINGONS MAP",
                 function()
                 {
-                    if (trekGame.enterprise.components.LibraryComputer.mapsAccessible())
+                    if (!trekGame.enterprise.components.LibraryComputer.mapsAccessible())
                     {
                         gameOutputAppend("\nShip's computer too damaged to access maps.");
                         return true;
@@ -125,7 +125,7 @@ class ShipComputerMenu extends Menu
                 "STAR DENSITY MAP",
                 function()
                 {
-                    if (trekGame.enterprise.components.LibraryComputer.mapsAccessible())
+                    if (!trekGame.enterprise.components.LibraryComputer.mapsAccessible())
                     {
                         gameOutputAppend("\nShip's computer too damaged to access maps.");
                         return true;

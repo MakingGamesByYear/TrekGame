@@ -101,7 +101,9 @@ class MainMenu extends Menu
                         suggestedStr += "\nSUGGESTED SHIELD LEVEL FOR CURRENT COMBAT SITUATION: " + suggestedShieldLevel;
                     }
 
-                    trekgame.awaitInput("ENTER NEW SHIELD ENERGY LEVEL. \nAVAILABLE: " + totalEnergy + suggestedStr, 4, trekgame.shieldHandler);
+                    let maxStr = "\nMAXIMUM SHIELD ENERGY: " + trekgame.enterprise.components.ShieldControl.maxShields();
+
+                    trekgame.awaitInput("ENTER NEW SHIELD ENERGY LEVEL. \nAVAILABLE ENERGY: " + totalEnergy + maxStr + suggestedStr, 4, trekgame.shieldHandler);
                 }
             ),
 
@@ -162,7 +164,11 @@ class MainMenu extends Menu
                     if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
                     {
                         let freestring = "\nFREE ENERGY : " + trekgame.enterprise.freeEnergy;
-                        trekgame.awaitInput("ENTER ENERGY TO EXPEND ON PHASER FIRE"+freestring, 4, trekgame.phaserHandler);
+                        
+                        let accuracy = trekgame.enterprise.components.PhaserControl.phaserAccuracy() * 100;
+                        let chanceToHitString = "PHASER CHANCE TO HIT : " + accuracy + "%";
+                        
+                        trekgame.awaitInput(chanceToHitString + "\nENTER ENERGY TO EXPEND ON PHASER FIRE"+freestring, 4, trekgame.phaserHandler);
                         return false;
                     }
                     else

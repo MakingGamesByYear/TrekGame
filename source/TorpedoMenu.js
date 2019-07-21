@@ -52,7 +52,7 @@ class TorpedoMenu extends Menu
             (
                 this.options.length + 1, 
                 ") ",
-                "MANUAL TARGETING",
+                "MANUAL TARGETING (CHANCE TO HIT : " + (100 * trekgame.enterprise.components.PhotonTubes.torpedoAccuracy()) + "%)",
                 function()
                 {
                     trekgame.manualTorpedoHandler();
