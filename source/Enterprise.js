@@ -142,6 +142,18 @@ class Enterprise extends GameObject
             throw "Invalid value for shield level"; 
         }
 
+        let adjustedShields = Math.min(this.components.ShieldControl.maxShields(), newShields);
+
+        if (!(adjustedShields >0))
+        {
+            gameOutputAppend("Sorry captain, we've taken too much damage to raise shields!");
+        }
+        if ((adjustedShields < newShields) && (adjustedShields < ShieldControlComponent.MaxShields))
+        {
+            gameOutputAppend("\mBecause of damage to the deflector shields, we cannot raise shields above " + adjustedShields);
+            newShields = adjustedShields;
+        }
+
         this.freeEnergy += this.shields - newShields;
         this.shields = newShields;
 
@@ -193,7 +205,7 @@ class Enterprise extends GameObject
 
         let component = this.components[Object.keys(this.components)[idx]];
 
-        component.componentHealth -= Math.min(passthroughDamage, component.componentHealth);
+        component.damage(this, passthroughDamage);
 
         gameOutputAppend(component.componentName + " hit.  Now at " + Math.floor(component.componentHealth*100) + "% integrity" );
     }

@@ -154,6 +154,11 @@ class MainMenu extends Menu
                 "PHASERS",
                 function()
                 {
+                    if (!trekgame.enterprise.components.PhotonTubes.canFire())
+                    {
+                        gameOutputAppend("\nPhasers too damaged to fire!");
+                        return true;
+                    }
                     if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
                     {
                         let freestring = "\nFREE ENERGY : " + trekgame.enterprise.freeEnergy;

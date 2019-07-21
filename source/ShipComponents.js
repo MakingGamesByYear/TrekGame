@@ -10,11 +10,14 @@ class ShipComponent
     damageReport()
     {
     }
+
+    passthroughDamage(enterprise, damage)
+    {
+        this.componentHealth -= Math.min(damage, this.componentHealth);
+    }
 }
 
-// possible damage effects
-// 10% chance of coming out of short range jump early.
-// +- 1 from target on long range jump.
+// cap speed.
 class WarpEnginesComponent extends ShipComponent
 {
     constructor()
@@ -64,8 +67,6 @@ class ShortRangeSensorsComponent extends ShipComponent
         {
             this.corruptGrid.setValue1D(x, Math.random() < corruptChance);
         }
-
-        console.log(this.corruptGrid);
     }
 
     isSectorCorrupt1D(x)
@@ -100,17 +101,26 @@ class LongRangeSensorsComponent extends ShipComponent
 LongRangeSensorsComponent.FullyFunctionalHealth = .8;
 
 
-// chance of missing phasers? 
-// phasers inoperable vs inefficient
+
+// chance of missing phasers
 class PhaserControlComponent extends ShipComponent
 {
     constructor()
     {
         super ("Phaser Control", .0625);
     }
+
+    canFire()
+    {
+        return this.componentHealth >= PhaserControlComponent.DisabledThreshold;
+    }
 }
 
-// chance of torpedoes missing?
+PhaserControlComponent.DisabledThreshold = .5;
+PhaserControlComponent.FullyFunctionalHealth = .75;
+PhaserControlComponent.MinAccuracy = .5;
+
+// chance of torpedoes missing?  if manual.
 class PhotonTubesComponent extends ShipComponent
 {
     constructor()
@@ -148,14 +158,38 @@ PhotonTubesComponent.DamagedThreshold = .5; // 50% health = automatic targeting 
 PhotonTubesComponent.DisabledThreshold = .25; // 25% health = can't fire torpedoes.
 
 // make the shield scan thing conditional.  in both places.
-// inefficiency?  Or max shields.
 class ShieldControlComponent extends ShipComponent
 {
     constructor()
     {
         super ("Shield Control", .125);
     }
+
+    maxShields()
+    {
+        if (this.componentHealth >= ShieldControlComponent.FullyFunctionalHealth)
+        {
+            return ShieldControlComponent.MaxShields;
+        }
+
+        return (1.0 - this.componentHealth) * ShieldControlComponent.MaxShields + (this.componentHealth * ShieldControlComponent.MinShields);
+    }
+
+    passthroughDamage(enterprise, damage)
+    {
+        this.componentHealth -= Math.min(damage, this.componentHealth);
+
+        if (enterprise.shields > this.maxShields())
+        {
+            enterprise.shields = this.maxShields();
+            gameOutputAppend("Deflector shields hit!  Shield energy dropped to " + this.maxShields());
+        }
+    }
 }
+
+ShieldControlComponent.MinShields = 0;
+ShieldControlComponent.MaxShields = 2000; ///\todo calculate what kind of combat situations would minimally exceed this and prevent them in the generator
+ShieldControlComponent.FullyFunctionalHealth = .8;
 
 class LibraryComputerComponent extends ShipComponent
 {
