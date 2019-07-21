@@ -487,9 +487,27 @@ class TrekGame
             return false;
         }
 
-        let xd = this.enterprise.quadrantX - quadrantX;
-        let yd = this.enterprise.quadrantY - quadrantY;
-        let travelDistance = Math.sqrt(xd*xd + yd*yd);
+        let xd = quadrantX - this.enterprise.quadrantX;
+        let yd = quadrantY - this.enterprise.quadrantY;
+        let travelDistance = Math.sqrt(xd*xd + yd*yd);  // assumes single stardate.  so distance and speed have the same scalar value.
+
+        let maxSpeed = this.enterprise.components.WarpEngines.maxSpeed();
+
+        if (!this.enterprise.components.WarpEngines.fullyFunctional())
+        {
+            xd /= travelDistance;
+            yd /= travelDistance;
+
+            xd *= maxSpeed;
+            yd *= maxSpeed;
+            
+            travelDistance = Math.sqrt(xd*xd + yd*yd);
+
+            quadrantX = Math.floor(this.enterprise.quadrantX + xd);
+            quadrantY = Math.floor(this.enterprise.quadrantY + yd);
+
+            gameOutputAppend("Unable to make it to the destination warp target in a single jump due to damage.  New destination is Sector " + (quadrantX+1) + ", " + (quadrantY+1));
+        }
 
         let jumpEnergyRequired = Math.floor(Enterprise.EnergyCostPerQuadrant * travelDistance);
 
