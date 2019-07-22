@@ -150,13 +150,21 @@ class Enterprise extends GameObject
 
         let adjustedShields = Math.min(this.components.ShieldControl.maxShields(), newShields);
 
-        if (!(adjustedShields >0))
+        if (!(adjustedShields > 0))
         {
             gameOutputAppend("Sorry captain, we've taken too much damage to raise shields!");
         }
-        if ((adjustedShields < newShields) && (adjustedShields < ShieldControlComponent.MaxShields))
+        if ((adjustedShields < newShields))
         {
-            gameOutputAppend("\mBecause of damage to the deflector shields, we cannot raise shields above " + adjustedShields);
+            if ( (adjustedShields < ShieldControlComponent.MaxShields))
+            {
+                gameOutputAppend("\nBecause of damage to the deflector shields, we cannot raise shields above " + adjustedShields);
+            }
+            else
+            {
+                gameOutputAppend("\nCannot exceed the maximum shield level of " + adjustedShields);
+            }
+
             newShields = adjustedShields;
         }
 

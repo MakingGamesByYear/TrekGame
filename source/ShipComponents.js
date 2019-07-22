@@ -47,9 +47,8 @@ WarpEnginesComponent.FullyFunctionalHealth = .8;
 // min sectors to travel in a single stardate jump.  Cover at least sqrt(2) so we can go one sector in any direction even diagonal
 WarpEnginesComponent.MinSpeed = 1.5;
 
-// max sectors to travel in a single stardate jump.
+// max sectors to travel in a single stardate jump.  sqrt 2 for diagonal (pythagorean)
 WarpEnginesComponent.MaxSpeed = Math.sqrt(2.0) * Math.max(mapWidthQuadrants, mapHeightQuadrants);
-
 
 
 class ShortRangeSensorsComponent extends ShipComponent
@@ -231,12 +230,9 @@ class ShieldControlComponent extends ShipComponent
 
     maxShields()
     {
-        if (this.componentHealth >= ShieldControlComponent.FullyFunctionalHealth)
-        {
-            return ShieldControlComponent.MaxShields;
-        }
+        let t = Math.min(1.0, this.componentHealth / ShieldControlComponent.FullyFunctionalHealth);
 
-        return (1.0 - this.componentHealth) * ShieldControlComponent.MaxShields + (this.componentHealth * ShieldControlComponent.MinShields);
+        return (1.0 - t) * ShieldControlComponent.MinShields + (t * ShieldControlComponent.MaxShields);
     }
 
     passthroughDamage(enterprise, damage)
