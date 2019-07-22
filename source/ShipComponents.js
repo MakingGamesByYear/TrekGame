@@ -254,11 +254,17 @@ class ShieldControlComponent extends ShipComponent
     {
         gameOutputAppend("Deflector shield system can process " + this.maxShields() + " units of energy out of a possible " + ShieldControlComponent.MaxShields);
     }
+
+    estimateAvailable()
+    {
+        return this.componentHealth >= ShieldControlComponent.ShowShieldEstimateHealth;
+    }
 }
 
 ShieldControlComponent.MinShields = 0;
 ShieldControlComponent.MaxShields = 2000; ///\todo calculate what kind of combat situations would minimally exceed this and prevent them in the generator
 ShieldControlComponent.FullyFunctionalHealth = .8;
+ShieldControlComponent.ShowShieldEstimateHealth = .6;
 
 class LibraryComputerComponent extends ShipComponent
 {

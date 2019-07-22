@@ -983,7 +983,10 @@ class TrekGame
         {
             flags.push("RED ALERT");
 
-            if (this.enterprise.isShieldLevelCritical(this.currentQuadrant.getEntitiesOfType(Klingon)))
+            let estAvail = this.enterprise.components.ShieldControl.estimateAvailable();
+            let critical = this.enterprise.isShieldLevelCritical(this.currentQuadrant.getEntitiesOfType(Klingon));
+
+            if (estAvail && critical)
             {
                 flags.push("SHIELDS CRITICAL");
             }

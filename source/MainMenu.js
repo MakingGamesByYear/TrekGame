@@ -98,6 +98,11 @@ class MainMenu extends Menu
 
                         let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
 
+                        if (!trekgame.enterprise.components.ShieldControl.estimateAvailable())
+                        {
+                            suggestedShieldLevel = "?????";
+                        }
+
                         suggestedStr += "\nSUGGESTED SHIELD LEVEL FOR CURRENT COMBAT SITUATION: " + suggestedShieldLevel;
                     }
 
