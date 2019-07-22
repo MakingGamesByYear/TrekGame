@@ -19,6 +19,20 @@ class Enterprise extends GameObject
         return probArray;
     }
 
+    createComponents()
+    {
+        this.components =
+        {
+            WarpEngines : new WarpEnginesComponent(), 
+            ShortRangeSensors: new ShortRangeSensorsComponent(),
+            LongRangeSensors: new LongRangeSensorsComponent(),
+            PhaserControl : new PhaserControlComponent(),
+            PhotonTubes : new PhotonTubesComponent(),
+            ShieldControl : new ShieldControlComponent(), 
+            LibraryComputer : new LibraryComputerComponent()
+        }
+    }
+    
     constructor()
     {
         super(Enterprise);
@@ -27,15 +41,7 @@ class Enterprise extends GameObject
 
         this.freeEnergy = Enterprise.StartEnergy;
 
-        this.components =   {
-                                WarpEngines : new WarpEnginesComponent(), 
-                                ShortRangeSensors: new ShortRangeSensorsComponent(),
-                                LongRangeSensors: new LongRangeSensorsComponent(),
-                                PhaserControl : new PhaserControlComponent(),
-                                PhotonTubes : new PhotonTubesComponent(),
-                                ShieldControl : new ShieldControlComponent(), 
-                                LibraryComputer : new LibraryComputerComponent()
-                            }
+        this.createComponents();
 
         this.hitNoShields = false;
         this.dockStarbase = null;
@@ -446,6 +452,24 @@ class Enterprise extends GameObject
             let component = this.components[key];
             component.damageReport();
         }
+    }
+
+    static ConstructFromJSData(jsData)
+    {
+        let rval = Object.create(Enterprise.prototype);
+        Object.assign(rval, jsData);
+
+        rval.sensorHistory = new SensorHistory();
+        Object.assign(rval.sensorHistory, jsData.sensorHistory);
+
+        rval.createComponents();
+
+        for (var key in this.components)
+        {
+            Object.assign(rval.components[key], jsData.components[key]);
+        }
+
+        return rval;
     }
 }
 

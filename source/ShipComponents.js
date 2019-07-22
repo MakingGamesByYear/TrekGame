@@ -32,7 +32,7 @@ class WarpEnginesComponent extends ShipComponent
 
     damageReport()
     {
-        gameOutputAppend("Warp can achieve " + this.maxSpeed() + " sectors per stardate");
+        gameOutputAppend("At its current level of repair, the warp engines can achieve a speed of " + Math.round(this.maxSpeed()) + " sectors per stardate");
     }
 
     maxSpeed()
@@ -196,7 +196,7 @@ class PhotonTubesComponent extends ShipComponent
                gameOutputAppend("Due to damage, torpedo targeting computer is nonfunctional.  You will need to input torpedo trajectories manually until the system is repaired.");
             }
 
-            gameOutputAppend("Expected accuracy : " + (100 * this.torpedoAccuracy()) + "%");
+            gameOutputAppend("Torpedo Accuracy : " + (100 * this.torpedoAccuracy()) + "%");
         }
         else
         {

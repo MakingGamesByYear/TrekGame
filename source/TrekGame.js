@@ -7,11 +7,7 @@ class TrekGame
             let gamerval = Object.create(TrekGame.prototype);
             Object.assign(gamerval, jsData);
 
-            gamerval.enterprise = Object.create(Enterprise.prototype);
-            Object.assign(gamerval.enterprise, jsData.enterprise);
-
-            gamerval.enterprise.sensorHistory = new SensorHistory();// Object.create(SensorHistory);
-            Object.assign(gamerval.enterprise.sensorHistory, jsData.enterprise.sensorHistory);
+            gamerval.enterprise = Enterprise.ConstructFromJSData(jsData.enterprise);
 
             gamerval.galaxyMap = GalaxyMap.ConstructFromJSData(jsData.galaxyMap);
 
@@ -39,6 +35,7 @@ class TrekGame
         }
         catch(err)
         {
+            console.log(err);
             console.log("Corrupt save file.  Erasing.");
             autosave(null);
             gameOutputAppend("Corrupt save file.  Refresh page to start new game.");
