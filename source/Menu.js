@@ -31,7 +31,7 @@ class Menu
     {
         for (var x in this.options)
         {
-            if (this.options[x].compare(optionText))
+            if (this.options[x].compare(optionText) && this.options[x].enabled)
             {
                 return this.options[x];
             }

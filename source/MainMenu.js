@@ -31,6 +31,44 @@ class MainMenu extends Menu
             ),
             new MenuOption
             (
+                "0",
+                ") ",
+                "BOMBARD PLANET ("+TrekGame.BombardCost+" TORPEDOES)",
+                function()
+                {
+
+                    let bombardPrompt = "\nWhile in orbit around the planet, your scanners detected a base established by enemies of the empire.";
+                    bombardPrompt += "\nYou could bombard the base to lure enemy ships into the sector.  Make sure you're prepared, because a large ";
+                    bombardPrompt += "number of ships may deploy to the sector!";
+
+                    gameOutputAppend(bombardPrompt);
+
+                    let confirmMenu = new Menu();
+
+                    confirmMenu.options.push
+                    (
+                        new MenuOption
+                        (
+                            "1", ") ", "BOMBARD THE PLANET (" + TrekGame.BombardCost + " TORPEDOES)", function(){trekgame.bombardPlanet(); return true;}
+                        ),
+                        new MenuOption
+                        (
+                            "2", ") ", "NEVER MIND", function(){return true;}
+                        )
+                    );
+
+                    trekgame.awaitInput
+                    (
+                        confirmMenu.toString(),
+                        1,
+                        function(inputline){return confirmMenu.chooseOption(inputline);}
+                    );
+
+                    return false;
+                }
+            ),
+            new MenuOption
+            (
                 "1",
                 ") ",
                 "NAVIGATION",
@@ -147,6 +185,9 @@ class MainMenu extends Menu
 
         this.dockOption = this.options[0];
         this.dockOption.enabled = false;
+
+        this.bombardOption = this.options[1];
+        this.bombardOption.enabled = false;
     }
 
     static showWeaponsMenu(trekgame)

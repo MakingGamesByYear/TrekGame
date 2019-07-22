@@ -20,6 +20,7 @@ class TrekGame
             gamerval.createMenus();
 
             gamerval.checkStarbaseDock();
+            gamerval.checkPlanetBombard();
 
             if (gamerval.enterprise.dockStarbase)
             {
@@ -46,9 +47,9 @@ class TrekGame
     {
         this.primeUniverse = true;
 
-        if (!this.primeUniverse)
+        if (this.primeUniverse)
         {
-            TrekGame.EntityTypes.push(Planet);
+            Planet.MaxInstances = 0;
         }
 
         this.gameOver = false;
@@ -373,6 +374,19 @@ class TrekGame
 
     }
 
+    bombardPlanet()
+    {
+        let adjacentPlanets = this.currentQuadrant.getAdjacentEntitiesOfType(this.enterprise, Planet);
+        console.assert(adjacentPlanets.length);
+
+        let p = adjacentPlanets[0];
+
+        if (this.enterprise.bombardPlanet(this, p))
+        {
+            this.advanceStardate(1.0);
+        }
+    }
+
     shieldHandler(inputline)
     {
         let parsedVal = parseInt(inputline);
@@ -490,7 +504,7 @@ class TrekGame
 
         let maxSpeed = this.enterprise.components.WarpEngines.maxSpeed();
 
-        if (!this.enterprise.components.WarpEngines.fullyFunctional())
+        if (!this.enterprise.components.WarpEngines.fullyFunctional() && (travelDistance > maxSpeed))
         {
             xd /= travelDistance;
             yd /= travelDistance;
@@ -555,7 +569,7 @@ class TrekGame
         {
             if (trekgame.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, trekgame))
             {
-                gameOutputAppend("\nComing out of warp in sector " + trekgame.enterprise.quadrantString());
+                gameOutputAppend("\nComing out of warp in sector " + trekgame.enterprise.sectorString());
                 trekgame.advanceStardate(1.0);
             }
 
@@ -840,12 +854,40 @@ class TrekGame
         }
     }
 
+    checkPlanetBombard()
+    {
+        if (this.enterprise.dockStarbase)
+        {
+            return;
+        }
+
+        this.mainMenu.bombardOption.enabled = false;
+
+        let planets = this.currentQuadrant.getEntitiesOfType(Planet);
+
+        for (var x in planets)
+        {
+            var p = planets[x];
+
+            if (this.enterprise.isAdjacentTo(p) && !p.bombarded)
+            {
+                this.mainMenu.bombardOption.enabled = true;
+            }
+        }
+
+        if (!this.inputHandler)
+        {
+            this.awaitInput(this.mainMenu.toString(), 3, null);
+        }
+    }
+
     updateGame()
     {
         this.updateDisplay();
         this.starbasesScan();
         this.enterpriseShortRangeScan();
         this.checkStarbaseDock();
+        this.checkPlanetBombard();
 
         this.checkEndConditions();
     }
@@ -1035,9 +1077,11 @@ class TrekGame
     }
 }
 
-TrekGame.EntityTypes = [Star, StarBase, Klingon];
+TrekGame.EntityTypes = [Star, StarBase, Klingon, Planet];
 TrekGame.BaseMissionTime = 25;
 TrekGame.MissionTimeSpread = 10;
+TrekGame.BombardCost = 3;
+TrekGame.BombardReinforcementSize = 5;
 
 function createEntityMap(entityList)
 {

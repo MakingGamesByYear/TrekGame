@@ -3,6 +3,7 @@ class Planet extends GameObject
 {
     constructor()
     {
+        console.log("Planet created!")
         super(Planet);
         this.bombarded = false;
     }
@@ -25,7 +26,7 @@ class Planet extends GameObject
 
     static maxInstancesGame()
     {
-        return 1;
+        return Planet.MaxInstances;
     }
 
     static maxInstancesQuadrant()
@@ -44,3 +45,5 @@ class Planet extends GameObject
         return [.95, .05];
     }
 }
+
+Planet.MaxInstances = 1;

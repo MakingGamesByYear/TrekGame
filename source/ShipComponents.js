@@ -56,6 +56,7 @@ class ShortRangeSensorsComponent extends ShipComponent
     constructor()
     {
         super("Short Range Sensors", .0625);
+        this.generateCorruptGrid();
     }
 
     fullyFunctional()
@@ -232,7 +233,7 @@ class ShieldControlComponent extends ShipComponent
     {
         let t = Math.min(1.0, this.componentHealth / ShieldControlComponent.FullyFunctionalHealth);
 
-        return (1.0 - t) * ShieldControlComponent.MinShields + (t * ShieldControlComponent.MaxShields);
+        return Math.round((1.0 - t) * ShieldControlComponent.MinShields + (t * ShieldControlComponent.MaxShields));
     }
 
     passthroughDamage(enterprise, damage)

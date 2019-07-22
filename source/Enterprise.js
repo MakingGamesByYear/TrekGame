@@ -5,6 +5,44 @@ class Enterprise extends GameObject
         return !this.components.ShortRangeSensors.isSectorCorrupt(entity.sectorX, entity.sectorY);
     }
 
+    bombardPlanet(trekgame, planet)
+    {
+        console.assert(!planet.bombarded);
+
+        if (this.torpedoes < TrekGame.BombardCost)
+        {
+            return false;
+        }
+
+        var klingonsMoved = 0;
+        let klingonsToMove = Math.min(Math.min(Klingon.Instances, TrekGame.BombardReinforcementSize), trekgame.currentQuadrant.emptySquares());
+
+        for (var q in trekgame.galaxyMap.contents)
+        {
+            let quadrant = trekgame.galaxyMap.lookup1D(q);
+            let quadrantKlingons = quadrant.getEntitiesOfType(Klingon);
+
+            if (quadrant == trekgame.currentQuadrant)
+            {
+                continue;
+            }
+            
+            for (var i = 0; i < Math.min(klingonsToMove - klingonsMoved, quadrantKlingons.length); i++)
+            {
+                let k = quadrantKlingons[i];
+                quadrant.removeEntity(k);
+                trekgame.currentQuadrant.addEntityInFreeSector(k);
+                klingonsMoved++;
+            }
+        }
+
+        console.log("Klingons moved : " + klingonsMoved);
+
+        this.torpedoes -= TrekGame.BombardCost;
+
+        planet.bombard();
+    }
+
     componentDamageProbabilities()
     {
         var probArray = [];
@@ -242,13 +280,13 @@ class Enterprise extends GameObject
             return;
         }
 
+        this.shields -= energy;
+        gameOutputAppend("Shields at " + this.shields);
+
         if ((hitRatio > Enterprise.DamagePassthroughRatio) || Math.random() < Enterprise.RandomPassthroughRatio)
         {
             this.passthroughDamage(energy);
-        }
-
-        this.shields -= energy;
-        gameOutputAppend("Shields at " + this.shields);
+        }        
     }
 
     firePhasers(energy, game)
@@ -472,10 +510,13 @@ class Enterprise extends GameObject
 
         rval.createComponents();
 
-        for (var key in this.components)
+        for (var key in rval.components)
         {
             Object.assign(rval.components[key], jsData.components[key]);
         }
+
+        rval.components.ShortRangeSensors.corruptGrid = new Grid();
+        rval.components.ShortRangeSensors.corruptGrid.contents = jsData.components.ShortRangeSensors.corruptGrid.contents;
 
         return rval;
     }
