@@ -36,7 +36,7 @@ class Planet extends GameObject
 
     static minInstancesGame()
     {
-        return 0;
+        return Planet.MinInstances;
     }
 
     static quadrantInstanceProbabilities()
@@ -46,4 +46,6 @@ class Planet extends GameObject
     }
 }
 
-Planet.MaxInstances = 1;
+Planet.MaxInstances = 3;
+Planet.MinInstances = 1;
+
