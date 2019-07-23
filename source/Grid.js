@@ -75,7 +75,24 @@ class Grid
         return null;
     }
 
-    toString()
+    toStringHyperlink()
+    {
+        let rval = "";
+        for ( let y = 0; y < this.height; y++)
+        {
+            rval += padStringToLength(""+(y+1), 2) + '|';
+            for (let x = 0; x < this.width; x++)
+            {
+                let catstr = "<a href=\"\" style=\"color: rgb(0,255,0); text-decoration: none;\">" + this.lookup(x,y).toString() + "</a>";
+                rval += catstr;
+            }
+            rval += '|';
+            rval += '\n';
+        }
+        return rval;
+    }
+
+    toStringTyping()
     {
         let rval = "";
         for ( let y = 0; y < this.height; y++)
@@ -91,4 +108,11 @@ class Grid
         }
         return rval;
     }
+
+    toString()
+    {
+        return Grid.TypingFree ? this.toStringHyperlink() : this.toStringTyping();
+    }
 }
+
+Grid.TypingFree = false;
