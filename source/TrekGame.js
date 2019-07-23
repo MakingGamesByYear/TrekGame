@@ -371,7 +371,6 @@ class TrekGame
     setInputPrompt(newprompt)
     {
         document.getElementById("inputPrompt").innerHTML = newprompt;
-
     }
 
     bombardPlanet()

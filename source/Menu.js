@@ -57,6 +57,11 @@ class Menu
 
     toString()
     {
+        return Menu.TypingFree ? this.toStringHyperlink() : this.toStringTyping();
+    }
+
+    toStringTyping()
+    {
         var rstring = "ENTER ONE OF THE FOLLOWING:\n";
 
         for (var x in this.options)
@@ -69,4 +74,24 @@ class Menu
 
         return rstring;
     }
+
+    toStringHyperlink()
+    {
+        var rstring = "ENTER ONE OF THE FOLLOWING:\n";
+
+        for (var x in this.options)
+        {
+            if (this.options[x].enabled)
+            {
+                let sb = "<pre><a href=\"javascript:game.gameInput('" + this.options[x].option + "');\">";
+                let sa = "</a></pre>"
+                rstring += sb + this.options[x] + sa;
+                console.log(sb + this.options[x] + sa);
+            }
+        }
+
+        return rstring;
+    }
 }
+
+Menu.TypingFree = false;
