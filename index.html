@@ -23,162 +23,104 @@
 
 <script src="trekgame.js"></script>
 
-<div id="mapstatus">
-    <div id="map2" style="margin-left: 2%; display:inline-block; font-size: 2vmin">
-<div id="mapHeaderQuadrant" style=" text-align: center; margin-top: 2%; font-size: 1.5vmin">
-<pre>
-SECTOR 4,5
+<div class="container" style="text-align: center">
+<pre style="display: inline-block;text-align: left;">
+   ______________    ____     __________  ________ __
+  / ___/_  __/   |  / __ \   /_  __/ __ \/ ____/ //_/
+  \__ \ / / / /| | / /_/ /    / / / /_/ / __/ / ,<   
+ ___/ // / / ___ |/ _, _/    / / / _, _/ /___/ /| |  
+/____//_/ /_/  |_/_/ |_|    /_/ /_/ |_/_____/_/ |_|  
+                                                    
+                        ,------*------,
+       ,-------------    '---  ------'
+        '-------- --'      / /
+            ,---' '-------/ /--,
+            '----------------'
 </pre>
-</div>
-        <div id="map">
-        </div>
-        <div id = "statusflags" style=" text-align: center; font-size: 1.5vmin">
-<pre>
-SHIELDS CRITICAL | RED ALERT
+<pre style="text-align: center">Created for "Making Games By Year", Episode 1</pre>
+</div>                                           
+
+<div class="containerA" id="newgameprompt" style="text-align: center">
+<pre style="display: inline-block;text-align: left;">
+<p style="text-align: center">How would you like to play?</p>
+<a href="javascript:prompt1();">1) New Game (Erases Previous Save)</a><br>
+<a href="javascript:forward();">2) Continue Your Previous Game</a>
 </pre>
-        </div>
-    </div>
-    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2vmin"></div>
-</div>
+</div>    
 
-<div id="gameOutput" style="font-size: 2vmin;margin-left: 2%; margin-top: 0px;">   
-<pre>
-<textarea 
-readonly=true  
-id="gameOutputBox" 
-rows="10"
-style="
-resize: none;
-height: 90%;
-width: 96%;
-padding: 0px;
-font-size: 1.5vmin; 
-font-family: monospace;
-background-color: black; color:#39FF14; border-color: #39FF14"">
-</textarea>
+<div class="container2" id="prompt1" style="text-align: center;display: none">
+<pre style="display: inline-block;text-align: left;">
+<p style="text-align: center">How would you like to play?</p>
+<a href ="javascript:prompt2(false);">1) Typing mode (as in the classic game)</a><br>
+<a href="javascript:prompt2(true);">2) Touchscreen friendly mode (better for mobile)</a>
 </pre>
-</div>
+</div>    
 
-
-<div id="bottomOfScreenLeft" style="display:inline-block; vertical-align: top; margin-left: 2%; font-size: 2vmin">
-
-<div id="inputline">
-<pre>
-<div id="inputPrompt" style="font-size: 1.5vmin"></div> <!-- was 3, button also-->
-<input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-size: 2vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+<div class="container3" id = "prompt2" style="text-align: center; display: none">
+<pre style="display: inline-block;text-align: left;">
+<p style="text-align: center">How would you like to play?</p>
+<a href ="javascript:prompt3(false);">1) Mirror universe</a><br>
+<a href ="javascript:prompt3(true);">2) Prime universe</a>
 </pre>
+</div>    
+        
+<p><br><br></p>
 
-<input type="button" 
-    value="Make it so!" 
-    onclick="handleInput(this)"
-    id="inputButton"
-    style="font-size: 2vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
-</input>
-</div>
+<p style="font-size: 1vmax">
+Inspired by the 1971 computer game <a href="https://en.wikipedia.org/wiki/Star_Trek_(1971_video_game)">Star Trek" by Mike Mayfield.</a><br>
+<br>STAR TREK and all related marks, logos and characters are owned by CBS Studios Inc.
+<br><br>This game was created for educational and historical purposes and is not affiliated or endorsed by the intellectual property owners.
+</p>
 
-</div> <!-- bottom left -->
-
-
-<div id="bottomOfScreenRight" style="display:inline-block; vertical-align: middle; margin-left: 5%; font-size: 1.5vmin ">
-<pre>
-
-KEY:
-<*> : ENTERPRISE
- *  : STAR
-+K+ : KLINGON
->!< : STARBASE
-</pre>
-</div>
-
-
+<p style="font-size: 1vmax">
+The GitHub for the games created for the show can be found <a href="https://github.com/MakingGamesByYear/Games">here.</a><br>
+<br>
+Here's a <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILggGaExem7zKai5?si=4nELQYb9SK6l2JHO3_ndHw">Spotify Playlist</a> for 1971, the year the game was created. <br>
 </p>
 
 </body>
 <script>
 
-    function handleInput(submitButton)
-    {
-        submitButton.blur();
-        game.gameInput(inputBox.value);
-        inputBox.value = "";
-
-        onResize();
-    }
-
-    //localStorage.clear();
-    //console.log(localStorage.getItem("autosave"));
-    lookup = JSON.parse(localStorage.getItem("autosave"));
-
+    lookup = localStorage.getItem("autosave");
+    
+    // if we don't have a saved game skip the continue prompt
     if (!lookup)
     {
-        game = new TrekGame();
-        console.log("Autosave not found, starting new game.");
+        prompt1();
     }
-    else
+
+    let primeUniverse = false;
+    let typingFree = false;
+
+    function prompt1()
     {
-        gamedata = lookup;
-        
-        game = TrekGame.ConstructFromJSData(gamedata);
-
-        var outputText = localStorage.getItem("outputText");
-        
-        // load previous output text
-        if (outputText)
-        {
-            gameOutputAppend(outputText);
-        }
-
-        gameOutputAppend("Welcome back, captain!");
+        document.getElementById("newgameprompt").style.display="None";
+        document.getElementById("prompt1").style.display="";
     }
 
-    let inputBox =  document.getElementById("gameInput");
-
-    // set up a listener on the input box to map the enter key to being the same as clicking the submit button
-    inputBox.addEventListener("keyup", 
-        function(event)
-        {
-            if (event.keyCode == 13) // enter
-            {
-                event.preventDefault();
-                document.getElementById("inputButton").click();
-            }
-        }
-    );
-
-    // console.log(""+ window.innerHeight);
-    let windowHeight = window.innerHeight;
-    let topHeight = document.getElementById("mapstatus").offsetHeight;
-    let bottomHeight = document.getElementById("inputline").offsetHeight;
-
-    let mainHeight = windowHeight - (topHeight + bottomHeight);
-
-    // console.log("" + mainHeight);
-
-    function onResize() 
+    function prompt2(inparam)
     {
-
-        let topHeight = document.getElementById("mapstatus").offsetHeight;
-        let bottomHeight = document.getElementById("inputline").offsetHeight;
-
-        //console.log("RESIZE");
-        let windowHeight = document.documentElement.clientHeight;//window.screen.height;//window.innerHeight;
-        let mainHeight = windowHeight - (topHeight + bottomHeight);
-
-        mainHeight = Math.max(.8*mainHeight, .15 * windowHeight);
-
-        //console.log("" + windowHeight + " " + topHeight + " " + bottomHeight + " " + mainHeight);
-
-        // really just set a default height here, in the css.  then get the difference with the whole document.
-        document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
-        document.getElementById("gameOutputBox").style.height = ""+(mainHeight)+"px";
-
-        gameOutputScrollToBottom();
+        document.getElementById("prompt1").style.display="None";
+        document.getElementById("prompt2").style.display="";
+        typingFree = inparam;
     }
 
-    window.onresize = onResize;
+    function prompt3(inparam)
+    {
+        primeUniverse = inparam;
+        newGame();
+    }
 
-    onResize();
-    
+    function newGame()
+    {
+        window.location.href = "./game.html?NewGame=\"true\"&TypingFree=\""+typingFree+"\"&PrimeUniverse=\""+ primeUniverse + "\"";
+    }
+
+    function forward()
+    {
+        window.location.href = "./game.html";
+    }
+
 </script>
 </html>
 

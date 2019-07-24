@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <!-- flexbox footer formatting : solution from https://medium.com/@paynoattn/flexbox-sticky-footer-d19dab50c34 -->
+        <style>
+            html,body 
+            {
+                font-size: 2vh;
+                color:rgb(42, 197, 15);
+                margin-left: 2.5%;
+                font-family: monospace;
+                justify-content: top;
+                height: 100%;
+            }
+        </style>
+
+        <title>
+            Star Trek Game - Making Games By Year Episode 1
+        </title>
+    </head>
+<body style="background-color:black;">
+
+<script src="trekgame.js"></script>
+
+<div id="mapstatus">
+    <div id="map2" style="margin-left: 2%; display:inline-block; font-size: 2vmin">
+<div id="mapHeaderQuadrant" style=" text-align: center; margin-top: 2%; font-size: 1.5vmin">
+<pre>
+SECTOR 4,5
+</pre>
+</div>
+        <div id="map">
+        </div>
+        <div id = "statusflags" style=" text-align: center; font-size: 1.5vmin">
+<pre>
+SHIELDS CRITICAL | RED ALERT
+</pre>
+        </div>
+    </div>
+    <div id="status" style="margin-left: 2%;display:inline-block; vertical-align: top; font-size: 2vmin"></div>
+</div>
+
+<div id="gameOutput" style="font-size: 2vmin;margin-left: 2%; margin-top: 0px;">   
+<pre>
+<textarea 
+readonly=true  
+id="gameOutputBox" 
+rows="10"
+style="
+resize: none;
+height: 90%;
+width: 96%;
+padding: 0px;
+font-size: 1.5vmin; 
+font-family: monospace;
+background-color: black; color:#39FF14; border-color: #39FF14"">
+</textarea>
+</pre>
+</div>
+
+
+<div id="bottomOfScreenLeft" style="display:inline-block; vertical-align: top; margin-left: 2%; font-size: 2vmin">
+
+<div id="inputline">
+<pre>
+<div id="inputPrompt" style="font-size: 1.5vmin"></div> <!-- was 3, button also-->
+<input maxlength="3" type="text" id="gameInput" name="gameinput" style="font-size: 2vmin; font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14""/>
+</pre>
+
+<input type="button" 
+    value="Make it so!" 
+    onclick="handleInput(this)"
+    id="inputButton"
+    style="font-size: 2vmin;font-family: monospace;background-color: black; color:#39FF14; border-color: #39FF14"">
+</input>
+</div>
+
+</div> <!-- bottom left -->
+
+
+<div id="bottomOfScreenRight" style="display:inline-block; vertical-align: middle; margin-left: 5%; font-size: 1.5vmin ">
+<pre>
+
+KEY:
+<*> : ENTERPRISE
+ *  : STAR
++K+ : KLINGON
+>!< : STARBASE
+</pre>
+</div>
+
+
+</p>
+
+</body>
+<script>
+
+    function handleInput(submitButton)
+    {
+        submitButton.blur();
+        game.gameInput(inputBox.value);
+        inputBox.value = "";
+
+        onResize();
+    }
+
+    //localStorage.clear();
+    //console.log(localStorage.getItem("autosave"));
+    lookup = JSON.parse(localStorage.getItem("autosave"));
+
+    if (!lookup)
+    {
+        game = new TrekGame();
+        console.log("Autosave not found, starting new game.");
+    }
+    else
+    {
+        gamedata = lookup;
+        
+        game = TrekGame.ConstructFromJSData(gamedata);
+
+        var outputText = localStorage.getItem("outputText");
+        
+        // load previous output text
+        if (outputText)
+        {
+            gameOutputAppend(outputText);
+        }
+
+        gameOutputAppend("Welcome back, captain!");
+    }
+
+    let inputBox =  document.getElementById("gameInput");
+
+    // set up a listener on the input box to map the enter key to being the same as clicking the submit button
+    inputBox.addEventListener("keyup", 
+        function(event)
+        {
+            if (event.keyCode == 13) // enter
+            {
+                event.preventDefault();
+                document.getElementById("inputButton").click();
+            }
+        }
+    );
+
+    // console.log(""+ window.innerHeight);
+    let windowHeight = window.innerHeight;
+    let topHeight = document.getElementById("mapstatus").offsetHeight;
+    let bottomHeight = document.getElementById("inputline").offsetHeight;
+
+    let mainHeight = windowHeight - (topHeight + bottomHeight);
+
+    // console.log("" + mainHeight);
+
+    function onResize() 
+    {
+
+        let topHeight = document.getElementById("mapstatus").offsetHeight;
+        let bottomHeight = document.getElementById("inputline").offsetHeight;
+
+        //console.log("RESIZE");
+        let windowHeight = document.documentElement.clientHeight;//window.screen.height;//window.innerHeight;
+        let mainHeight = windowHeight - (topHeight + bottomHeight);
+
+        mainHeight = Math.max(.8*mainHeight, .15 * windowHeight);
+
+        //console.log("" + windowHeight + " " + topHeight + " " + bottomHeight + " " + mainHeight);
+
+        // really just set a default height here, in the css.  then get the difference with the whole document.
+        document.getElementById("gameOutput").style.height = ""+(mainHeight)+"px";
+        document.getElementById("gameOutputBox").style.height = ""+(mainHeight)+"px";
+
+        gameOutputScrollToBottom();
+    }
+
+    window.onresize = onResize;
+
+    onResize();
+    
+</script>
+</html>
+
