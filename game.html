@@ -147,8 +147,16 @@ KEY:
 
     if (!lookup || newGame)
     {
-        game = new TrekGame(userParams);
-        console.log("Autosave not found, starting new game.");
+        console.log("userparams length " + userParams.length);
+        if (!userParams || !("NewGame" in userParams))
+        {
+            window.location.href = "./index.html";
+        }
+        else
+        {
+            game = new TrekGame(userParams);
+            console.log("Autosave not found, starting new game.");
+        }
     }
     else
     {

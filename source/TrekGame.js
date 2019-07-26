@@ -1107,7 +1107,7 @@ class TrekGame
             }
         }
 
-        let mapString = quadrantStringGrid.toString();
+        let mapString = (this.typingFree && this.gridHandler) ? quadrantStringGrid.toStringHyperlink() : quadrantStringGrid.toStringTyping();
 
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
 
