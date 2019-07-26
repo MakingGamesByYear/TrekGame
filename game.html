@@ -96,6 +96,40 @@ KEY:
 </body>
 <script>
 
+    // get user params from URL as dictionary
+    function userParamDictionary()
+    {
+        let rval = {};
+        var parameters = location.search.substring(1).split("&");
+
+        //console.log(parameters);
+        //console.log(parameters.length);
+
+        if (!parameters.length)return null;
+
+        for (var x in parameters)
+        {
+            let arr = parameters[x].split("=");
+
+            if (arr.length != 2)
+            {
+                console.log("skipping malformed input " + parameters[x]);
+                continue;
+            }
+
+            rval[arr[0]] = arr[1];
+        }
+
+        console.log("User params : ");
+        console.log(rval);
+
+        return rval;
+    }
+
+    let userParams = userParamDictionary();
+
+    let newGame = userParams && ("NewGame" in userParams) && (userParams["NewGame"] == "true");
+
     function handleInput(submitButton)
     {
         submitButton.blur();
@@ -109,9 +143,9 @@ KEY:
     //console.log(localStorage.getItem("autosave"));
     lookup = JSON.parse(localStorage.getItem("autosave"));
 
-    if (!lookup)
+    if (!lookup || newGame)
     {
-        game = new TrekGame();
+        game = new TrekGame(userParams);
         console.log("Autosave not found, starting new game.");
     }
     else

@@ -17,6 +17,8 @@ class TrekGame
 
             gamerval.currentQuadrant.addEntity(gamerval.enterprise);
 
+            this.applySettings();
+
             gamerval.createMenus();
 
             gamerval.checkStarbaseDock();
@@ -43,14 +45,34 @@ class TrekGame
         }
     }
 
-    constructor()
+    parseGameSettings(gameSettings)
     {
-        this.primeUniverse = true;
+        // default before parse
+        this.primeUniverse = false;
+        this.typingFree = false;
+
+        this.primeUniverse = gameSettings["PrimeUniverse"] == 'true';
+        this.typingFree = gameSettings["TypingFree"] == 'true';
+
+        console.log("typing free : " + this.typingFree);
+        console.log("prime universe : " + this.primeUniverse);
+    }
+
+    applySettings()
+    {
+        Menu.TypingFree = this.typingFree;
 
         if (this.primeUniverse)
         {
             Planet.MaxInstances = 0;
+            Planet.MinInstances = 0;
         }
+    }
+
+    constructor(gameSettings)
+    {
+        this.parseGameSettings(gameSettings);
+        this.applySettings();
 
         this.gameOver = false;
 
