@@ -146,7 +146,41 @@ class MainMenu extends Menu
 
                     let maxStr = "\nMAXIMUM SHIELD ENERGY: " + trekgame.enterprise.components.ShieldControl.maxShields();
 
-                    trekgame.awaitInput("ENTER NEW SHIELD ENERGY LEVEL. \nAVAILABLE ENERGY: " + totalEnergy + maxStr + suggestedStr, 4, trekgame.shieldHandler);
+                    let headerStr = "ENTER NEW SHIELD ENERGY LEVEL. \nAVAILABLE ENERGY: " + totalEnergy + maxStr + suggestedStr;
+
+                    if (trekgame.typingFree)
+                    {
+                        let increment = trekgame.enterprise.components.ShieldControl.maxShields() / 5;
+                        let shieldMenu = new Menu();
+                        let maxShields = trekgame.enterprise.components.ShieldControl.maxShields();
+
+                        shieldMenu.headerString = headerStr;
+
+                        for (var x = 0; x < 6; x++)
+                        {
+
+                            let shieldAmount = x * increment;
+                            let optionString = "SET SHIELD ENERGY TO " +shieldAmount + " ("+ (100*shieldAmount / maxShields) + '%)'; 
+
+                            shieldMenu.options.push
+                            (
+                                new MenuOption
+                                (
+                                    x+1,
+                                    ") ",
+                                    optionString,
+                                    function(){trekgame.shieldHandler("" + shieldAmount);return true;}
+                                )
+                            );
+                        }
+
+                        shieldMenu.options.push(new MenuOption("7", ") ", "BACK", function(){return true}));
+                        trekgame.awaitInput(shieldMenu.toString(), 1, function(inputline){return shieldMenu.chooseOption(inputline);});
+                    } 
+                    else
+                    {
+                        trekgame.awaitInput(headerStr, 4, trekgame.shieldHandler);
+                    }
                 }
             ),
 

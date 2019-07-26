@@ -25,6 +25,7 @@ class Menu
     constructor()
     {
         this.options = [];
+        this.headerString = "ENTER ONE OF THE FOLLOWING:\n";
     }
 
     getSelectedOption(optionText)
@@ -62,7 +63,7 @@ class Menu
 
     toStringTyping()
     {
-        var rstring = "ENTER ONE OF THE FOLLOWING:\n";
+        var rstring = this.headerString;
 
         for (var x in this.options)
         {
@@ -77,7 +78,7 @@ class Menu
 
     toStringHyperlink()
     {
-        var rstring = "ENTER ONE OF THE FOLLOWING:\n";
+        var rstring = this.headerString;
 
         for (var x in this.options)
         {
