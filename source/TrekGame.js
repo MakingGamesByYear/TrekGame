@@ -17,7 +17,7 @@ class TrekGame
 
             gamerval.currentQuadrant.addEntity(gamerval.enterprise);
 
-            this.applySettings();
+            gamerval.applySettings();
 
             gamerval.createMenus();
 
@@ -66,6 +66,11 @@ class TrekGame
         {
             Planet.MaxInstances = 0;
             Planet.MinInstances = 0;
+        }
+
+        if (this.typingFree)
+        {
+            this.disableInputKeepPrompt();
         }
     }
 
@@ -793,8 +798,12 @@ class TrekGame
     awaitInput(inputPrompt, charactersToRead=3, inputHandler=null)
     {
         document.getElementById("inputPrompt").style.display="Block";
-        document.getElementById("gameInput").style.display="Block";
-        document.getElementById("inputButton").style.display ="Block";
+        
+        if (!this.typingFree)
+        {
+            document.getElementById("gameInput").style.display="Block";
+            document.getElementById("inputButton").style.display ="Block";
+        }
 
         this.inputHandler = inputHandler;
         document.getElementById("gameInput").maxLength = charactersToRead;
@@ -804,6 +813,12 @@ class TrekGame
     disableInput()
     {
         document.getElementById("inputPrompt").style.display="None";
+        document.getElementById("gameInput").style.display="None";
+        document.getElementById("inputButton").style.display ="None";
+    }
+
+    disableInputKeepPrompt()
+    {
         document.getElementById("gameInput").style.display="None";
         document.getElementById("inputButton").style.display ="None";
     }
