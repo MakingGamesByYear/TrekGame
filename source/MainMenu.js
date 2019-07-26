@@ -84,7 +84,15 @@ class MainMenu extends Menu
                             "SHORT RANGE JUMP (1 STARDATE)",
                             function()
                             {
-                                trekgame.getSubsectorMenu(trekgame.shortRangeNavigationHandler);
+                                if (trekgame.typingFree)
+                                {
+                                    trekgame.gridHandler = function(x,y){trekgame.shortRangeNavigationHandler(trekgame, x, y);}
+                                    trekgame.awaitInput("SELECT YOUR DESTINATION SUBSECTOR ON THE MAP", 1, function(){});
+                                }
+                                else
+                                {
+                                    trekgame.getSubsectorMenu(trekgame.shortRangeNavigationHandler);
+                                }
                                 return false;
                             }
                         ),

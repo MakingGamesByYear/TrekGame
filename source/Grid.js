@@ -83,7 +83,13 @@ class Grid
             rval += padStringToLength(""+(y+1), 2) + '|';
             for (let x = 0; x < this.width; x++)
             {
-                let catstr = "<a href=\"\" style=\"color: rgb(0,255,0); text-decoration: none;\">" + this.lookup(x,y).toString() + "</a>";
+                let lookupVal = this.lookup(x,y).toString();
+                if (lookupVal == padStringToLength(' ', lookupVal.length))
+                {
+                    lookupVal = padStringToLength('.', lookupVal.length);
+                }
+
+                let catstr = "<a href=\"javascript:clickGridHandler("+x+","+y+")\" style=\"color: rgb(0,255,0); text-decoration: none;\">" + lookupVal + "</a>";
                 rval += catstr;
             }
             rval += '|';

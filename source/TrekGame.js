@@ -61,6 +61,7 @@ class TrekGame
     applySettings()
     {
         Menu.TypingFree = this.typingFree;
+        Grid.TypingFree = this.typingFree;
 
         if (this.primeUniverse)
         {
@@ -1111,6 +1112,21 @@ class TrekGame
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
 
     }
+
+    clickGridHandler(x,y)
+    {
+        if (this.gridHandler)
+        {
+            this.gridHandler(x,y);
+            this.gridHandler = null;
+        }
+    }
+}
+
+function clickGridHandler(x,y)
+{
+    console.log("" + x + "," +y);
+    game.clickGridHandler(x,y);
 }
 
 TrekGame.EntityTypes = [Star, StarBase, Klingon, Planet];
