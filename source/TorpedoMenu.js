@@ -46,13 +46,18 @@ class TorpedoMenu extends Menu
             }
         }
 
+        let manualString = "MANUAL TARGETING" 
+        if (!trekgame.enterprise.components.PhotonTubes.targetingAvailable())
+        {
+            manualString += "(CHANCE TO HIT : " + (100 * trekgame.enterprise.components.PhotonTubes.torpedoAccuracy()) + "%)";
+        }  
         this.options.push
         (
             new MenuOption
             (
                 this.options.length + 1, 
                 ") ",
-                "MANUAL TARGETING (CHANCE TO HIT : " + (100 * trekgame.enterprise.components.PhotonTubes.torpedoAccuracy()) + "%)",
+                manualString,
                 function()
                 {
                     trekgame.manualTorpedoHandler();

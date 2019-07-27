@@ -600,6 +600,8 @@ class TrekGame
                 trekgame.advanceStardate(1.0);
             }
 
+            trekgame.gridHandler = null;
+
             return true;
         }
 
@@ -744,7 +746,52 @@ class TrekGame
             return true;
         };
 
-        this.getSubsectorMenu(tfunc);
+        if (!this.typingFree)
+        {
+            this.getSubsectorMenu(tfunc);
+        }
+        else
+        {
+            let trekgame = this;
+            this.gridHandler = function(x,y)
+            {
+                tfunc(trekgame,x,y);
+                trekgame.gridHandler = null;
+                trekgame.updateDisplay();
+                trekgame.awaitInput(trekgame.mainMenu.toString());
+            };
+
+            this.showBackMenu();
+        }
+    }
+
+    showBackMenu()
+    {
+        let backMenu = new Menu();
+        let trekgame = this;
+
+        backMenu.headerString = "SELECT TORPEDO DESTINATION ON THE MAP";
+        backMenu.options.push
+        (
+            new MenuOption
+            (
+                "1",
+                ") ",
+                "BACK",
+                function()
+                {
+                    trekgame.gridHandler = null;
+                    return true;
+                }
+            )
+        );
+
+        this.showMenu(backMenu);
+    }
+
+    showMenu(menu)
+    {
+        this.awaitInput(menu.toString(), 1, function(inputline){return menu.chooseOption(inputline)});
     }
 
     torpedoHandler(target)
@@ -1118,7 +1165,7 @@ class TrekGame
         if (this.gridHandler)
         {
             this.gridHandler(x,y);
-            this.gridHandler = null;
+            //this.gridHandler = null;
         }
     }
 }

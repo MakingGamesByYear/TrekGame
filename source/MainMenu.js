@@ -87,7 +87,8 @@ class MainMenu extends Menu
                                 if (trekgame.typingFree)
                                 {
                                     trekgame.gridHandler = function(x,y){trekgame.shortRangeNavigationHandler(trekgame, x, y);}
-                                    trekgame.awaitInput("SELECT YOUR DESTINATION SUBSECTOR ON THE MAP", 1, function(){});
+                                    trekgame.showBackMenu();
+                                    return false;
                                 }
                                 else
                                 {
@@ -100,7 +101,7 @@ class MainMenu extends Menu
                         (
                             "2",
                             ") ",
-                            "LONG RANGE JUMP  (1 STARDATE)",
+                            "JUMP TO ANOTHER SECTOR  (1 STARDATE)",
                             function()
                             {
                                 trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthQuadrants, 2, trekgame.navigationHandlerLongRangeX);
