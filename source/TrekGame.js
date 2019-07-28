@@ -563,6 +563,32 @@ class TrekGame
             return true;
         }
 
+        let sensorHistory = this.enterprise.sensorHistory.lookup(quadrantX, quadrantY);
+        
+        if (Klingon in sensorHistory)
+        {
+            gameOutputAppend("\nThe destination sector " + "(" + (1+quadrantX) + ',' + (1+quadrantY) +  ")" + " contains the following: ");
+
+            if (sensorHistory[Klingon] > 0)
+            {
+                gameOutputAppend("Klingons : " + sensorHistory[Klingon]);
+            }
+
+            if (this.galaxyMap.lookup(quadrantX, quadrantY).countEntitiesOfType(StarBase) > 0)
+            {
+                gameOutputAppend("Starbases : 1");
+            }
+
+            if (sensorHistory[Star] > 0)
+            {
+                gameOutputAppend("Stars : " + sensorHistory[Klingon]);
+            }
+        }
+        else
+        {
+            gameOutputAppend("\nThe destination sector " + "(" + (1+quadrantX) + ',' + (1+quadrantY) +  ")" + " is unexplored.");
+        }
+
         let trekgame = this;
         let confirmMenu = new Menu();
         confirmMenu.options.push
@@ -574,6 +600,9 @@ class TrekGame
                 "CONFIRM JUMP TO SECTOR " + (quadrantX+1) + ", " + (quadrantY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
                 function()
                 {
+                    trekgame.mapScreenGalaxy = false;
+                    trekgame.gridHandler = null;
+
                     trekgame.enterprise.freeEnergy -= jumpEnergyRequired;
                     trekgame.changeToQuadrant(quadrantX, quadrantY);
                     trekgame.advanceStardateNoCombat(1.0); // don't get blown up as soon as we enter a new Sector!
@@ -594,6 +623,7 @@ class TrekGame
         );
 
         this.awaitInput(confirmMenu.toString(), 1, function(inputline){return confirmMenu.chooseOption(inputline);});
+        return false;
     }
 
     shortRangeNavigationHandler(trekgame, subsectorX, subsectorY)

@@ -110,8 +110,6 @@ class MainMenu extends Menu
                                     trekgame.gridHandler = function(x,y)
                                     {
                                         trekgame.longRangeJump(x,y);
-                                        trekgame.mapScreenGalaxy = false;
-                                        trekgame.gridHandler = null;
                                     }
 
                                     trekgame.showBackMenu("SELECT DESTINATION SECTOR ON THE GALAXY MAP");
