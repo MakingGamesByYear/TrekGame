@@ -789,6 +789,7 @@ class TrekGame
                 function()
                 {
                     trekgame.gridHandler = null;
+                    trekgame.mapScreenGalaxy = false;
                     return true;
                 }
             )
