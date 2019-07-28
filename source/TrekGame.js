@@ -21,6 +21,8 @@ class TrekGame
 
             gamerval.createMenus();
 
+            gamerval.mapScreenGalaxy = false;
+
             gamerval.checkStarbaseDock();
             gamerval.checkPlanetBombard();
 
@@ -81,6 +83,7 @@ class TrekGame
         this.applySettings();
 
         this.gameOver = false;
+        this.mapScreenGalaxy = false;
 
         this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
         
@@ -525,6 +528,11 @@ class TrekGame
             return false;
         }
 
+        this.longRangeJump(quadrantX, quadrantY);
+    }
+
+    longRangeJump(quadrantX, quadrantY)
+    {
         let xd = quadrantX - this.enterprise.quadrantX;
         let yd = quadrantY - this.enterprise.quadrantY;
         let travelDistance = Math.sqrt(xd*xd + yd*yd);  // assumes single stardate.  so distance and speed have the same scalar value.
@@ -761,16 +769,16 @@ class TrekGame
                 trekgame.awaitInput(trekgame.mainMenu.toString());
             };
 
-            this.showBackMenu();
+            this.showBackMenu("SELECT TORPEDO DESTINATION ON THE MAP");
         }
     }
 
-    showBackMenu()
+    showBackMenu(headerString)
     {
         let backMenu = new Menu();
         let trekgame = this;
 
-        backMenu.headerString = "SELECT TORPEDO DESTINATION ON THE MAP";
+        backMenu.headerString = headerString;
         backMenu.options.push
         (
             new MenuOption
@@ -841,6 +849,12 @@ class TrekGame
     updateStatus()
     {
         document.getElementById("status").innerHTML = this.statusString();
+        document.getElementById("status").style.display = "inline-block";
+    }
+
+    hideStatus()
+    {
+        document.getElementById("status").style.display = "None";
     }
 
     awaitInput(inputPrompt, charactersToRead=3, inputHandler=null)
@@ -899,10 +913,22 @@ class TrekGame
 
     updateDisplay()
     {
-        this.updateStatus();
-        updateMap(this.updateMapScreen());
-        updateMapHeader("SECTOR : " + this.enterprise.quadrantString());
-        updateMapFooter(this.updateStatusFlags());
+
+        if (this.mapScreenGalaxy)
+        {
+            this.hideStatus();
+            updateMap(this.updateMapScreenGalaxy());
+            updateMapHeader("GALAXY MAP : CHOOSE DESTINATION SECTOR");
+            //updateMap(this.updateMapScreenGalaxy());
+            updateMapFooter("E: ENTERPRISE | K : KLINGONS | S : STARBASE | ? : UNEXPLORED");
+        }
+        else
+        {
+            this.updateStatus();
+            updateMap(this.updateMapScreen());
+            updateMapHeader("SECTOR : " + this.enterprise.quadrantString());
+            updateMapFooter(this.updateStatusFlags());
+        }
     }
 
     checkStarbaseDock()
@@ -1120,6 +1146,80 @@ class TrekGame
         }
 
         return flags.join(" | ");
+    }
+
+    updateMapScreenGalaxy()
+    {
+        let topStr = "---------";
+        let topStrLong = ' ' + topStr.repeat(mapWidthQuadrants-1);
+
+        let rval = "<pre>" + '\n' + topStrLong + '\n';
+
+        for (var y = 0; y < mapHeightQuadrants; y++)
+        {
+            rval += '|';
+            for (var x = 0; x < mapWidthQuadrants; x++)
+            {
+
+                rval += "<a href=\"javascript:clickGridHandler(" + x + ","+ y +")\" style=\"color: rgb(0,255,0); text-decoration: none;\">";
+
+                let coordstr = "("+(x+1)+","+(y+1)+")";
+                rval += padStringToLength(coordstr, 7);
+
+                rval += "</a>";
+
+                rval += '|';
+            }
+
+            rval += '\n|';
+
+            for (var x = 0; x < mapWidthQuadrants; x++)
+            {
+                rval += "<a href=\"javascript:clickGridHandler("+x+","+y+")\" style=\"color: rgb(0,255,0); text-decoration: none;\">";
+
+                let identifiers = '';
+
+                let sensorHistory = this.enterprise.sensorHistory.lookup(x,y);
+
+                if (Klingon in sensorHistory)
+                {
+                    if ((this.enterprise.quadrantX == x) && (this.enterprise.quadrantY == y))
+                    {
+                        identifiers+= 'E';
+                    }
+
+                    if (sensorHistory[Klingon] > 0)
+                    {
+                        identifiers += 'K';
+                    }
+
+                    if (StarBase in sensorHistory && sensorHistory[StarBase] > 0)
+                    {
+                        identifiers += 'S';
+                    }
+                }
+                else
+                {
+                    identifiers += '?';
+                }
+                
+              
+
+                rval += padStringToLength(identifiers,7);
+
+                rval += "</a>";
+
+                rval += '|';
+            }
+
+            //rval += '|';
+
+            rval += '\n' + topStrLong + '\n';
+        }
+
+        rval += "</pre>";
+
+        return rval;
     }
 
     updateMapScreen()

@@ -87,7 +87,7 @@ class MainMenu extends Menu
                                 if (trekgame.typingFree)
                                 {
                                     trekgame.gridHandler = function(x,y){trekgame.shortRangeNavigationHandler(trekgame, x, y);}
-                                    trekgame.showBackMenu();
+                                    trekgame.showBackMenu("SELECT DESTINATION ON THE MAP");
                                     return false;
                                 }
                                 else
@@ -104,7 +104,23 @@ class MainMenu extends Menu
                             "JUMP TO ANOTHER SECTOR  (1 STARDATE)",
                             function()
                             {
-                                trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthQuadrants, 2, trekgame.navigationHandlerLongRangeX);
+                                if (trekgame.typingFree)
+                                {
+                                    trekgame.mapScreenGalaxy = true;
+                                    trekgame.gridHandler = function(x,y)
+                                    {
+                                        trekgame.longRangeJump(x,y);
+                                        trekgame.mapScreenGalaxy = false;
+                                        trekgame.gridHandler = null;
+                                    }
+
+                                    trekgame.showBackMenu("SELECT DESTINATION SECTOR ON THE GALAXY MAP");
+                                    return false;
+                                }
+                                else
+                                {
+                                    trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthQuadrants, 2, trekgame.navigationHandlerLongRangeX);
+                                }
                                 return false;
                             }
                         ),
