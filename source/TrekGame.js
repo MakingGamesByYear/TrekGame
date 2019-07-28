@@ -1194,7 +1194,7 @@ class TrekGame
                         identifiers += 'K';
                     }
 
-                    if (StarBase in sensorHistory && sensorHistory[StarBase] > 0)
+                    if (this.galaxyMap.lookup(x,y).countEntitiesOfType(StarBase) > 0)
                     {
                         identifiers += 'S';
                     }
