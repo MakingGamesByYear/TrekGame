@@ -581,7 +581,7 @@ class TrekGame
 
             if (sensorHistory[Star] > 0)
             {
-                gameOutputAppend("Stars : " + sensorHistory[Klingon]);
+                gameOutputAppend("Stars : " + sensorHistory[Star]);
             }
         }
         else
@@ -617,6 +617,8 @@ class TrekGame
                 "CANCEL",
                 function()
                 {
+                    trekgame.gridHandler = null;
+                    trekgame.mapScreenGalaxy = false;
                     return true;
                 }
             )
