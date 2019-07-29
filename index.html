@@ -80,6 +80,19 @@ Here's a <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILgg
 </body>
 <script>
 
+    let ev = function(event)
+    {
+        document.getElementById("newgameprompt").style.display="";
+        document.getElementById("prompt1").style.display="None";
+        document.getElementById("prompt2").style.display="None";
+        // if we don't have a saved game skip the continue prompt
+        if (!lookup)
+        {
+            prompt1();
+        }
+    }
+    window.addEventListener("pageshow", ev, false);
+
     lookup = localStorage.getItem("autosave");
     
     // if we don't have a saved game skip the continue prompt
