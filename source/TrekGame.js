@@ -256,6 +256,21 @@ class TrekGame
 
             gameOutputAppend(storyString);
         }
+
+        let enemyCount = this.currentQuadrant.countEntitiesOfType(Klingon);
+        if (enemyCount)
+        {
+            gameOutputAppend("\n=============================\n");
+            gameOutputAppend("As you begin your mission, you find yourself in a sector with " + (enemyCount > 1) ?  " enemy ships." : " an enemy ship.");
+            gameOutputAppend("Prepare for combat!");
+        }
+        else
+        {
+            gameOutputAppend("\n=============================\n");
+            gameOutputAppend("As you begin your mission, you find yourself in a sector clear of enemy ships.  You will have to use navigation to jump to another sector to engage with the enemy.");
+            gameOutputAppend("If the sectors adjacent to your ship are unexplored, you can use your long range sensors to try and find the enemy.");
+        }
+
     }
 
     printTutorial()
