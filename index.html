@@ -86,18 +86,26 @@ Here's a <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILgg
         document.getElementById("prompt1").style.display="None";
         document.getElementById("prompt2").style.display="None";
         // if we don't have a saved game skip the continue prompt
-        if (!lookup)
+
+        lookup = localStorage.getItem("autosave");
+
+        console.log(lookup);
+
+        if (!lookup || lookup == "null")
         {
+            console.log("lookup 1");
             prompt1();
         }
     }
     window.addEventListener("pageshow", ev, false);
 
-    lookup = localStorage.getItem("autosave");
-    
+    lookup = (localStorage.getItem("autosave"));
+    console.log(lookup);
+
     // if we don't have a saved game skip the continue prompt
-    if (!lookup)
+    if (!lookup || lookup == "null")
     {
+        console.log("lookup 1");
         prompt1();
     }
 
