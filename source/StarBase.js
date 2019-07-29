@@ -9,8 +9,6 @@ class StarBase extends GameObject
     onTorpedoHit(game)
     {
         console.log("hit a starbase");
-        gameOutputAppend("\nReport from sector " + this.sectorString());
-        gameOutputAppend("The torpedo strikes and destroys the friendly starbase! I bet you'll be court martialled for that one!");
 
         game.currentQuadrant.removeEntity(this);
         StarBase.Instances--;
@@ -21,6 +19,17 @@ class StarBase extends GameObject
         if (game.enterprise.dockStarbase == removeSB)
         {
             game.enterprise.undock(removeSB);
+        }
+
+        gameOutputAppend("\nReport from sector " + this.sectorString());
+        if (game.primeUniverse)
+        {
+            gameOutputAppend("The torpedo strikes and destroys the friendly starbase! I bet you'll be court martialled for that one!");
+        }
+        else
+        {
+            gameOutputAppend("The torpedo strikes and destroys the Imperial starbase! Starfleet orders your second in command to throw you in the agonizer booth, costing you a Stardate.");
+            game.advanceStardate(1.0);
         }
     }
 

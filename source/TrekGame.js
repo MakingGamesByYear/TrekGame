@@ -198,7 +198,7 @@ class TrekGame
 
     destroyKlingon(k)
     {
-        gameOutputAppend("Klingon Fighter Destroyed");
+        gameOutputAppend(this.primeUniverse ? "Klingon Fighter Destroyed" : "Enemy vessel destroyed.");
         this.currentQuadrant.removeEntity(k);
         Klingon.Instances--;
         Klingon.InstancesDestroyed++;
@@ -206,26 +206,51 @@ class TrekGame
 
     printStory()
     {
-        var storyString = "The stardate is " + this.starDate + ".\n\nYou are the captain of the USS Enterprise.  " +
-        "You have received word from Starfleet command of a plot by Klingon spies to destroy all the Federation " +
-        "starbases in the region so the Klingon Empire can assume control.\n\n";
+        if (this.primeUniverse)
+        {
+            var storyString = "The stardate is " + this.starDate + ".\n\nYou are the captain of the USS Enterprise.  " +
+            "You have received word from Starfleet command of a plot by Klingon spies to destroy all the Federation " +
+            "starbases in the region so the Klingon Empire can assume control.\n\n";
 
-        storyString += 
-        "The Federation is in danger and you are the only ship in range.\n\n"
+            storyString += 
+            "The Federation is in danger and you are the only ship in range.\n\n"
 
-        storyString+= 
-        "Your mission is to hunt down and destroy the " + Klingon.Instances + " Klingon warships in the region.\n" + 
-        "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
-        " stardates to succeed.";
+            storyString+= 
+            "Your mission is to hunt down and destroy the " + Klingon.Instances + " Klingon warships in the region.\n" + 
+            "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
+            " stardates to succeed.";
 
-        storyString += 
-        "\n\nThere are " + StarBase.Instances + " Federation Starbases in the region for refueling, restocking torpedoes, and repairs.";
+            storyString += 
+            "\n\nThere are " + StarBase.Instances + " Federation Starbases in the region for refueling, restocking torpedoes, and repairs.";
 
-        storyString += "\n\nCheck the ship's computer to access the captain's manual for a tutorial on how to complete your mission.";
+            storyString += "\n\nCheck the ship's computer to access the captain's manual for a tutorial on how to complete your mission.";
 
-        storyString += "\n\nGood luck, galactic peace is in your hands!";
+            storyString += "\n\nGood luck, galactic peace is in your hands!";
+            gameOutputAppend(storyString);
+        }
+        else
+        {
+            var storyString = "";
 
-        gameOutputAppend(storyString);
+            storyString += "The stardate is " + this.starDate + ".\n\nYou are the captain of the ISS Enterprise.  " +
+            "You have received word from Starfleet command of a plot by spies from a faction called the \"Federation\" to hack our starbases to spread " +
+            "propaganda encouraging people to rebel against the Terran Empire. The Empire's external enemies want to use internal strife to make it easier to conquer and enslave."
+            + "  This must be prevented at any cost.";
+
+            storyString+= 
+            "Your mission is to hunt down and destroy the " + Klingon.Instances + " Federation ships in the region.\n" + 
+            "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
+            " stardates to succeed.";
+
+            storyString += 
+            "\n\nThere are " + StarBase.Instances + " Imperial Starbases in the region for refueling, restocking torpedoes, and repairs.";
+
+            storyString += "\n\nIf you fail, the consequences to yourself will be severe.  Terror must be maintained or the Empire is doomed.";
+
+            storyString += "\n\nCheck the ship's computer to access the captain's manual for a tutorial on how to complete your mission.";
+
+            gameOutputAppend(storyString);
+        }
     }
 
     printTutorial()
@@ -394,7 +419,8 @@ class TrekGame
         "PHOTON TORPEDOES      " + this.enterprise.torpedoes + '\n' + 
         "SHIELD ENERGY         " + this.enterprise.shields + '\n' + 
         "FREE ENERGY           " + this.enterprise.freeEnergy + '\n' + 
-        "KLINGONS REMAINING    " + Klingon.Instances + '\n' + 
+        this.primeUniverse ? "KLINGONS REMAINING    " : "TRAITORS REMAINING    "
+        + Klingon.Instances + '\n' + 
         "STARBASES REMAINING   " + StarBase.Instances + '\n' +
         "</pre>";
     }
@@ -583,7 +609,7 @@ class TrekGame
 
             if (sensorHistory[Klingon] > 0)
             {
-                gameOutputAppend("Klingons : " + sensorHistory[Klingon]);
+                gameOutputAppend( (this.primeUniverse ? "Klingons : " : "ENEMY FIGHTERS") + sensorHistory[Klingon]);
             }
 
             if (this.galaxyMap.lookup(quadrantX, quadrantY).countEntitiesOfType(StarBase) > 0)
@@ -1116,9 +1142,20 @@ class TrekGame
         if (this.starDate >= this.endStarDate)
         {
             gameOutputAppend("\n\n============================GAME OVER============================\n");
-            gameOutputAppend("You were unable to complete your mission in time.");
-            gameOutputAppend("The Klingons were able to execute their plan to destroy the Federation starbases!");
-            gameOutputAppend("You'll be demoted for sure!");
+            
+            if (this.primeUniverse)
+            {
+                gameOutputAppend("You were unable to complete your mission in time.");
+                gameOutputAppend("The Klingons were able to execute their plan to destroy the Federation starbases!");
+                gameOutputAppend("You'll be demoted for sure!");
+            }
+            else
+            {
+                gameOutputAppend("You were unable to complete your mission in time.");
+                gameOutputAppend("The Federation ships were able to execute their plan.  Reports of civil unrest and insurrection start coming in from throughout the Terran Empire.");
+                gameOutputAppend("\nYour second in command and his henchmen are waiting to assassinate you in your quarters.");
+                gameOutputAppend("The Enterprise gets a better captain and everyone else moves up in rank.  You have paid the price for your failures.");
+            }
 
             gameOutputAppend("\nFinal Score : " + this.generateScore(false));
 
@@ -1147,8 +1184,20 @@ class TrekGame
         else if (!StarBase.Instances)
         {
             gameOutputAppend("\n\n============================\GAME OVER============================\n");
-            gameOutputAppend("All the Federation starbases have been destroyed!");
-            gameOutputAppend("You've failed in your mission.  The Federation is doomed.");
+            
+            if (this.primeUniverse)
+            {
+                gameOutputAppend("All the Federation starbases have been destroyed!");
+                gameOutputAppend("You've failed in your mission.  The Federation is doomed.");
+            }
+            else
+            {
+                gameOutputAppend("All the Imperial starbases have been destroyed!");
+                gameOutputAppend("Insurgents from planets under the Empire's control take advantage of the power vacuum and take control of the region.");
+                gameOutputAppend("The Empire has been seriously harmed by your incompetence");
+                gameOutputAppend("\nYour second in command and his henchmen are waiting to assassinate you in your quarters.");
+                gameOutputAppend("The Enterprise gets a better captain and everyone else moves up in rank.  You have paid the price for your failures.");
+            }
 
             gameOutputAppend("\nFinal Score : " + this.generateScore(false));
 
@@ -1159,7 +1208,15 @@ class TrekGame
             gameOutputAppend("\n\n============================YOU WIN!!============================\n");
             gameOutputAppend("You've managed to destroy all the enemy vessels, preventing the enemy from executing their plan!");
             gameOutputAppend("You're sure to get a promotion!");
-            gameOutputAppend("Congratulations on your victory!");
+            
+            if (this.primeUniverse)
+            {
+                gameOutputAppend("Congratulations on your victory!");
+            }
+            else
+            {
+                gameOutputAppend("Terror has been maintained!");
+            }
 
             gameOutputAppend("\nFinal Score : " + this.generateScore(true));
             
