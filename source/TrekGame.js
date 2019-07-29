@@ -69,6 +69,11 @@ class TrekGame
         {
             Planet.MaxInstances = 0;
             Planet.MinInstances = 0;
+            Klingon.stringRepresentation = "+K+";
+        }
+        else
+        {
+            Klingon.stringRepresentation = "+F+";
         }
 
         if (this.typingFree)
@@ -278,8 +283,12 @@ class TrekGame
 
                     tutorialString += "\n\nBelow the map screen are important status flags, such as whether the shields are too low or whether we're at red alert when enemies are present. ";
 
-                    tutorialString += "\n\nMap key :\n" +
-                    "<*> : ENTERPRISE\n*  : STAR\n+K+ : KLINGON\n>!< : STARBASE\n";
+                    tutorialString += "\n\nMap key :\n";
+
+                    tutorialString += this.primeUniverse ? 
+                    "<*> : ENTERPRISE\n*  : STAR\n+K+ : KLINGON\n>!< : STARBASE\n"
+                    :
+                    "<*> : ENTERPRISE\n*  : STAR\n+F+ : FEDERATION SHIP\n>!< : STARBASE\n";
 
                     gameOutputAppend(tutorialString);
 
@@ -351,7 +360,15 @@ class TrekGame
 
                     tutorialString += "\n\MAPS:\n";
                     tutorialString += "Galaxy maps can be found in the ship's computer.\n\nThe starbase map shows the sectors that contain a starbase.  The locations of all starbases are known at the beginning of your mission.";
-                    tutorialString += "\n\nThe klingons map shows the number of enemies in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
+                    
+                    if (this.primeUniverse)
+                    {
+                        tutorialString += "\n\nThe klingons map shows the number of enemies in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
+                    }
+                    else
+                    {
+                        tutorialString += "\n\nThe enemy locations map shows the number of enemies in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
+                    }
                     tutorialString += "\n\nThe star density map shows the number of stars in each sector based on your previous long range scans.  Starbases also do a continous long range scan and update your map.  Uncharted sectors display a question mark.";
                     tutorialString += "\nThe galaxy maps in the ship computer show an E in the sector corresponding to the location of your ship.";
 
@@ -609,7 +626,7 @@ class TrekGame
 
             if (sensorHistory[Klingon] > 0)
             {
-                gameOutputAppend( (this.primeUniverse ? "Klingons : " : "ENEMY FIGHTERS") + sensorHistory[Klingon]);
+                gameOutputAppend( (this.primeUniverse ? "Klingons : " : "Enemy vessels") + sensorHistory[Klingon]);
             }
 
             if (this.galaxyMap.lookup(quadrantX, quadrantY).countEntitiesOfType(StarBase) > 0)
@@ -789,7 +806,6 @@ class TrekGame
 
     longRangeScan()
     {
-
         if (!this.enterprise.components.LongRangeSensors.functional())
         {
             gameOutputAppend("\nLong range scan unavailable due to damage.");
@@ -798,7 +814,7 @@ class TrekGame
 
         gameOutputAppend("\nLong Range Scan completed.");
         gameOutputAppend("Adjacent sectors have been scanned.  The ship's computer has been updated with the following information:\n");
-        gameOutputAppend(this.enterprise.lrsString(this.galaxyMap));
+        gameOutputAppend(this.enterprise.lrsString(this, this.galaxyMap));
 
         var sh = this.enterprise.sensorHistory;
         sh.updateSensorHistoryForEntityTypes
@@ -1001,7 +1017,15 @@ class TrekGame
             updateMap(this.updateMapScreenGalaxy());
             updateMapHeader("GALAXY MAP : CHOOSE DESTINATION SECTOR");
             //updateMap(this.updateMapScreenGalaxy());
-            updateMapFooter("E: ENTERPRISE | K : KLINGONS | S : STARBASE | ? : UNEXPLORED");
+            
+            if (this.primeUniverse)
+            {
+                updateMapFooter("E: ENTERPRISE | K : KLINGONS | S : STARBASE | ? : UNEXPLORED");
+            }
+            else
+            {
+                updateMapFooter("E: ENTERPRISE | F : FEDERATION SPIES | S : STARBASE | ? : UNEXPLORED");
+            }
         }
         else
         {
@@ -1302,7 +1326,7 @@ class TrekGame
 
                     if (sensorHistory[Klingon] > 0)
                     {
-                        identifiers += 'K';
+                        identifiers += this.primeUniverse ? 'K' : 'E';
                     }
 
                     if (this.galaxyMap.lookup(x,y).countEntitiesOfType(StarBase) > 0)

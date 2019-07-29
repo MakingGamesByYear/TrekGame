@@ -103,7 +103,7 @@ class ShipComputerMenu extends Menu
             (
                 "2",
                 ") ",
-                "KLINGONS MAP",
+                trekGame.primeUniverse ? "KLINGONS MAP" : "ENEMY LOCATIONS MAP",
                 function()
                 {
                     if (!trekGame.enterprise.components.LibraryComputer.mapsAccessible())
@@ -112,7 +112,7 @@ class ShipComputerMenu extends Menu
                         return true;
                     }
 
-                    gameOutputAppend("\nSENSOR RECORDS OF KLINGONS IN EACH SECTOR");
+                    gameOutputAppend("\nSENSOR RECORDS OF ENEMIES IN EACH SECTOR");
                     gameOutputAppend(trekGame.enterprise.sensorHistory.mapString(Klingon, trekGame.enterprise));
                     return true;
                 }

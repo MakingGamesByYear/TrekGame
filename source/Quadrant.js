@@ -193,13 +193,14 @@ class Quadrant
     {
         let klist = this.getEntitiesOfType(Klingon);
 
+        let descStr = game.primeUniverse ? "Klingon" : "Federation";
         if (klist.length > 1)
         {
-            gameOutputAppend("\nThe Klingon vessels fire their phasers.");
+            gameOutputAppend("\nThe " + descStr + " vessels fire their phasers.");
         }
         else if (klist.length)
         {
-            gameOutputAppend("\nThe Klingon vessel fires its phasers.");
+            gameOutputAppend("\nThe " + descStr + " vessel fires its phasers.");
         }
 
         for (var x in klist)

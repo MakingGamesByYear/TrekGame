@@ -27,7 +27,8 @@ class Klingon extends GameObject
         }
         else
         {
-            gameOutputAppend("Phaser hit the klingon fighter for " + energy + " damage.");
+            let descStr = game.primeUniverse ? "klingon fighter" : " enemy ship";
+            gameOutputAppend("Phaser hit the " + descStr + " for " + energy + " damage.");
 
             this.shields -= energy;
 
@@ -80,7 +81,7 @@ class Klingon extends GameObject
 
     toString()
     {
-        return "+K+";
+        return Klingon.stringRepresentation;
     }
     
     static maxInstancesQuadrant()
@@ -113,3 +114,5 @@ Klingon.shieldDeflectionPercent = .15;
 Klingon.InstancesDestroyed = 0;
 Klingon.MaxPhaserMultiplier = 3;
 Klingon.MinPhaserMultiplier = 2;
+
+Klingon.stringRepresentation = "+K+";
