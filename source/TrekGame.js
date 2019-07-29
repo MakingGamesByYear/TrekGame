@@ -531,6 +531,18 @@ class TrekGame
         this.longRangeJump(quadrantX, quadrantY);
     }
 
+    manualPhaserEntry()
+    {
+        let freestring = "\nFREE ENERGY : " + this.enterprise.freeEnergy;
+                        
+        let accuracy = this.enterprise.components.PhaserControl.phaserAccuracy() * 100;
+        let chanceToHitString = "PHASER CHANCE TO HIT : " + accuracy + "%";
+        
+        this.awaitInput(chanceToHitString + "\nENTER ENERGY TO EXPEND ON PHASER FIRE"+freestring, 4, this.phaserHandler, true);
+
+        return false;
+    }
+
     longRangeJump(quadrantX, quadrantY)
     {
         let xd = quadrantX - this.enterprise.quadrantX;
@@ -854,6 +866,13 @@ class TrekGame
             return false;
         }
 
+        this.firePhasersEnergy(energy);
+
+        return true;
+    }
+
+    firePhasersEnergy(energy)
+    {
         if (energy > this.enterprise.freeEnergy)
         {
             gameOutputAppend("Not enough energy, captain!");
@@ -869,8 +888,6 @@ class TrekGame
         {
             this.combatStep();
         }
-
-        return true;
     }
 
     combatStep()
@@ -890,14 +907,19 @@ class TrekGame
         document.getElementById("status").style.display = "None";
     }
 
-    awaitInput(inputPrompt, charactersToRead=3, inputHandler=null)
+    awaitInput(inputPrompt, charactersToRead=3, inputHandler=null, override=false)
     {
         document.getElementById("inputPrompt").style.display="Block";
         
-        if (!this.typingFree)
+        if (!this.typingFree || override)
         {
             document.getElementById("gameInput").style.display="Block";
             document.getElementById("inputButton").style.display ="Block";
+        }
+        else
+        {
+            document.getElementById("gameInput").style.display="None";
+            document.getElementById("inputButton").style.display ="None";
         }
 
         this.inputHandler = inputHandler;

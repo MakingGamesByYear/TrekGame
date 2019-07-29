@@ -31,6 +31,7 @@ IncludeSource SensorHistory.js
 IncludeSource Menu.js
 IncludeSource MainMenu.js
 IncludeSource TorpedoMenu.js
+IncludeSource PhaserMenu.js
 IncludeSource ShipComputer.js
 IncludeSource TrekGame.js
 

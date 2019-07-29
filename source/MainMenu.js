@@ -266,13 +266,16 @@ class MainMenu extends Menu
                     }
                     if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
                     {
-                        let freestring = "\nFREE ENERGY : " + trekgame.enterprise.freeEnergy;
-                        
-                        let accuracy = trekgame.enterprise.components.PhaserControl.phaserAccuracy() * 100;
-                        let chanceToHitString = "PHASER CHANCE TO HIT : " + accuracy + "%";
-                        
-                        trekgame.awaitInput(chanceToHitString + "\nENTER ENERGY TO EXPEND ON PHASER FIRE"+freestring, 4, trekgame.phaserHandler);
-                        return false;
+                        if (trekgame.typingFree)
+                        {
+                            let pm = new PhaserMenu(trekgame);
+                            trekgame.showMenu(pm);
+                            return false;
+                        }
+                        else
+                        {
+                            return trekgame.manualPhaserEntry();
+                        }
                     }
                     else
                     {
