@@ -263,12 +263,14 @@ class TrekGame
             gameOutputAppend("\n=============================\n");
             gameOutputAppend("As you begin your mission, you find yourself in a sector with" + ((enemyCount > 1) ?  " enemy ships." : " an enemy ship."));
             gameOutputAppend("Prepare for combat!");
+            this.sectorClearFirstTime = false;
         }
         else
         {
             gameOutputAppend("\n=============================\n");
             gameOutputAppend("As you begin your mission, you find yourself in a sector clear of enemy ships.  You will have to use navigation to jump to another sector to engage with the enemy.");
             gameOutputAppend("If the sectors adjacent to your ship are unexplored, you can use your long range sensors to try and find the enemy.");
+            this.sectorClearFirstTime = true;
         }
 
     }
@@ -1294,6 +1296,15 @@ class TrekGame
         else
         {
             flags.push("SECTOR CLEAR");
+
+            // tutorial pro tip.
+            if (!this.sectorClearFirstTime)
+            {
+                this.sectorClearFirstTime = true;
+                gameOutputAppend("You find yourself in a sector clear of enemy ships.  You will have to use navigation to jump to another sector to engage with the enemy.");
+                gameOutputAppend("If the sectors adjacent to your ship are unexplored, you can use your long range sensors to try and find the enemy.");
+            }
+            
         }
 
         return flags.join(" | ");

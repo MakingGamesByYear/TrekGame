@@ -16,6 +16,7 @@ class Planet extends GameObject
 
     bombard()
     {
+        gameOutputAppend("\nYou bombard the planet.  The base and every living inhabitant inside is reduced to ash.  Let's see if the enemy takes the bait.");
         this.bombarded = true;
     }
 
