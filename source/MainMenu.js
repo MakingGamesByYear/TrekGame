@@ -197,7 +197,13 @@ class MainMenu extends Menu
                             );
                         }
 
-                        shieldMenu.options.push(new MenuOption("7", ") ", "BACK", function(){return true}));
+                        shieldMenu.options.push(new MenuOption("7", ") ", "TYPE IN MANUALLY", 
+                            function()
+                            {
+                                trekgame.awaitInput(headerStr, 4, trekgame.shieldHandler, true);
+                                return false;
+                            }));
+                        shieldMenu.options.push(new MenuOption("8", ") ", "BACK", function(){return true}));
                         trekgame.awaitInput(shieldMenu.toString(), 1, function(inputline){return shieldMenu.chooseOption(inputline);});
                     } 
                     else
