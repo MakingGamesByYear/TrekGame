@@ -423,7 +423,9 @@ class Enterprise extends GameObject
     // long range scan
     lrsString(trekGame, galaxyMap)
     {
-        let rval = (trekgame.primeUniverse ? ("\t KLINGONS") : ("\t ENEMIES")) + "\t\t  STARS\t\t\tSTARBASES\n";
+        let rval = trekGame.primeUniverse ? "\t KLINGONS" : "\t ENEMIES";
+        
+        rval += "\t\t  STARS\t\t\tSTARBASES\n";
 
         let klingonLRS = this.lrsStringEntityType(galaxyMap, Klingon);
         let starLRS = this.lrsStringEntityType(galaxyMap, Star);

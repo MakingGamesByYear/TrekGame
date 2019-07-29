@@ -239,11 +239,11 @@ class TrekGame
 
             storyString += "The stardate is " + this.starDate + ".\n\nYou are the captain of the ISS Enterprise.  " +
             "You have received word from Starfleet command of a plot by spies from a faction called the \"Federation\" to hack our starbases to spread " +
-            "propaganda encouraging people to rebel against the Terran Empire. The Empire's external enemies want to use internal strife to make it easier to conquer and enslave."
-            + "  This must be prevented at any cost.";
+            "propaganda encouraging people to rebel against the Terran Empire. The Empire's external enemies want to use internal strife to make it easier to conquer and enslave.";
+            storyString += "\n\nThis must be prevented at any cost.  ";
 
             storyString+= 
-            "Your mission is to hunt down and destroy the " + Klingon.Instances + " Federation ships in the region.\n" + 
+            "\n\nYour mission is to hunt down and destroy the " + Klingon.Instances + " Federation ships in the region.\n" + 
             "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
             " stardates to succeed.";
 
@@ -451,7 +451,7 @@ class TrekGame
         "PHOTON TORPEDOES      " + this.enterprise.torpedoes + '\n' + 
         "SHIELD ENERGY         " + this.enterprise.shields + '\n' + 
         "FREE ENERGY           " + this.enterprise.freeEnergy + '\n' + 
-        this.primeUniverse ? "KLINGONS REMAINING    " : "TRAITORS REMAINING    "
+        (this.primeUniverse ? "KLINGONS REMAINING    " : "TRAITORS REMAINING    ")
         + Klingon.Instances + '\n' + 
         "STARBASES REMAINING   " + StarBase.Instances + '\n' +
         "</pre>";
@@ -1341,7 +1341,7 @@ class TrekGame
 
                     if (sensorHistory[Klingon] > 0)
                     {
-                        identifiers += this.primeUniverse ? 'K' : 'E';
+                        identifiers += this.primeUniverse ? 'K' : 'F';
                     }
 
                     if (this.galaxyMap.lookup(x,y).countEntitiesOfType(StarBase) > 0)
