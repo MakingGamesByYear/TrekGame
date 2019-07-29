@@ -261,7 +261,7 @@ class TrekGame
         if (enemyCount)
         {
             gameOutputAppend("\n=============================\n");
-            gameOutputAppend("As you begin your mission, you find yourself in a sector with " + (enemyCount > 1) ?  " enemy ships." : " an enemy ship.");
+            gameOutputAppend("As you begin your mission, you find yourself in a sector with" + ((enemyCount > 1) ?  " enemy ships." : " an enemy ship."));
             gameOutputAppend("Prepare for combat!");
         }
         else
