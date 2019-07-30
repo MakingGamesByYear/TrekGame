@@ -114,9 +114,9 @@ class TrekGame
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
 
-        this.updateGame();
-
         this.printStory();
+
+        this.updateGame();
 
         autosave(this);
     }
@@ -225,8 +225,16 @@ class TrekGame
             "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
             " stardates to succeed.";
 
-            storyString += 
-            "\n\nThere are " + StarBase.Instances + " Federation Starbases in the region for refueling, restocking torpedoes, and repairs.";
+            if (StarBase.Instances > 1)
+            {
+                storyString += 
+                "\n\nThere are " + StarBase.Instances + " Federation Starbases in the region for refueling, restocking torpedoes, and repairs.";
+            }
+            else
+            {
+                storyString += 
+                "\n\nThere is " + StarBase.Instances + " Federation Starbase in the region for refueling, restocking torpedoes, and repairs.";
+            }
 
             storyString += "\n\nCheck the ship's computer to access the captain's manual for a tutorial on how to complete your mission.";
 
@@ -247,9 +255,17 @@ class TrekGame
             "You must complete your mission before stardate " + this.endStarDate + ", giving you " + (this.endStarDate - this.starDate) + 
             " stardates to succeed.";
 
-            storyString += 
-            "\n\nThere are " + StarBase.Instances + " Imperial Starbases in the region for refueling, restocking torpedoes, and repairs.";
-
+            if (StarBase.Instances > 1)
+            {
+                storyString += 
+                "\n\nThere are " + StarBase.Instances + " Imperial Starbases in the region for refueling, restocking torpedoes, and repairs.";
+            }
+            else
+            {
+                storyString += 
+                "\n\nThere is " + StarBase.Instances + " Imperial Starbase in the region for refueling, restocking torpedoes, and repairs.";
+            }
+            
             storyString += "\n\nIf you fail, the consequences to yourself will be severe.  Terror must be maintained or the Empire is doomed.";
 
             storyString += "\n\nCheck the ship's computer to access the captain's manual for a tutorial on how to complete your mission.";
@@ -643,7 +659,7 @@ class TrekGame
 
             if (sensorHistory[Klingon] > 0)
             {
-                gameOutputAppend( (this.primeUniverse ? "Klingons : " : "Enemy vessels") + sensorHistory[Klingon]);
+                gameOutputAppend( (this.primeUniverse ? "Klingons : " : "Enemy vessels : ") + sensorHistory[Klingon]);
             }
 
             if (this.galaxyMap.lookup(quadrantX, quadrantY).countEntitiesOfType(StarBase) > 0)
