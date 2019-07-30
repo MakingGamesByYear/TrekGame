@@ -87,7 +87,7 @@ class Menu
                 let sb = "<pre><a href=\"javascript:game.gameInput('" + this.options[x].option + "');\"  style=\"color: rgb(0,255,0)\">";
                 let sa = "</a></pre>"
                 rstring += sb + this.options[x] + sa;
-                console.log(sb + this.options[x] + sa);
+                //console.log(sb + this.options[x] + sa);
             }
         }
 

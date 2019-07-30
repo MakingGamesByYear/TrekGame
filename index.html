@@ -89,8 +89,6 @@ Here's a <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILgg
 
         lookup = localStorage.getItem("autosave");
 
-        console.log(lookup);
-
         if (!lookup || lookup == "null")
         {
             prompt1();
@@ -99,8 +97,7 @@ Here's a <a href="https://open.spotify.com/user/chrispugh666/playlist/0SHaymILgg
     window.addEventListener("pageshow", ev, false);
 
     lookup = (localStorage.getItem("autosave"));
-    console.log(lookup);
-
+    
     // if we don't have a saved game skip the continue prompt
     if (!lookup || lookup == "null")
     {
