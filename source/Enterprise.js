@@ -26,6 +26,8 @@ class Enterprise extends GameObject
             {
                 continue;
             }
+
+            let shQuadrant = this.sensorHistory.lookup1D(q);
             
             for (var i = 0; i < Math.min(klingonsToMove - klingonsMoved, quadrantKlingons.length); i++)
             {
@@ -33,6 +35,15 @@ class Enterprise extends GameObject
                 quadrant.removeEntity(k);
                 trekgame.currentQuadrant.addEntityInFreeSector(k);
                 klingonsMoved++;
+
+                // remove the enemy from the sensor history count -- 
+                // i guess the enterprise could somehow scan where the enemy is warping in from?
+                // from a gameplay standpoint i want only correct counts or question marks - not wrong info
+                if (Klingon in shQuadrant)
+                {
+                    shQuadrant[Klingon]--;
+                    //console.log("removing klingon sensor history");
+                }
             }
         }
 
