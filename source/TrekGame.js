@@ -1043,7 +1043,6 @@ class TrekGame
 
     updateDisplay()
     {
-
         if (this.mapScreenGalaxy)
         {
             this.hideStatus();
@@ -1067,6 +1066,8 @@ class TrekGame
             updateMapHeader("SECTOR : " + this.enterprise.quadrantString());
             updateMapFooter(this.updateStatusFlags());
         }
+
+        onResize();
     }
 
     checkStarbaseDock()
