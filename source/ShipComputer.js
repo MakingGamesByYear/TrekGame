@@ -93,7 +93,7 @@ class ShipComputerMenu extends Menu
                         return true;
                     }
 
-                    gameOutputAppend(trekgame.primeUniverse ? "\nFEDERATION STARBASES" : "\nIMPERIAL STARBASES");
+                    gameOutputAppend(trekGame.primeUniverse ? "\nFEDERATION STARBASES" : "\nIMPERIAL STARBASES");
                     gameOutputAppend(trekGame.galaxyMap.mapString(trekGame.galaxyMap, StarBase, trekGame.enterprise));
                     return true;
                 }
