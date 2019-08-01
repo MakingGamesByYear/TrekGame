@@ -21,6 +21,7 @@
     </head>
 <body style="background-color:black;">
 
+<script src="DetectMobile.js"></script>
 <script src="trekgame.js"></script>
 
 <div id="mapstatus">
@@ -97,6 +98,15 @@ KEY:
 
 </body>
 <script>
+    console.log("Is mobile ? : " + isMobile());
+
+    // tweak some layout things for mobile
+    if (isMobile())
+    {
+        document.getElementById("gameOutputBox").style.fontSize = "1.0vmin";
+        document.getElementById("inputPrompt").style.fontSize = "2.0vmin";
+        //document.getElementById("bottomOfScreenRight").style.fontSize = "1.0vmin";
+    }
 
     // get user params from URL as dictionary
     function userParamDictionary()

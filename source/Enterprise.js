@@ -434,22 +434,25 @@ class Enterprise extends GameObject
     // long range scan
     lrsString(trekGame, galaxyMap)
     {
-        let rval = trekGame.primeUniverse ? "\t KLINGONS" : "\t ENEMIES";
-        
-        rval += "\t\t  STARS\t\t\tSTARBASES\n";
-
+       
         let klingonLRS = this.lrsStringEntityType(galaxyMap, Klingon);
         let starLRS = this.lrsStringEntityType(galaxyMap, Star);
-        let starbaseLRS = this.lrsStringEntityType(galaxyMap, StarBase);
+        //let starbaseLRS = this.lrsStringEntityType(galaxyMap, StarBase);
+
+        let rval = trekGame.primeUniverse ? "\t KLINGONS" : "\t ENEMIES";
+        
+        //rval += "\t\t  STARS\t\t\tSTARBASES\n";
+        rval += "\t\t  STARS\n";
 
         let klingonLRSLines = klingonLRS.split('\n');
         let starLRSLines = starLRS.split('\n');
-        let starbaseLRSLines = starbaseLRS.split('\n');
+        //let starbaseLRSLines = starbaseLRS.split('\n');
 
         console.assert(klingonLRSLines.length == starLRSLines.length);
         for (var x in klingonLRSLines)
         {
-            rval += klingonLRSLines[x] + "\t" + starLRSLines[x] + "\t" + starbaseLRSLines[x] + '\n';
+            //rval += klingonLRSLines[x] + "\t" + starLRSLines[x] + "\t" + starbaseLRSLines[x] + '\n';
+            rval += klingonLRSLines[x] + "\t" + starLRSLines[x] + '\n';
         }
 
         return rval;
