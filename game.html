@@ -53,7 +53,7 @@ resize: none;
 height: 90%;
 width: 96%;
 padding: 0px;
-font-size: 1.5vmin; 
+font-size: 16px; 
 font-family: monospace;
 background-color: black; color:#39FF14; border-color: #39FF14"">
 </textarea>
@@ -103,9 +103,13 @@ KEY:
     // tweak some layout things for mobile
     if (isMobile())
     {
-        document.getElementById("gameOutputBox").style.fontSize = "1.0vmin";
+        //document.getElementById("gameOutputBox").style.fontSize = "1.0vmin";
         document.getElementById("inputPrompt").style.fontSize = "2.0vmin";
         //document.getElementById("bottomOfScreenRight").style.fontSize = "1.0vmin";
+    }
+    else
+    {
+        document.getElementById("gameOutputBox").style.fontSize = "1.5vmin";
     }
 
     // get user params from URL as dictionary
