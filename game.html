@@ -103,7 +103,7 @@ KEY:
     // tweak some layout things for mobile
     if (isMobile())
     {
-        document.getElementById("gameOutputBox").style.fontSize = "12px";
+        document.getElementById("gameOutputBox").style.fontSize = "1.0vmin";
         document.getElementById("inputPrompt").style.fontSize = "2.0vmin";
         //document.getElementById("bottomOfScreenRight").style.fontSize = "1.0vmin";
     }
@@ -234,8 +234,6 @@ KEY:
     window.onresize = onResize;
 
     onResize();
-
-    gameOutputAppend("Ismobile, IsFacebook? " + isMobile() + " " + isFacebookApp());
     
 </script>
 </html>
