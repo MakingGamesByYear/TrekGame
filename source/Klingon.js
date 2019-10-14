@@ -9,7 +9,7 @@ class Klingon extends GameObject
     onTorpedoHit(game)
     {
         console.log("hit a klingon");
-        gameOutputAppend("\nReport from sector " + this.sectorString());
+        gameOutputAppend("\nReport from subsector " + this.subsectorString());
         
         game.destroyKlingon(this);
     }
@@ -19,7 +19,7 @@ class Klingon extends GameObject
         console.log("Klingon::onPhaserHit");
         let shieldDeflectionLevel = Klingon.shieldDeflectionPercent * this.shields;
 
-        gameOutputAppend("\nReport from sector " + this.sectorString());
+        gameOutputAppend("\nReport from subsector " + this.subsectorString());
 
         if (energy <= shieldDeflectionLevel)
         {
@@ -38,7 +38,7 @@ class Klingon extends GameObject
             }
             else
             {
-                if (game.currentQuadrantScanned)
+                if (game.currentSectorScanned)
                 {
                     if (game.enterprise.canSeeEntity(this))
                     {
@@ -64,8 +64,8 @@ class Klingon extends GameObject
         let dist = this.distanceToObject(target);
         let phaserDamage = this.phaserDamageBase(dist) * randomInt(Klingon.MinPhaserMultiplier, Klingon.MaxPhaserMultiplier);
 
-        let sstr = game.enterprise.canSeeEntity(this) ? this.sectorString() : " ???? ";
-        gameOutputAppend("\nHit from sector " + sstr + " for " + phaserDamage + " units");
+        let sstr = game.enterprise.canSeeEntity(this) ? this.subsectorString() : " ???? ";
+        gameOutputAppend("\nHit from subsector " + sstr + " for " + phaserDamage + " units");
         target.onPhaserHit(phaserDamage, game);
     }
 
@@ -84,12 +84,12 @@ class Klingon extends GameObject
         return Klingon.stringRepresentation;
     }
     
-    static maxInstancesQuadrant()
+    static maxInstancesSector()
     {
         return 4;
     }
 
-    static quadrantInstanceProbabilities()
+    static sectorInstanceProbabilities()
     {
         return [.9,  
                 .025,

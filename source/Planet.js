@@ -10,7 +10,7 @@ class Planet extends GameObject
 
     onTorpedoHit(game)
     {
-        gameOutputAppend("\nReport from sector " + this.sectorString());
+        gameOutputAppend("\nReport from subsector " + this.subsectorString());
         gameOutputAppend("The torpedo burns up in the planet's atmosphere.");
     }
 
@@ -30,7 +30,7 @@ class Planet extends GameObject
         return Planet.MaxInstances;
     }
 
-    static maxInstancesQuadrant()
+    static maxInstancesSector()
     {
         return 1;
     }
@@ -40,9 +40,9 @@ class Planet extends GameObject
         return Planet.MinInstances;
     }
 
-    static quadrantInstanceProbabilities()
+    static sectorInstanceProbabilities()
     {
-        // 5% chance of a planet in any given quadrant
+        // 5% chance of a planet in any given sector
         return [.95, .05];
     }
 }

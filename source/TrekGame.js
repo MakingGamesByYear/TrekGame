@@ -13,9 +13,9 @@ class TrekGame
 
             // console.log("galaxy map : " + gamerval.galaxyMap);
 
-            gamerval.currentQuadrant = gamerval.galaxyMap.lookup(gamerval.enterprise.quadrantX, gamerval.enterprise.quadrantY);
+            gamerval.currentSector = gamerval.galaxyMap.lookup(gamerval.enterprise.sectorX, gamerval.enterprise.sectorY);
 
-            gamerval.currentQuadrant.addEntity(gamerval.enterprise);
+            gamerval.currentSector.addEntity(gamerval.enterprise);
 
             gamerval.applySettings();
 
@@ -90,26 +90,26 @@ class TrekGame
         this.gameOver = false;
         this.mapScreenGalaxy = false;
 
-        this.galaxyMap = new GalaxyMap(mapWidthQuadrants, mapHeightQuadrants, TrekGame.EntityTypes);
+        this.galaxyMap = new GalaxyMap(mapWidthSectors, mapHeightSectors, TrekGame.EntityTypes);
         
         this.enterprise = new Enterprise();
 
-        // start in a random quadrant
-        this.enterprise.quadrantX = randomInt(0, mapWidthQuadrants - 1);
-        this.enterprise.quadrantY = randomInt(0, mapHeightQuadrants - 1);
-        this.enterprise.sectorX = 0;
-        this.enterprise.sectorY = 0;
+        // start in a random sector
+        this.enterprise.sectorX = randomInt(0, mapWidthSectors - 1);
+        this.enterprise.sectorY = randomInt(0, mapHeightSectors - 1);
+        this.enterprise.subsectorX = 0;
+        this.enterprise.subsectorY = 0;
         
-        this.currentQuadrant = this.galaxyMap.lookup(this.enterprise.quadrantX, this.enterprise.quadrantY);
+        this.currentSector = this.galaxyMap.lookup(this.enterprise.sectorX, this.enterprise.sectorY);
 
-        this.currentQuadrant.addEntityInFreeSector(this.enterprise);
+        this.currentSector.addEntityInFreeSubsector(this.enterprise);
 
         // pick a stardate between the start and end of TOS
         this.starDate = randomInt(1312, 5928);
         this.starDateBegin = this.starDate;
         this.endStarDate = this.starDate + TrekGame.BaseMissionTime + randomInt(0, TrekGame.MissionTimeSpread);
 
-        this.currentQuadrantScanned = false;
+        this.currentSectorScanned = false;
 
         this.createMenus();
         this.setInputPrompt(this.mainMenu.toString());
@@ -185,10 +185,10 @@ class TrekGame
             (
                 [Star, Klingon], 
                 this.galaxyMap, 
-                starbase.quadrantX-1, 
-                starbase.quadrantY-1, 
-                starbase.quadrantX+1, 
-                starbase.quadrantY+1
+                starbase.sectorX-1, 
+                starbase.sectorY-1, 
+                starbase.sectorX+1, 
+                starbase.sectorY+1
             );
         }
     }
@@ -204,7 +204,7 @@ class TrekGame
     destroyKlingon(k)
     {
         gameOutputAppend(this.primeUniverse ? "Klingon Fighter Destroyed" : "Enemy vessel destroyed.");
-        this.currentQuadrant.removeEntity(k);
+        this.currentSector.removeEntity(k);
         Klingon.Instances--;
         Klingon.InstancesDestroyed++;
     }
@@ -273,7 +273,7 @@ class TrekGame
             gameOutputAppend(storyString);
         }
 
-        let enemyCount = this.currentQuadrant.countEntitiesOfType(Klingon);
+        let enemyCount = this.currentSector.countEntitiesOfType(Klingon);
         if (enemyCount)
         {
             gameOutputAppend("\n=============================\n");
@@ -307,7 +307,7 @@ class TrekGame
                     let tutorialString = "";
 
                     tutorialString += "DISPLAY:\nThe map display at the top of your screen shows the map of the galactic sector where your ship is located.  ";
-                    tutorialString += "Your mission takes place in a region of the galaxy that is " + mapWidthQuadrants + " by " + mapHeightQuadrants + " sectors.";
+                    tutorialString += "Your mission takes place in a region of the galaxy that is " + mapWidthSectors + " by " + mapHeightSectors + " sectors.";
                     tutorialString += "  A galactic sector is about 2 light years across.";
 
                     tutorialString += "\n\nThe sector map is made up of a grid of subsectors.  The X,Y coordinates of the subsectors are displayed across the horizontal and vertical axes of the map.  The key symbols corresponding to different objects occupying a subsector are listed below.";
@@ -448,15 +448,15 @@ class TrekGame
         return false;
     }
 
-    changeToQuadrant(qX, qY)
+    changeToSector(qX, qY)
     {
-        this.currentQuadrantScanned = false;
+        this.currentSectorScanned = false;
 
-        this.currentQuadrant.removeEntity(this.enterprise);
-        this.currentQuadrant = this.galaxyMap.lookup(qX, qY);
-        this.currentQuadrant.addEntityInFreeSector(this.enterprise);
+        this.currentSector.removeEntity(this.enterprise);
+        this.currentSector = this.galaxyMap.lookup(qX, qY);
+        this.currentSector.addEntityInFreeSubsector(this.enterprise);
 
-        gameOutputAppend("\nEntering galactic sector " + this.enterprise.quadrantString());
+        gameOutputAppend("\nEntering galactic sector " + this.enterprise.sectorString());
     }
 
     statusString()
@@ -464,8 +464,8 @@ class TrekGame
         return "<pre>" +
         "\n\n\n" + 
         "STARDATES REMAINING   " + (this.endStarDate - this.starDate) +"\n" +
-        "SECTOR (X,Y)          " + (this.enterprise.quadrantX+1) +  ',' + (this.enterprise.quadrantY+1) + '\n' + 
-        "SUBSECTOR (X,Y)       " + (this.enterprise.sectorX+1) +  ',' + (this.enterprise.sectorY+1) + "\n" + 
+        "SECTOR (X,Y)          " + (this.enterprise.sectorY+1) +  ',' + (this.enterprise.sectorY+1) + '\n' + 
+        "SUBSECTOR (X,Y)       " + (this.enterprise.subsectorX+1) +  ',' + (this.enterprise.subsectorY+1) + "\n" + 
         "PHOTON TORPEDOES      " + this.enterprise.torpedoes + '\n' + 
         "SHIELD ENERGY         " + this.enterprise.shields + '\n' + 
         "FREE ENERGY           " + this.enterprise.freeEnergy + '\n' + 
@@ -482,7 +482,7 @@ class TrekGame
 
     bombardPlanet()
     {
-        let adjacentPlanets = this.currentQuadrant.getAdjacentEntitiesOfType(this.enterprise, Planet);
+        let adjacentPlanets = this.currentSector.getAdjacentEntitiesOfType(this.enterprise, Planet);
         console.assert(adjacentPlanets.length);
 
         let p = adjacentPlanets[0];
@@ -521,8 +521,8 @@ class TrekGame
     // finalHandler has prototype (game, x, y)
     getSubsectorMenu(finalHandler)
     {
-        let promptstringX = "Enter destination subsector X coordinate.  Enter a value between 1 and " + quadrantWidthSectors;
-        let promptstringY = "Enter destination subsector Y coordinate.  Enter a value between 1 and " + quadrantHeightSectors;
+        let promptstringX = "Enter destination subsector X coordinate.  Enter a value between 1 and " + sectorWidthSubsectors;
+        let promptstringY = "Enter destination subsector Y coordinate.  Enter a value between 1 and " + sectorHeightSubsectors;
 
         let trekgame = this;
 
@@ -530,7 +530,7 @@ class TrekGame
         {
             let subsectorY = parseInt(inputline) - 1;
 
-            if ((subsectorY == null) || isNaN(subsectorY) || subsectorY < 0 || subsectorY >= quadrantHeightSectors)
+            if ((subsectorY == null) || isNaN(subsectorY) || subsectorY < 0 || subsectorY >= sectorHeightSubsectors)
             {
                 gameOutputAppend("Invalid value!");
                 return false;
@@ -543,7 +543,8 @@ class TrekGame
         {
             let subsectorX = parseInt(inputline) - 1;
 
-            if ((subsectorX == null) || isNaN(subsectorX) || subsectorX < 0 || subsectorX >= quadrantWidthSectors)
+            if ((subsectorX == null) || isNaN(subsectorX) || subsectorX < 0 || subsectorX >= sectorWidthSubsectors
+        )
             {
                 gameOutputAppend("Invalid value!");
                 return false;
@@ -573,38 +574,38 @@ class TrekGame
     navigationHandlerLongRangeX(inputline)
     {
         console.log("nav");
-        let quadrantX = parseInt(inputline) - 1;
+        let sectorX = parseInt(inputline) - 1;
 
-        if ((quadrantX == null) || isNaN(quadrantX) || quadrantX < 0 || quadrantX >= mapWidthQuadrants)
+        if ((sectorX == null) || isNaN(sectorX) || sectorX < 0 || sectorX >= mapWidthSectors)
         {
             gameOutputAppend("Invalid value!");
             return false;
         }
 
         this.awaitInput(
-            "Enter destination sector Y coordinate.  Enter a value between 1 and " + mapHeightQuadrants,
+            "Enter destination sector Y coordinate.  Enter a value between 1 and " + mapHeightSectors,
             2, 
             
             function(inputline)
             {
-                return this.navigationHandlerLongRangeY(inputline, quadrantX);
+                return this.navigationHandlerLongRangeY(inputline, sectorX);
             }
         );
         
         return false;
     }
 
-    navigationHandlerLongRangeY(inputline, quadrantX)
+    navigationHandlerLongRangeY(inputline, sectorX)
     {
-        let quadrantY = parseInt(inputline) - 1;
+        let sectorY = parseInt(inputline) - 1;
 
-        if ((quadrantY == null) || isNaN(quadrantY) || quadrantY < 0 || quadrantY >= mapHeightQuadrants)
+        if ((sectorY == null) || isNaN(sectorY) || sectorY < 0 || sectorY >= mapHeightSectors)
         {
             gameOutputAppend("Invalid value!");
             return false;
         }
 
-        this.longRangeJump(quadrantX, quadrantY);
+        this.longRangeJump(sectorX, sectorY);
     }
 
     manualPhaserEntry()
@@ -619,10 +620,10 @@ class TrekGame
         return false;
     }
 
-    longRangeJump(quadrantX, quadrantY)
+    longRangeJump(sectorX, sectorY)
     {
-        let xd = quadrantX - this.enterprise.quadrantX;
-        let yd = quadrantY - this.enterprise.quadrantY;
+        let xd = sectorX - this.enterprise.sectorX;
+        let yd = sectorY - this.enterprise.sectorY;
         let travelDistance = Math.sqrt(xd*xd + yd*yd);  // assumes single stardate.  so distance and speed have the same scalar value.
 
         let maxSpeed = this.enterprise.components.WarpEngines.maxSpeed();
@@ -637,13 +638,13 @@ class TrekGame
             
             travelDistance = Math.sqrt(xd*xd + yd*yd);
 
-            quadrantX = Math.floor(this.enterprise.quadrantX + xd);
-            quadrantY = Math.floor(this.enterprise.quadrantY + yd);
+            sectorX = Math.floor(this.enterprise.sectorX + xd);
+            sectorY = Math.floor(this.enterprise.sectorY + yd);
 
-            gameOutputAppend("Unable to make it to the destination warp target in a single jump due to damage.  New destination is Sector " + (quadrantX+1) + ", " + (quadrantY+1));
+            gameOutputAppend("Unable to make it to the destination warp target in a single jump due to damage.  New destination is Sector " + (sectorX+1) + ", " + (sectorY+1));
         }
 
-        let jumpEnergyRequired = Math.floor(Enterprise.EnergyCostPerQuadrant * travelDistance);
+        let jumpEnergyRequired = Math.floor(Enterprise.EnergyCostPerSector * travelDistance);
 
         if (this.enterprise.freeEnergy < jumpEnergyRequired)
         {
@@ -651,18 +652,18 @@ class TrekGame
             return true;
         }
 
-        let sensorHistory = this.enterprise.sensorHistory.lookup(quadrantX, quadrantY);
+        let sensorHistory = this.enterprise.sensorHistory.lookup(sectorX, sectorY);
         
         if (Klingon in sensorHistory)
         {
-            gameOutputAppend("\nThe destination sector " + "(" + (1+quadrantX) + ',' + (1+quadrantY) +  ")" + " contains the following: ");
+            gameOutputAppend("\nThe destination sector " + "(" + (1+sectorX) + ',' + (1+sectorY) +  ")" + " contains the following: ");
 
             if (sensorHistory[Klingon] > 0)
             {
                 gameOutputAppend( (this.primeUniverse ? "Klingons : " : "Enemy vessels : ") + sensorHistory[Klingon]);
             }
 
-            if (this.galaxyMap.lookup(quadrantX, quadrantY).countEntitiesOfType(StarBase) > 0)
+            if (this.galaxyMap.lookup(sectorX, sectorY).countEntitiesOfType(StarBase) > 0)
             {
                 gameOutputAppend("Starbases : 1");
             }
@@ -674,7 +675,7 @@ class TrekGame
         }
         else
         {
-            gameOutputAppend("\nThe destination sector " + "(" + (1+quadrantX) + ',' + (1+quadrantY) +  ")" + " is unexplored.");
+            gameOutputAppend("\nThe destination sector " + "(" + (1+sectorX) + ',' + (1+sectorY) +  ")" + " is unexplored.");
         }
 
         let trekgame = this;
@@ -685,14 +686,14 @@ class TrekGame
             (
                 "1", 
                 ") ", 
-                "CONFIRM JUMP TO SECTOR " + (quadrantX+1) + ", " + (quadrantY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
+                "CONFIRM JUMP TO SECTOR " + (sectorX+1) + ", " + (sectorY+1) + ".\nTRIP TAKES 1 STARDATE, " + jumpEnergyRequired + " ENERGY\n",
                 function()
                 {
                     trekgame.mapScreenGalaxy = false;
                     trekgame.gridHandler = null;
 
                     trekgame.enterprise.freeEnergy -= jumpEnergyRequired;
-                    trekgame.changeToQuadrant(quadrantX, quadrantY);
+                    trekgame.changeToSector(sectorX, sectorY);
                     trekgame.advanceStardateNoCombat(1.0); // don't get blown up as soon as we enter a new Sector!
                     return true;
                 }
@@ -718,13 +719,13 @@ class TrekGame
 
     shortRangeNavigationHandler(trekgame, subsectorX, subsectorY)
     {
-        let sectorsToTravel = trekgame.enterprise.distanceToSectorLoc(subsectorX, subsectorY);
+        let subsectorsToTravel = trekgame.enterprise.distanceToSubsectorLoc(subsectorX, subsectorY);
 
         let confirmFunc = function()
         {
-            if (trekgame.enterprise.warp(subsectorX, subsectorY, sectorsToTravel, trekgame))
+            if (trekgame.enterprise.warp(subsectorX, subsectorY, subsectorsToTravel, trekgame))
             {
-                gameOutputAppend("\nComing out of warp in sector " + trekgame.enterprise.sectorString());
+                gameOutputAppend("\nComing out of warp in subsector " + trekgame.enterprise.subsectorString());
                 trekgame.advanceStardate(1.0);
             }
 
@@ -733,7 +734,7 @@ class TrekGame
             return true;
         }
 
-        let jumpEnergyRequired = Math.round(trekgame.enterprise.warpEnergyCost(sectorsToTravel));
+        let jumpEnergyRequired = Math.round(trekgame.enterprise.warpEnergyCost(subsectorsToTravel));
 
         let confirmMenu = new Menu();
         confirmMenu.options.push
@@ -770,7 +771,7 @@ class TrekGame
             return;
         }
 
-        let enemylist = this.currentQuadrant.getEntitiesOfType(Klingon);
+        let enemylist = this.currentSector.getEntitiesOfType(Klingon);
 
         if (!enemylist.length)
         {
@@ -779,7 +780,7 @@ class TrekGame
         }
 
         this.enterprise.freeEnergy -= Enterprise.EnemyScanCost;
-        this.currentQuadrantScanned = true;
+        this.currentSectorScanned = true;
 
         gameOutputAppend("\nENEMY SHIP SCANNER REPORTS");
 
@@ -818,7 +819,7 @@ class TrekGame
             }
             else
             {
-                gameOutputAppend("\nEnemy in subsector (" + k.sectorString() + ")");
+                gameOutputAppend("\nEnemy in subsector (" + k.subsectorString() + ")");
                 gameOutputAppend("Enemy shield level : " + kshields);
                 gameOutputAppend("Phaser energy to destroy : " + Math.round(e_required_min) + "-" + Math.round(e_required_max));
             }
@@ -854,10 +855,10 @@ class TrekGame
         (
             [Star, Klingon], 
             this.galaxyMap, 
-            this.enterprise.quadrantX-1, 
-            this.enterprise.quadrantY-1, 
-            this.enterprise.quadrantX+1, 
-            this.enterprise.quadrantY+1
+            this.enterprise.sectorX-1, 
+            this.enterprise.sectorY-1, 
+            this.enterprise.sectorX+1, 
+            this.enterprise.sectorY+1
         );
 
         this.advanceStardate(1.0);
@@ -867,8 +868,8 @@ class TrekGame
     {
         let tfunc = function(trekgame, x, y){
             let gobj = new GameObject();
-            gobj.sectorX = x;
-            gobj.sectorY = y;
+            gobj.subsectorX = x;
+            gobj.subsectorY = y;
             trekgame.torpedoHandler(gobj)
             return true;
         };
@@ -967,7 +968,7 @@ class TrekGame
 
     combatStep()
     {
-        this.currentQuadrant.klingonsFire(this.enterprise, this);
+        this.currentSector.klingonsFire(this.enterprise, this);
         this.enterprise.components.ShortRangeSensors.generateCorruptGrid();
     }
 
@@ -1063,7 +1064,7 @@ class TrekGame
         {
             this.updateStatus();
             updateMap(this.updateMapScreen());
-            updateMapHeader("SECTOR : " + this.enterprise.quadrantString());
+            updateMapHeader("SECTOR : " + this.enterprise.sectorString());
             updateMapFooter(this.updateStatusFlags());
         }
 
@@ -1080,7 +1081,7 @@ class TrekGame
 
         this.mainMenu.dockOption.enabled = false;
 
-        let starbases = this.currentQuadrant.getEntitiesOfType(StarBase);
+        let starbases = this.currentSector.getEntitiesOfType(StarBase);
 
         for (var x in starbases)
         {
@@ -1112,7 +1113,7 @@ class TrekGame
 
         this.mainMenu.bombardOption.enabled = false;
 
-        let planets = this.currentQuadrant.getEntitiesOfType(Planet);
+        let planets = this.currentSector.getEntitiesOfType(Planet);
 
         for (var x in planets)
         {
@@ -1147,10 +1148,10 @@ class TrekGame
             (
                 [Star, Klingon], 
                 this.galaxyMap, 
-                this.enterprise.quadrantX, 
-                this.enterprise.quadrantY, 
-                this.enterprise.quadrantX, 
-                this.enterprise.quadrantY
+                this.enterprise.sectorX, 
+                this.enterprise.sectorY, 
+                this.enterprise.sectorX, 
+                this.enterprise.sectorY
             );
     }
 
@@ -1298,12 +1299,12 @@ class TrekGame
             flags.push("DOCKED");
         }
 
-        if (this.currentQuadrant.countEntitiesOfType(Klingon))
+        if (this.currentSector.countEntitiesOfType(Klingon))
         {
             flags.push("RED ALERT");
 
             let estAvail = this.enterprise.components.ShieldControl.estimateAvailable();
-            let critical = this.enterprise.isShieldLevelCritical(this.currentQuadrant.getEntitiesOfType(Klingon));
+            let critical = this.enterprise.isShieldLevelCritical(this.currentSector.getEntitiesOfType(Klingon));
 
             if (estAvail && critical)
             {
@@ -1330,14 +1331,14 @@ class TrekGame
     updateMapScreenGalaxy()
     {
         let topStr = "---------";
-        let topStrLong = ' ' + topStr.repeat(mapWidthQuadrants-1);
+        let topStrLong = ' ' + topStr.repeat(mapWidthSectors-1);
 
         let rval = "<pre>" + '\n' + topStrLong + '\n';
 
-        for (var y = 0; y < mapHeightQuadrants; y++)
+        for (var y = 0; y < mapHeightSectors; y++)
         {
             rval += '|';
-            for (var x = 0; x < mapWidthQuadrants; x++)
+            for (var x = 0; x < mapWidthSectors; x++)
             {
 
                 rval += "<a href=\"javascript:clickGridHandler(" + x + ","+ y +")\" style=\"color: rgb(0,255,0); text-decoration: none;\">";
@@ -1352,7 +1353,7 @@ class TrekGame
 
             rval += '\n|';
 
-            for (var x = 0; x < mapWidthQuadrants; x++)
+            for (var x = 0; x < mapWidthSectors; x++)
             {
                 rval += "<a href=\"javascript:clickGridHandler("+x+","+y+")\" style=\"color: rgb(0,255,0); text-decoration: none;\">";
 
@@ -1362,7 +1363,7 @@ class TrekGame
 
                 if (Klingon in sensorHistory)
                 {
-                    if ((this.enterprise.quadrantX == x) && (this.enterprise.quadrantY == y))
+                    if ((this.enterprise.sectorX == x) && (this.enterprise.sectorY == y))
                     {
                         identifiers+= 'E';
                     }
@@ -1403,37 +1404,37 @@ class TrekGame
 
     updateMapScreen()
     {
-        let quad = this.currentQuadrant;
+        let sect = this.currentSector;
 
-        let borderStringPost = "   " + mapFooter(quadrantWidthSectors);
-        let borderStringPre = "   " + mapHeader(quadrantWidthSectors) + '\n';
+        let borderStringPost = "   " + mapFooter(sectorWidthSubsectors);
+        let borderStringPre = "   " + mapHeader(sectorWidthSubsectors) + '\n';
 
-        let quadrantStringGrid = new Grid(quad.width, quad.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
+        let sectorStringGrid = new Grid(sect.width, sect.height, function(){return " ".padStart(subsectorDisplayWidthChars, ' ')})
 
         var gameObjectIndex;
-        for (gameObjectIndex in quad.quadrantEntities)
+        for (gameObjectIndex in sect.sectorEntities)
         {
-            let gameObject = quad.quadrantEntities[gameObjectIndex];
+            let gameObject = sect.sectorEntities[gameObjectIndex];
             var objStr;
         
-            objStr = gameObject.toString().padStart(sectorDisplayWidthChars, ' ');
+            objStr = gameObject.toString().padStart(subsectorDisplayWidthChars, ' ');
 
-            quadrantStringGrid.setValue(gameObject.sectorX, gameObject.sectorY, objStr);
+            sectorStringGrid.setValue(gameObject.subsectorX, gameObject.subsectorY, objStr);
         }
 
         if (!this.enterprise.components.ShortRangeSensors.fullyFunctional())
         {
             // randomly go through and corrupt the short range scan based on the health of the ship components
-            for (var x in quadrantStringGrid.contents)
+            for (var x in sectorStringGrid.contents)
             {   
-                if (this.enterprise.components.ShortRangeSensors.isSectorCorrupt1D(x))
+                if (this.enterprise.components.ShortRangeSensors.isSubsectorCorrupt1D(x))
                 {
-                    quadrantStringGrid.setValue1D(x, '?'.padStart(sectorDisplayWidthChars, ' '));
+                    sectorStringGrid.setValue1D(x, '?'.padStart(subsectorDisplayWidthChars, ' '));
                 }
             }
         }
 
-        let mapString = (this.typingFree && this.gridHandler) ? quadrantStringGrid.toStringHyperlink() : quadrantStringGrid.toStringTyping();
+        let mapString = (this.typingFree && this.gridHandler) ? sectorStringGrid.toStringHyperlink() : sectorStringGrid.toStringTyping();
 
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
 

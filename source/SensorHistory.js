@@ -2,7 +2,7 @@ class SensorHistory extends Grid
 {
     constructor()
     {
-        super( mapWidthQuadrants, mapHeightQuadrants, function(){return {};} );
+        super( mapWidthSectors, mapHeightSectors, function(){return {};} );
     }
 
     updateSensorHistory(EntityType, galaxyMap, startLocX, startLocY, endLocX, endLocY)
@@ -11,11 +11,11 @@ class SensorHistory extends Grid
         {
             for (var x = startLocX; x <= endLocX; x++)
             {
-                let quadrant = galaxyMap.lookup(x, y);
+                let sector = galaxyMap.lookup(x, y);
 
-                if (quadrant)
+                if (sector)
                 {
-                    let ct = quadrant.countEntitiesOfType(EntityType);
+                    let ct = sector.countEntitiesOfType(EntityType);
                     this.lookup(x, y)[EntityType] = ct;
                 }
             }
@@ -34,13 +34,13 @@ class SensorHistory extends Grid
     mapString(EntityType = Klingon, gameobject = null)
     {
         let header = "   ";
-        for (let x = 0; x < mapWidthQuadrants; x++)
+        for (let x = 0; x < mapWidthSectors; x++)
         {
             header += padStringToLength((""+(x+1)), 6);
         }
 
         let border = "------";
-        border = border.repeat(mapWidthQuadrants);
+        border = border.repeat(mapWidthSectors);
         let rval = header + "\n   " + border + '\n';
 
         for (let y = 0; y < this.height; y++)
@@ -48,15 +48,15 @@ class SensorHistory extends Grid
             rval += " " + (y+1) + " |";
             for (let x = 0; x < this.width; x++)
             {
-                let quadrantDict = this.lookup(x, y);
+                let sectorDict = this.lookup(x, y);
                 
-                if (quadrantDict)
+                if (sectorDict)
                 {    
                     var k = "";
 
-                    if (EntityType in quadrantDict)
+                    if (EntityType in sector)
                     {
-                        k += quadrantDict[EntityType]; // integer count of the entity type
+                        k += sectorDict[EntityType]; // integer count of the entity type
                     }
                     else
                     {
@@ -65,7 +65,7 @@ class SensorHistory extends Grid
 
                     if (gameobject)
                     {
-                        if (gameobject.quadrantX == x && gameobject.quadrantY == y)
+                        if (gameobject.sectorX == x && gameobject.sectorY == y)
                         {
                             // put an "E" on the map for the enterprise's current location
                             k += 'E';

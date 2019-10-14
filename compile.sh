@@ -25,7 +25,7 @@ IncludeSource Klingon.js
 IncludeSource Star.js
 IncludeSource ShipComponents.js
 IncludeSource Enterprise.js
-IncludeSource Quadrant.js
+IncludeSource Sector.js
 IncludeSource GalaxyMap.js
 IncludeSource SensorHistory.js
 IncludeSource Menu.js

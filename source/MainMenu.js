@@ -15,7 +15,7 @@ class MainMenu extends Menu
                 "DOCK WITH STARBASE",
                 function()
                 {
-                    let adjacentStarbases = trekgame.currentQuadrant.getAdjacentEntitiesOfType(trekgame.enterprise, StarBase);
+                    let adjacentStarbases = trekgame.currentSector.getAdjacentEntitiesOfType(trekgame.enterprise, StarBase);
                     console.assert(adjacentStarbases.length);
 
                     let sb = adjacentStarbases[0];
@@ -117,7 +117,7 @@ class MainMenu extends Menu
                                 }
                                 else
                                 {
-                                    trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthQuadrants, 2, trekgame.navigationHandlerLongRangeX);
+                                    trekgame.awaitInput("Enter destination sector X coordinate. Enter a value between 1 and " + mapWidthSectors, 2, trekgame.navigationHandlerLongRangeX);
                                 }
                                 return false;
                             }
@@ -153,9 +153,9 @@ class MainMenu extends Menu
                     let totalEnergy = (trekgame.enterprise.freeEnergy + trekgame.enterprise.shields);
                     
                     let suggestedStr = "";
-                    if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
+                    if (trekgame.currentSector.countEntitiesOfType(Klingon))
                     {
-                        let klingonList = trekgame.currentQuadrant.getEntitiesOfType(Klingon);
+                        let klingonList = trekgame.currentSector.getEntitiesOfType(Klingon);
 
                         let suggestedShieldLevel = trekgame.enterprise.suggestedMinShieldLevel(klingonList);
 
@@ -220,7 +220,7 @@ class MainMenu extends Menu
                 "SENSORS",
                 function()
                 {
-                    let enemyScanAddendum = trekgame.currentQuadrantScanned ? "" : " (" + Enterprise.EnemyScanCost + " ENERGY)";
+                    let enemyScanAddendum = trekgame.currentSectorScanned ? "" : " (" + Enterprise.EnemyScanCost + " ENERGY)";
                     let sensorMenu = new Menu();
 
                     sensorMenu.options.push
@@ -270,7 +270,7 @@ class MainMenu extends Menu
                         gameOutputAppend("\nPhasers too damaged to fire!");
                         return true;
                     }
-                    if (trekgame.currentQuadrant.countEntitiesOfType(Klingon))
+                    if (trekgame.currentSector.countEntitiesOfType(Klingon))
                     {
                         if (trekgame.typingFree)
                         {
@@ -309,7 +309,7 @@ class MainMenu extends Menu
                             // automatic targeting enabled. push a menu of targets.
                             console.log("auto targeting path");
 
-                            let torpMenu = new TorpedoMenu(trekgame.currentQuadrant.getEntitiesOfType(Klingon), trekgame);
+                            let torpMenu = new TorpedoMenu(trekgame.currentSector.getEntitiesOfType(Klingon), trekgame);
 
                             trekgame.awaitInput(torpMenu.toString(), 1, function(inputline){return torpMenu.chooseOption(inputline);});
                         }

@@ -50,14 +50,14 @@ function gameOutputAppend(str)
     textarea.scrollTop = textarea.scrollHeight;
 }
 
-function updateMap(mapString = game.currentQuadrant.toString())
+function updateMap(mapString = game.currentSector.toString())
 {
     document.getElementById("map").innerHTML = mapString;
 }
 
 function updateMapHeader(str)
 {
-    document.getElementById("mapHeaderQuadrant").innerHTML = "<pre>"+str+"</pre>";
+    document.getElementById("mapHeaderSector").innerHTML = "<pre>"+str+"</pre>";
 }
 
 function updateMapFooter(str)

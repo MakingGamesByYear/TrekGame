@@ -2,7 +2,7 @@ class Enterprise extends GameObject
 {
     canSeeEntity(entity)
     {
-        return !this.components.ShortRangeSensors.isSectorCorrupt(entity.sectorX, entity.sectorY);
+        return !this.components.ShortRangeSensors.isSubsectorCorrupt(entity.subsectorX, entity.subsectorY);
     }
 
     bombardPlanet(trekgame, planet)
@@ -15,33 +15,33 @@ class Enterprise extends GameObject
         }
 
         var klingonsMoved = 0;
-        let klingonsToMove = Math.min(Math.min(Klingon.Instances, TrekGame.BombardReinforcementSize), trekgame.currentQuadrant.emptySquares());
+        let klingonsToMove = Math.min(Math.min(Klingon.Instances, TrekGame.BombardReinforcementSize), trekgame.currentSector.emptySquares());
 
         for (var q in trekgame.galaxyMap.contents)
         {
-            let quadrant = trekgame.galaxyMap.lookup1D(q);
-            let quadrantKlingons = quadrant.getEntitiesOfType(Klingon);
+            let sector = trekgame.galaxyMap.lookup1D(q);
+            let sectorKlingons = sector.getEntitiesOfType(Klingon);
 
-            if (quadrant == trekgame.currentQuadrant)
+            if (sector == trekgame.currentSector)
             {
                 continue;
             }
 
-            let shQuadrant = this.sensorHistory.lookup1D(q);
+            let shSector = this.sensorHistory.lookup1D(q);
             
-            for (var i = 0; i < Math.min(klingonsToMove - klingonsMoved, quadrantKlingons.length); i++)
+            for (var i = 0; i < Math.min(klingonsToMove - klingonsMoved, sectorKlingons.length); i++)
             {
-                let k = quadrantKlingons[i];
-                quadrant.removeEntity(k);
-                trekgame.currentQuadrant.addEntityInFreeSector(k);
+                let k = sectorKlingons[i];
+                sector.removeEntity(k);
+                trekgame.currentSector.addEntityInFreeSubsector(k);
                 klingonsMoved++;
 
                 // remove the enemy from the sensor history count -- 
                 // i guess the enterprise could somehow scan where the enemy is warping in from?
                 // from a gameplay standpoint i want only correct counts or question marks - not wrong info
-                if (Klingon in shQuadrant)
+                if (Klingon in shSector)
                 {
-                    shQuadrant[Klingon]--;
+                    shSector[Klingon]--;
                     //console.log("removing klingon sensor history");
                 }
             }
@@ -143,6 +143,7 @@ class Enterprise extends GameObject
 
     dockWithStarbase(starbase)
     {
+        console.assert(starbase);
         console.log("dock with starbase");
 
         this.torpedoes = Enterprise.StartTorpedoes;
@@ -184,9 +185,9 @@ class Enterprise extends GameObject
         return !this.dockStarbase && (this.shields < this.suggestedMinShieldLevel(enemyList));
     }
 
-    warpEnergyCost(numSectors)
+    warpEnergyCost(numSubsectors)
     {
-        return Enterprise.EnergyCostPerSector * numSectors;
+        return Enterprise.EnergyCostPerSubsector * numSubsectors;
     }
     
     // assumes that the input value has been previously checked for the appropriate range and available value
@@ -233,7 +234,7 @@ class Enterprise extends GameObject
         return 1;
     }
 
-    static maxInstancesQuadrant()
+    static maxInstancesSector()
     {
         return 1;
     }
@@ -245,7 +246,7 @@ class Enterprise extends GameObject
 
     conditionString(game)
     {
-        if (game.currentQuadrant.countEntitiesOfType(Klingon))
+        if (game.currentSector.countEntitiesOfType(Klingon))
         {
             return "RED";
         }
@@ -309,7 +310,7 @@ class Enterprise extends GameObject
         var x;
         for (x in Enterprise.PhaserTargets)
         {
-            targets.push(...game.currentQuadrant.getEntitiesOfType(Enterprise.PhaserTargets[x]));
+            targets.push(...game.currentSector.getEntitiesOfType(Enterprise.PhaserTargets[x]));
         }
 
         let enterprise = this;
@@ -360,7 +361,7 @@ class Enterprise extends GameObject
             }
         }
 
-        if (!game.currentQuadrantScanned)
+        if (!game.currentSectorScanned)
         {
             gameOutputAppend("\nRun combat sensor scan to see enemy shield levels.");
         }
@@ -372,8 +373,8 @@ class Enterprise extends GameObject
     {
         if (this.freeEnergy >= Enterprise.TorpedoEnergyCost)
         {
-            gameOutputAppend("\nFiring torpedoes towards subsector " + target.sectorString());
-            let torpedoIntersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, target.sectorX, target.sectorY, Infinity);
+            gameOutputAppend("\nFiring torpedoes towards subsector " + target.subsectorString());
+            let torpedoIntersection = game.currentSector.intersectionTest(this.subsectorX, this.subsectorY, target.subsectorX, target.subsectorY, Infinity);
             this.torpedoes--;
             this.freeEnergy -= Enterprise.TorpedoEnergyCost;
             
@@ -396,7 +397,7 @@ class Enterprise extends GameObject
     lrsStringEntityType(galaxyMap, entityType)
     {
         let header = "   ";
-        for (let x = this.quadrantX - 1; x <= this.quadrantX + 1; x++)
+        for (let x = this.sectorX - 1; x <= this.sectorX + 1; x++)
         {
             header += padStringToLength((""+(x+1)), 6);
         }
@@ -404,17 +405,17 @@ class Enterprise extends GameObject
         let border = "-------------------";
         let rval = header + "\n   " + border + '\n';
 
-        for (let y = this.quadrantY - 1; y <= this.quadrantY + 1; y++)
+        for (let y = this.sectorY - 1; y <= this.sectorY + 1; y++)
         {
             rval += " " + (y+1) + " |";
-            for (let x = this.quadrantX - 1; x <= this.quadrantX + 1; x++)
+            for (let x = this.sectorX - 1; x <= this.sectorX + 1; x++)
             {
-                let quadrant = galaxyMap.lookup(x, y);
-                if (quadrant)
+                let sector = galaxyMap.lookup(x, y);
+                if (sector)
                 {
-                    let k = quadrant.countEntitiesOfType(entityType);
+                    let k = sector.countEntitiesOfType(entityType);
 
-                    if (x == this.quadrantX && y == this.quadrantY)
+                    if (x == this.sectorX && y == this.sectorY)
                     {
                         k = "" + k + "E";
                     }
@@ -458,9 +459,9 @@ class Enterprise extends GameObject
         return rval;
     }
 
-    warp(sectorXEnd, sectorYEnd, sectorsToTravel, game)
+    warp(subsectorXEnd, subsectorYEnd, subsectorsToTravel, game)
     {
-        let energyRequired = this.warpEnergyCost(sectorsToTravel);
+        let energyRequired = this.warpEnergyCost(subsectorsToTravel);
 
         if (this.freeEnergy < energyRequired)
         {
@@ -468,10 +469,10 @@ class Enterprise extends GameObject
             return false;
         }
 
-        let intersection = game.currentQuadrant.intersectionTest(this.sectorX, this.sectorY, sectorXEnd, sectorYEnd)
+        let intersection = game.currentSector.intersectionTest(this.subsectorX, this.subsectorY, subsectorXEnd, subsectorYEnd)
            
-        this.sectorX = Math.floor(intersection.lastX);
-        this.sectorY = Math.floor(intersection.lastY);
+        this.subsectorX = Math.floor(intersection.lastX);
+        this.subsectorY = Math.floor(intersection.lastY);
 
         if (intersection.intersects != null)
         {
@@ -485,7 +486,7 @@ class Enterprise extends GameObject
 
         let actualEnergy = this.warpEnergyCost(intersection.stepIterations);
 
-        // get the energy cost of the sectors we actually travelled
+        // get the energy cost of the subsectors we actually travelled
         this.freeEnergy -= actualEnergy;
 
         return true;
@@ -544,8 +545,8 @@ Enterprise.StartShields = 0;
 Enterprise.TorpedoEnergyCost = 10;
 Enterprise.EnemyScanCost = 10;
 Enterprise.PhaserTargets = [Klingon];           // future extension : this list could be dynamic based on evolving gameplay alliances, etc :) 
-Enterprise.EnergyCostPerSector = 1.0;           // Warp cost per sector moved
-Enterprise.EnergyCostPerQuadrant = 10.0;        // Warp cost per quadrant moved
+Enterprise.EnergyCostPerSubsector = 1.0;        // Warp cost per subsector moved
+Enterprise.EnergyCostPerSector = 10.0;          // Warp cost per sector moved
 Enterprise.DamagePassthroughRatio = .25;        // if damage is 25% of shields or more, pass damage through to components
 Enterprise.RandomPassthroughRatio = .25;        // 25% chance that damage will pass through to ship components regardless of shields
 Enterprise.MinComponentRepairPerTurn = 1;       // integrity min autorepair per component

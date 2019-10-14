@@ -1,21 +1,21 @@
-class Quadrant
+class Sector
 {
-    constructor(widthSectorsIn, heightSectorsIn, x, y)
+    constructor(widthSubsectorsIn, heightSubsectorsIn, x, y)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
-        this.width = widthSectorsIn;
-        this.height = heightSectorsIn;
-        this.quadrantEntities = new Array();
+        this.width = widthSubsectorsIn;
+        this.height = heightSubsectorsIn;
+        this.sectorEntities = new Array();
         this.x = x;
         this.y = y;
     }
 
-    populateFromJSData(entitiesQuadrantJS)
+    populateFromJSData(entitiesSectorJS)
     {
         var x;
-        for (x in entitiesQuadrantJS.quadrantEntities)
+        for (x in entitiesSectorJS.sectorEntities)
         {
-            let entData = entitiesQuadrantJS.quadrantEntities[x];
+            let entData = entitiesSectorJS.sectorEntities[x];
 
             // we construct and insert the enterprise entity elsewhere.
             if (entData.entityType != "Enterprise")
@@ -25,16 +25,16 @@ class Quadrant
                 let entityObj = new ctype(); 
                 Object.assign(entityObj, entData);
 
-                this.quadrantEntities.push(entityObj);
+                this.sectorEntities.push(entityObj);
             }
         }
     }
 
     removeEntity(entity)
     {
-        let rmindex = this.quadrantEntities.indexOf(entity);
+        let rmindex = this.sectorEntities.indexOf(entity);
         if (rmindex == -1)throw "Entity not found";
-        this.quadrantEntities.splice( rmindex, 1 );
+        this.sectorEntities.splice( rmindex, 1 );
     }
 
     entityAtLocation(nextXCoord, nextYCoord)
@@ -42,11 +42,11 @@ class Quadrant
         nextXCoord = Math.floor(nextXCoord);
         nextYCoord = Math.floor(nextYCoord);
         
-        for (var x in this.quadrantEntities)
+        for (var x in this.sectorEntities)
         {
-            let objTest = this.quadrantEntities[x];
+            let objTest = this.sectorEntities[x];
 
-            if ((objTest.sectorX == nextXCoord) && (objTest.sectorY == nextYCoord))
+            if ((objTest.subsectorX == nextXCoord) && (objTest.subsectorY == nextYCoord))
             {
                 return objTest;
             }
@@ -56,25 +56,25 @@ class Quadrant
     }
 
     // return a tuple containing
-    // the last sector prior to the intersection
+    // the last subsector prior to the intersection
     // and the intersection object (null if none)
-    intersectionTest(sectorX, sectorY, sectorXEnd, sectorYEnd, maxT = 1.0)
+    intersectionTest(subsectorX, subsectorY, subsectorXEnd, subsectorYEnd, maxT = 1.0)
     {
         checkArgumentsDefinedAndHaveValue(arguments);
 
         // polar to euclidean coordinates
-        let xVec = sectorXEnd - sectorX;
-        let yVec = sectorYEnd - sectorY;
+        let xVec = subsectorXEnd - subsectorX;
+        let yVec = subsectorYEnd - subsectorY;
 
         // we'll step through the grid in in increments of one cell; -1 if the x / y direction are negative
         let xNextF = xVec > 0.0 ? 1.0 : -1.0;
         let yNextF = yVec > 0.0 ? 1.0 : -1.0;
 
         // start in the middle of the cell.
-        let startCoordX = Math.floor(sectorX) + .5;
-        let startCoordY = Math.floor(sectorY) + .5;
-        let endCoordX = Math.floor(sectorXEnd) + .5;
-        let endCoordY = Math.floor(sectorYEnd) + .5;
+        let startCoordX = Math.floor(subsectorX) + .5;
+        let startCoordY = Math.floor(subsectorY) + .5;
+        let endCoordX = Math.floor(subsectorXEnd) + .5;
+        let endCoordY = Math.floor(subsectorYEnd) + .5;
 
         // return values
         let lastCellBeforeIntersectionX = startCoordX;
@@ -146,7 +146,7 @@ class Quadrant
                 break;
             }
 
-            if (nextXCoord < 0 || nextXCoord >= quadrantWidthSectors || nextYCoord < 0 || nextYCoord >= quadrantHeightSectors)
+            if (nextXCoord < 0 || nextXCoord >= sectorWidthSubsectors || nextYCoord < 0 || nextYCoord >= sectorHeightSubsectors)
             {
                 //console.log("next out of bounds " + nextXCoord + " " + nextYCoord);
                 break;
@@ -168,9 +168,9 @@ class Quadrant
     countEntitiesOfType(classtype)
     {
         var rval=0;
-        for (var x in this.quadrantEntities)
+        for (var x in this.sectorEntities)
         {
-            if (this.quadrantEntities[x].constructor == classtype)
+            if (this.sectorEntities[x].constructor == classtype)
             {
                 rval++;
             }
@@ -180,7 +180,7 @@ class Quadrant
 
     getEntitiesOfType(classtype)
     {
-        return this.quadrantEntities.filter(function(item){return item.constructor == classtype});
+        return this.sectorEntities.filter(function(item){return item.constructor == classtype});
     }
 
     getAdjacentEntitiesOfType(adjacentToObj, classtype)
@@ -216,42 +216,42 @@ class Quadrant
         {
             let entityType = entityTypes[entityIdx];
 
-            let numEntities = entityType.randomCountForQuadrant(this.emptySquares(), this.countEntitiesOfType(entityType));
+            let numEntities = entityType.randomCountForSector(this.emptySquares(), this.countEntitiesOfType(entityType));
 
             for (let i =0; i < numEntities; i++ )
             {
                 var ent = new entityType();
-                this.addEntityInFreeSector(ent);
+                this.addEntityInFreeSubsector(ent);
             }
         }
     }
 
-    addEntityInFreeSector(entity)
+    addEntityInFreeSubsector(entity)
     {
-        entity.quadrantX = this.x;
-        entity.quadrantY = this.y;
-        entity.setLocationSector(this.getEmptySquare());
-        this.quadrantEntities.push(entity);
+        entity.sectorX = this.x;
+        entity.sectorY = this.y;
+        entity.setLocationSubsector(this.getEmptySquare());
+        this.sectorEntities.push(entity);
     }
 
     addEntity(entity)
     {
-        entity.quadrantX = this.x;
-        entity.quadrantY = this.y;
+        entity.sectorX = this.x;
+        entity.sectorY = this.y;
 
-        this.quadrantEntities.push(entity);
+        this.sectorEntities.push(entity);
     }
 
     emptySquares()
     {
-        return this.width*this.height - this.quadrantEntities.length;
+        return this.width*this.height - this.sectorEntities.length;
     }
 
     getEmptySquare()
     {
-        console.assert(this.width * this.height > this.quadrantEntities.length);
+        console.assert(this.width * this.height > this.sectorEntities.length);
 
-        if (this.quadrantEntities.length >= this.width*this.height)
+        if (this.sectorEntities.length >= this.width*this.height)
         {
             return null;
         }
@@ -267,10 +267,10 @@ class Quadrant
 
             var entityIdx;
             emptyFound = true;
-            for (entityIdx in this.quadrantEntities)
+            for (entityIdx in this.sectorEntities)
             {
-                let entity = this.quadrantEntities[entityIdx];
-                if (entity.sectorX == randomX && entity.sectorY == randomY)
+                let entity = this.sectorEntities[entityIdx];
+                if (entity.subsectorX == randomX && entity.ssectorY == randomY)
                 {
                     emptyFound = false;
                     break;
@@ -288,20 +288,20 @@ class Quadrant
 
     toString()
     {
-        let borderStringPost = "   " + mapFooter(quadrantWidthSectors) + '\n';
-        let borderStringPre = "   " + mapHeader(quadrantWidthSectors); 
+        let borderStringPost = "   " + mapFooter(sectorWidthSubsectors) + '\n';
+        let borderStringPre = "   " + mapHeader(sectorWidthSubsectors); 
 
-        let quadrantStringGrid = new Grid(this.width, this.height, function(){return " ".padStart(sectorDisplayWidthChars, ' ')})
+        let sectorStringGrid = new Grid(this.width, this.height, function(){return " ".padStart(subsectorDisplayWidthChars, ' ')})
 
         var gameObjectIndex;
-        for (gameObjectIndex in this.quadrantEntities)
+        for (gameObjectIndex in this.sectorEntities)
         {
-            let gameObject = this.quadrantEntities[gameObjectIndex];
-            let objStr = gameObject.toString().padStart(sectorDisplayWidthChars, ' ');
-            quadrantStringGrid.setValue(gameObject.sectorX, gameObject.sectorY, objStr);
+            let gameObject = this.sectorEntities[gameObjectIndex];
+            let objStr = gameObject.toString().padStart(subsectorDisplayWidthChars, ' ');
+            sectorStringGrid.setValue(gameObject.subsectorX, gameObject.subsectorY, objStr);
         }
 
-        let mapString = quadrantStringGrid.toString();
+        let mapString = sectorStringGrid.toString();
 
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
     }

@@ -10,7 +10,7 @@ class StarBase extends GameObject
     {
         console.log("hit a starbase");
 
-        game.currentQuadrant.removeEntity(this);
+        game.currentSector.removeEntity(this);
         StarBase.Instances--;
 
         let removeSB = this;
@@ -21,7 +21,7 @@ class StarBase extends GameObject
             game.enterprise.undock(removeSB);
         }
 
-        gameOutputAppend("\nReport from sector " + this.sectorString());
+        gameOutputAppend("\nReport from sector " + this.subsectorString());
         if (game.primeUniverse)
         {
             gameOutputAppend("The torpedo strikes and destroys the friendly starbase! I bet you'll be court martialled for that one!");
@@ -38,7 +38,7 @@ class StarBase extends GameObject
         return ">!<";
     }
 
-    static maxInstancesQuadrant()
+    static maxInstancesSector()
     {
         return 1;
     }
@@ -48,7 +48,7 @@ class StarBase extends GameObject
         return 1;
     }
 
-    static quadrantInstanceProbabilities()
+    static sectorInstanceProbabilities()
     {
         // 5% chance of a starbase in any given quadrant
         return [.95, .05];

@@ -48,7 +48,7 @@ WarpEnginesComponent.FullyFunctionalHealth = .8;
 WarpEnginesComponent.MinSpeed = 1.5;
 
 // max sectors to travel in a single stardate jump.  sqrt 2 for diagonal (pythagorean)
-WarpEnginesComponent.MaxSpeed = Math.sqrt(2.0) * Math.max(mapWidthQuadrants, mapHeightQuadrants);
+WarpEnginesComponent.MaxSpeed = Math.sqrt(2.0) * Math.max(mapWidthSectors, mapHeightSectors);
 
 
 class ShortRangeSensorsComponent extends ShipComponent
@@ -85,7 +85,7 @@ class ShortRangeSensorsComponent extends ShipComponent
 
     generateCorruptGrid()
     {
-        this.corruptGrid = new Grid(quadrantWidthSectors, quadrantHeightSectors);
+        this.corruptGrid = new Grid(sectorWidthSubsectors, sectorHeightSubsectors);
 
         let corruptChance = this.chanceCorrupt();
 
@@ -95,20 +95,20 @@ class ShortRangeSensorsComponent extends ShipComponent
         }
     }
 
-    isSectorCorrupt1D(x)
+    isSubsectorCorrupt1D(x)
     {
         return this.corruptGrid.lookup1D(x);
     }
 
-    isSectorCorrupt(x, y)
+    isSubsectorCorrupt(x, y)
     {
         return this.corruptGrid.lookup(x,y);
     }
 }
 
 ShortRangeSensorsComponent.FullyFunctionalHealth = .7;   // short range scan fully functional above this health
-ShortRangeSensorsComponent.MinChanceCorrupt = .1;        // For a particular sector on the map, minimum chance it'll be corrupt when integrity is high
-ShortRangeSensorsComponent.MaxChanceCorrupt = .75;       // For a particular sector on the map, maximum chance it'll be corrupt when integrity is low
+ShortRangeSensorsComponent.MinChanceCorrupt = .1;        // For a particular subsector on the map, minimum chance it'll be corrupt when integrity is high
+ShortRangeSensorsComponent.MaxChanceCorrupt = .75;       // For a particular subsector on the map, maximum chance it'll be corrupt when integrity is low
 
 
 class LongRangeSensorsComponent extends ShipComponent

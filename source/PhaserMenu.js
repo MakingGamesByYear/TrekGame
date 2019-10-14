@@ -1,6 +1,5 @@
 class PhaserMenu extends Menu
 {
-
     phaserMenuSet(base, increment, count)
     {
         let rval = new Menu();

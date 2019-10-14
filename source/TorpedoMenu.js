@@ -18,7 +18,7 @@ class TorpedoMenu extends Menu
                     (
                         x + 1,
                         ") ",
-                        "TARGET AT SUBSECTOR ("+targetList[x].sectorString() + ")",
+                        "TARGET AT SUBSECTOR ("+targetList[x].subsectorString() + ")",
                         function()
                         {
                             trekgame.torpedoHandler(tgt);
