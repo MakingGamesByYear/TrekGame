@@ -885,7 +885,6 @@ class TrekGame
             {
                 tfunc(trekgame,x,y);
                 trekgame.gridHandler = null;
-                trekgame.updateDisplay();
                 trekgame.awaitInput(trekgame.mainMenu.toString());
             };
 
@@ -1446,6 +1445,8 @@ class TrekGame
         {
             this.gridHandler(x,y);
             //this.gridHandler = null;
+            this.updateGame();
+            autosave(this);
         }
     }
 }

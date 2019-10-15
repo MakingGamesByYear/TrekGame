@@ -21,6 +21,8 @@ class StarBase extends GameObject
             game.enterprise.undock(removeSB);
         }
 
+        game.checkStarbaseDock();
+
         gameOutputAppend("\nReport from sector " + this.subsectorString());
         if (game.primeUniverse)
         {
