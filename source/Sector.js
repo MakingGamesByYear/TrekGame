@@ -10,6 +10,14 @@ class Sector
         this.y = y;
     }
 
+    collisionLog(strToPrint)
+    {
+        if (Sector.CollisionLog)
+        {
+            console.log(strToPrint);
+        }
+    }
+
     populateFromJSData(entitiesSectorJS)
     {
         var x;
@@ -73,96 +81,103 @@ class Sector
         // start in the middle of the cell.
         let startCoordX = Math.floor(subsectorX) + .5;
         let startCoordY = Math.floor(subsectorY) + .5;
+
         let endCoordX = Math.floor(subsectorXEnd) + .5;
         let endCoordY = Math.floor(subsectorYEnd) + .5;
 
+        let currentCoordX = startCoordX;
+        let currentCoordY = startCoordY;
+
         // return values
-        let lastCellBeforeIntersectionX = startCoordX;
-        let lastCellBeforeIntersectionY = startCoordY;
+        let lastCoordX = startCoordX;
+        let lastCoordY = startCoordY;
+        
         let intersectionObject = null;
 
-        //console.log("start coord " + (startCoordX) + " " + (startCoordY));
-        //console.log("end coord " + (endCoordX) + " " + (endCoordY));
-        //console.log("vec " + (xVec) + " " + (yVec));
+        this.collisionLog("start coord " + (startCoordX) + " " + (startCoordY));
+        this.collisionLog("end coord " + (endCoordX) + " " + (endCoordY));
+        this.collisionLog("vec " + (xVec) + " " + (yVec));
 
-        var nextXCoord = 0;
-        var nextYCoord = 0;
-
-        let currentT = 0.0;
-
+        var nextXInteger = (xVec > 0.0) ? Math.floor(startCoordX) + 1.0 : Math.floor(startCoordX) - 1.0;
+        var nextYInteger = (yVec > 0.0) ? Math.floor(startCoordY) + 1.0 : Math.floor(startCoordY) - 1.0;
+    
         var steps = 0;
+
+        this.collisionLog("next x y integer coords : " + nextXInteger + " " + nextYInteger);
+
+        // get ray t values for the next cell on each axis
+        let tXBound = Math.abs(.50 / xVec);//(nextXInteger - startCoordX) / xVec;
+        let tYBound = Math.abs(.50 / yVec);//(nextYInteger - startCoordY) / yVec;
+
+        let txIncrement = Math.abs(1.0 / xVec);
+        let tyIncrement = Math.abs(1.0 / yVec);
+
+        // prevent divide by 0
+        tXBound = Math.abs(xVec) > .00001 ?  tXBound : Number.MAX_VALUE;
+        tYBound = Math.abs(yVec) > .00001 ?  tYBound : Number.MAX_VALUE;
+
         while (true)
         {
-            // we have, given a start coordinate and a direction vector, the parametric equation of a line
-            // Pt = P0 + D*t
-            // From this we can derive the parameter t at which the line will reach a particular X or Y value
-            // X_t = X_0 + V_x * t
-            // Y_t = Y_0 + V_y * t
-            // implies
-            // (X_t - X_0) / V_x = t
-            // or
-            // (Y_t - Y_0) / V_y = t
-            // so we can figure out what the next cell on the x axis is (current plus or minus one) and figure
-            // out the t parameter where the line crosses it.  
-            // We can do the same for the next call on the y axis.
-            // Then, whichever cell has the lower t parameter the line crosses first.
-            // Because there's a division and it's possible the direction vector has a zero component, we'll check for divide by zero
+            lastCoordX = Math.floor(currentCoordX);
+            lastCoordY = Math.floor(currentCoordY);
 
-            nextXCoord = Math.floor(lastCellBeforeIntersectionX + xNextF);
-            nextYCoord = Math.floor(lastCellBeforeIntersectionY + yNextF);
+            this.collisionLog("t's : " + tXBound + " " + tYBound);
 
-            //console.log("next " + nextXCoord + " " + nextYCoord);
-
-            let tXBound = ((nextXCoord+.5) - startCoordX) / xVec;
-            let tYBound = ((nextYCoord+.5) - startCoordY) / yVec;
-
-            tXBound = Math.abs(xVec) > .00001 ?  tXBound : Number.MAX_VALUE;
-            tYBound = Math.abs(yVec) > .00001 ?  tYBound : Number.MAX_VALUE;
-
-            if (tXBound < tYBound) // hit the x boundary first.
+            if (Math.min(tXBound, tYBound) > maxT)
             {
-                //console.log("xb " + tXBound);
-                currentT = tXBound;
-                nextYCoord = startCoordY + yVec * currentT;
-            }
-            else
-            {
-                //console.log("yb");
-                currentT = tYBound;
-                nextXCoord = startCoordX + xVec * currentT;
-            }
-
-            if (currentT > maxT)
-            {
-                //console.log("Exceeded jump range "+ currentT);
+                this.collisionLog("breaking for max t");
                 break;
             }
 
-            intersectionObject = this.entityAtLocation(nextXCoord, nextYCoord);
+            if (tXBound < tYBound) // hit the x boundary first?
+            {
+                this.collisionLog("step x " + tXBound);
+
+                currentCoordX = nextXInteger;
+                nextXInteger += xNextF;
+
+                tXBound += txIncrement;
+            }
+            else // hit the y boundary first
+            {
+                this.collisionLog("step y " + tYBound);
+
+                currentCoordY = nextYInteger;
+                nextYInteger += yNextF;
+
+                tYBound += tyIncrement;
+            }
+
+            this.collisionLog("stepping to " + currentCoordX + " " + currentCoordY);
+
+            console.assert((currentCoordX != lastCoordX) || (currentCoordY != lastCoordY));
+
+            this.collisionLog("next x y integer coords : " + nextXInteger + " " + nextYInteger);
+
+            if (currentCoordX < 0 || currentCoordY < 0 || currentCoordX >= sectorWidthSubsectors || currentCoordY >= sectorHeightSubsectors)
+            {
+                this.collisionLog("breaking for out of bounds");
+                break;
+            }
+
+            // handle intersections
+            intersectionObject = this.entityAtLocation(currentCoordX, currentCoordY);
 
             if (intersectionObject != null)
             {
-                //console.log("intersection return");
+                this.collisionLog("intersection return");
                 break;
             }
 
-            if (nextXCoord < 0 || nextXCoord >= sectorWidthSubsectors || nextYCoord < 0 || nextYCoord >= sectorHeightSubsectors)
-            {
-                //console.log("next out of bounds " + nextXCoord + " " + nextYCoord);
-                break;
-            }
-
-            //console.log("T is at " + currentT);
-            lastCellBeforeIntersectionX = nextXCoord;
-            lastCellBeforeIntersectionY = nextYCoord;
-
+            // no escape conditions, so we'll count this as a step
             steps++;
-
-            //console.log("cell step" + (lastCellBeforeIntersectionX) + " " + (lastCellBeforeIntersectionY));
         }
 
-        //console.log("cell end " + (lastCellBeforeIntersectionX) + " " + (lastCellBeforeIntersectionY)+ " " + intersectionObject);
-        return {lastX : lastCellBeforeIntersectionX, lastY : lastCellBeforeIntersectionY, intersects : intersectionObject, stepIterations:steps, nextX : nextXCoord, nextY : nextYCoord};
+        this.collisionLog("returning with lastcoord " + lastCoordX + " " + lastCoordY);
+        this.collisionLog("returning with intersection obj " + intersectionObject);
+        this.collisionLog("returning with steps  " + steps);
+
+        return {lastX : lastCoordX, lastY : lastCoordY, intersects : intersectionObject, stepIterations:steps};
     }
 
     countEntitiesOfType(classtype)
@@ -306,3 +321,5 @@ class Sector
         return "<pre>" + borderStringPre + mapString + borderStringPost + "</pre>";
     }
 }
+
+Sector.CollisionLog = false;

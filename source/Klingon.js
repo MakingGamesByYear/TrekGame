@@ -91,11 +91,11 @@ class Klingon extends GameObject
 
     static sectorInstanceProbabilities()
     {
-        return [.9,  
+        return [.9,     // %chance 0 klingons
                 .025,
                 .025,
                 .0125,
-                .00625
+                .00625  // %chance 4 klingons
         ];
     }
 

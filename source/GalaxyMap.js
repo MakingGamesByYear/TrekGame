@@ -81,7 +81,7 @@ class GalaxyMap extends Grid
 
             let instancesToCreate = etype.minInstancesGame() ;//- etype.Instances;
 
-            // console.log("Creating min instances of " + etype.name + " : " + instancesToCreate);
+            console.log("Creating min instances of " + etype.name + " : " + instancesToCreate);
             if (instancesToCreate > 0)
             {
                 for (let i = 0; i < instancesToCreate; i++)
@@ -90,12 +90,16 @@ class GalaxyMap extends Grid
                     let randomSector = randomInt(0, this.contents.length-1);
 
                     let instAssigned = false;
+
                     for (let quad = 0; quad < this.contents.length; quad++)
                     {
-                        if (this.lookup1D(randomSector).emptySquares())
+                        let sec = this.lookup1D(randomSector);
+
+                        if (sec.emptySquares() && sec.countEntitiesOfType(etype) < etype.maxInstancesSector())
                         {
                             this.lookup1D(randomSector).addEntityInFreeSubsector(inst);
                             instAssigned = true;
+                            console.log("inst assigned " + etype.name);
                             break;
                         }
 
