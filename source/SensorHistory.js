@@ -54,7 +54,7 @@ class SensorHistory extends Grid
                 {    
                     var k = "";
 
-                    if (EntityType in sector)
+                    if (EntityType in sectorDict)
                     {
                         k += sectorDict[EntityType]; // integer count of the entity type
                     }

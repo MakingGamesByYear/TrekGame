@@ -19,6 +19,6 @@ class Star extends GameObject
 
     static maxInstancesSector()
     {
-        return 9;//12;
+        return 9;
     }
 }
