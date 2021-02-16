@@ -1,4 +1,18 @@
 Todos and Ideas for possible extension:
+Made the file as an md
+
+- Introduce game levels, Novice, Ensign, Corporal, Lieutenant, Captain level
+(player is still Captain Kirk, game difficulty changes)
+(galaxy size, 64, 81, 100, 121, 144, sectors will be 10x10)
+(star density per quandrant)
+(enemy density)
+(mission time)
+(random species, random loyalties)
+- Introduce Ajax, PHP to save a leaderboard and sign in to save games
+- Extend to tournament play mode, Same game difficulty, different players
+- Introduce Romulans, Vegans, Andorians, Xindi
+
+Christopher Pugh suggestions
 
 - flavor text / communications from enemy ships
 - phaser target list could be dynamic based on evolving gameplay alliances, etc :) 
