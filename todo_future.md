@@ -1,4 +1,5 @@
 Todos and Ideas for possible extension:
+
 Made the file as an md
 
 - Introduce game levels, Novice, Ensign, Corporal, Lieutenant, Captain level
